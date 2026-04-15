@@ -551,7 +551,7 @@ function onCapoChange(v){capoFrets=parseInt(v)||0;updateSongView();}
 /* ══ EXPORT ══ */
 function openExportModal(){
   const lines=['WorshipBase — Set List',new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'}),''];
-  setList.forEach((id,i)=>{const s=songs.find(x=>x.id===id);if(!s)return;lines.push(`${i+1}. ${s.title}`);lines.push(`   ${s.author} · Key of ${s.key} · ${s.cat==='malayalam'?'Malayalam':'English'}`);lines.push('');});
+  setList.forEach((id,i)=>{const s=findSongById(id);if(!s)return;lines.push(`${i+1}. ${s.title}`);lines.push(`   ${s.author} · Key of ${s.key} · ${s.cat==='malayalam'?'Malayalam':'English'}`);lines.push('');});
   document.getElementById('export-preview').textContent=lines.join('\n');
   document.getElementById('export-modal').classList.add('open');
 }
@@ -562,6 +562,17 @@ function copyExport(){const text=document.getElementById('export-preview').textC
 let songs=[],setList=[],currentSong=null,currentKey=null,nnsMode=false,darkMode=false;
 let editingId=null,activeTab='english',modalCat='english',pickerFilter='all',fromSetList=false;
 let vRows=[],rowCache={},debounceTimer=null;
+
+function normalizeSongId(id){
+  return id==null?'':String(id);
+}
+function normalizeSongRecord(fbKey,song){
+  return {...song,id:normalizeSongId(song.id||fbKey),fbKey};
+}
+function findSongById(id){
+  const normalizedId=normalizeSongId(id);
+  return songs.find(song=>normalizeSongId(song.id)===normalizedId||normalizeSongId(song.fbKey)===normalizedId)||null;
+}
  
 /* ══ FIREBASE LISTENERS ══ */
 function initFirebase(){
@@ -569,7 +580,7 @@ function initFirebase(){
   songsRef.on('value',snapshot=>{
     const data=snapshot.val();
     if(data){
-      songs=Object.entries(data).map(([fbKey,v])=>({...v,fbKey}));
+      songs=Object.entries(data).map(([fbKey,v])=>normalizeSongRecord(fbKey,v));
     } else {
       // First run — seed with default songs
       songs=[];
@@ -586,7 +597,9 @@ function initFirebase(){
   // Setlist listener
   setlistRef.on('value',snapshot=>{
     const data=snapshot.val();
-    setList=data?Object.values(data).sort((a,b)=>a.order-b.order).map(x=>x.songId):[];
+    setList=data
+      ?Object.values(data).sort((a,b)=>a.order-b.order).map(x=>normalizeSongId(x.songId)).filter(Boolean)
+      :[];
     if(activeTab==='setlist')renderSetList();
   });
 }
@@ -602,11 +615,12 @@ function saveSongToFB(song){
   // song has fbKey if editing, undefined if new
   const {fbKey,...data}=song;
   if(fbKey){
-    songsRef.child(fbKey).set(data)
+    songsRef.child(fbKey).set({...data,id:normalizeSongId(data.id||fbKey)})
       .then(()=>showSync('Saved ✓'))
       .catch(()=>showSync('Save failed',true));
   } else {
-    songsRef.push(data)
+    const ref=songsRef.push();
+    ref.set({...data,id:normalizeSongId(data.id||ref.key)})
       .then(()=>showSync('Saved ✓'))
       .catch(()=>showSync('Save failed',true));
   }
@@ -618,7 +632,7 @@ function deleteSongFromFB(fbKey){
 }
 function saveSetListToFB(){
   const data={};
-  setList.forEach((id,i)=>{data[`item${i}`]={songId:id,order:i};});
+  setList.map(normalizeSongId).filter(Boolean).forEach((id,i)=>{data[`item${i}`]={songId:id,order:i};});
   setlistRef.set(data).catch(()=>showSync('Set list sync failed',true));
 }
  
@@ -776,7 +790,7 @@ function seedDefaultSongs(){
     {id:'ml29',cat:'malayalam',title:'Dinavum Yeshuvinte Koode',author:'Rajesh Daniel Elappara',key:'Em',chart:''},
     {id:'ml30',cat:'malayalam',title:'Ee Loka Jeevithathil',author:'R S Vijayaraj',key:'B',chart:''},
   ];
-  defaults.forEach(s=>{const{id:_,...data}=s;songsRef.push(data);});
+  defaults.forEach(s=>{songsRef.child(s.id).set(s);});
   showSync('Library seeded ✓');
 }
  
@@ -852,8 +866,8 @@ function renderSetList(){
   const items=document.getElementById('setlist-items');
   document.getElementById('set-count-label').textContent=`${setList.length} song${setList.length!==1?'s':''}`;
   if(!setList.length){items.innerHTML=`<div class="setlist-empty"><div class="sl-empty-icon">🎵</div><div class="sl-empty-title">No songs in set</div><div class="sl-empty-sub">Tap + to add songs</div></div>`;return;}
-  items.innerHTML=setList.map((id,idx)=>{const s=songs.find(x=>x.id===id);if(!s)return'';
-    return`<div class="set-item" onclick="openSong('${id}',true)"><span class="set-num">${idx+1}</span><div class="set-item-avatar">${s.title[0].toUpperCase()}</div><div class="set-info"><div class="set-item-title">${s.title}</div><div class="set-item-meta">${s.author}&nbsp;<span class="lang-badge">${s.cat==='malayalam'?'ML':'EN'}</span>&nbsp;·&nbsp;${s.key}</div></div><button class="set-remove" onclick="event.stopPropagation();removeFromSet('${id}')">×</button></div>`;
+  items.innerHTML=setList.map((id,idx)=>{const s=findSongById(id);if(!s)return'';
+    return`<div class="set-item" onclick="openSong('${s.id}',true)"><span class="set-num">${idx+1}</span><div class="set-item-avatar">${s.title[0].toUpperCase()}</div><div class="set-info"><div class="set-item-title">${s.title}</div><div class="set-item-meta">${s.author}&nbsp;<span class="lang-badge">${s.cat==='malayalam'?'ML':'EN'}</span>&nbsp;·&nbsp;${s.key}</div></div><button class="set-remove" onclick="event.stopPropagation();removeFromSet('${s.id}')">×</button></div>`;
   }).join('');
 }
 function clearSetList(){if(!setList.length)return;if(!confirm('Clear set list?'))return;setlistRef.set(null);setList=[];renderSetList();}
@@ -877,7 +891,7 @@ function toggleSetSong(id){
  
 /* ══ SWIPE ══ */
 let swipeStartX=0,swipeStartY=0;
-function getSongList(){if(fromSetList)return setList.map(id=>songs.find(s=>s.id===id)).filter(Boolean);return vRows.filter(r=>r.type==='song').map(r=>r.song);}
+function getSongList(){if(fromSetList)return setList.map(id=>findSongById(id)).filter(Boolean);return vRows.filter(r=>r.type==='song').map(r=>r.song);}
 function currentIndex(){return getSongList().findIndex(s=>s.id===currentSong.id);}
 function updateSwipeDots(){const list=getSongList();const ci=currentIndex();const hint=document.getElementById('swipe-hint');if(list.length<2){hint.innerHTML='';return;}hint.innerHTML=list.map((_,i)=>`<div class="swipe-dot${i===ci?' active':''}"></div>`).join('');hint.classList.add('show');setTimeout(()=>hint.classList.remove('show'),2000);}
 document.getElementById('sv-scroll').addEventListener('touchstart',e=>{swipeStartX=e.touches[0].clientX;swipeStartY=e.touches[0].clientY;},{passive:true});
@@ -904,7 +918,7 @@ function toggleDark(){darkMode=!darkMode;document.body.classList.toggle('dark',d
  
 /* ══ SONG VIEW ══ */
 function openSong(id,fromSet){
-  currentSong=songs.find(s=>s.id===id);if(!currentSong)return;
+  currentSong=findSongById(id);if(!currentSong)return;
   fromSetList=!!fromSet;currentKey=currentSong.key;nnsMode=false;lyricsOnly=false;capoFrets=0;
   document.getElementById('sv-title').textContent=currentSong.title;
   document.getElementById('sv-author').textContent=currentSong.author;
@@ -953,21 +967,22 @@ function saveSong(){
   const songData={cat:modalCat,title,author,key,chart};
   if(editingId){
     // Update existing in Firebase
-    const existing=songs.find(s=>s.id===editingId);
+    const existing=findSongById(editingId);
     if(existing&&existing.fbKey){
-      songsRef.child(existing.fbKey).update(songData)
+      songsRef.child(existing.fbKey).update({...songData,id:existing.id})
         .then(()=>{showSync('Saved ✓');closeModal();openSong(editingId,fromSetList);})
         .catch(()=>showSync('Save failed',true));
     }
   } else {
-    songsRef.push(songData)
-      .then(ref=>{showSync('Saved ✓');closeModal();activeTab=modalCat;document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['english','malayalam','setlist'][i]===activeTab));const ss=document.getElementById('song-section'),sl=document.getElementById('setlist-section'),sw=document.getElementById('search-wrap'),tb=document.querySelector('.toolbar');ss.style.display='flex';sl.style.display='none';sw.style.display='block';tb.style.display='flex';})
+    const ref=songsRef.push();
+    ref.set({...songData,id:ref.key})
+      .then(()=>{showSync('Saved ✓');closeModal();activeTab=modalCat;document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['english','malayalam','setlist'][i]===activeTab));const ss=document.getElementById('song-section'),sl=document.getElementById('setlist-section'),sw=document.getElementById('search-wrap'),tb=document.querySelector('.toolbar');ss.style.display='flex';sl.style.display='none';sw.style.display='block';tb.style.display='flex';})
       .catch(()=>showSync('Save failed',true));
   }
 }
 function deleteSong(){
   if(!editingId||!confirm('Delete this song?'))return;
-  const existing=songs.find(s=>s.id===editingId);
+  const existing=findSongById(editingId);
   if(existing&&existing.fbKey){
     songsRef.child(existing.fbKey).remove()
       .then(()=>{showSync('Deleted');closeModal();showList();})
