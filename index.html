@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="WorshipBase"/>
+<title>WorshipBase</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg1:#ffffff;--bg2:#f2f2f4;--bg3:#e8e8ea;
+  --txt1:#0a0a0a;--txt2:#4a4a52;--txt3:#9a9aa8;
+  --bdr:rgba(0,0,0,0.10);--bdr2:rgba(0,0,0,0.18);
+  --burg:#62202e;--burg2:#7d2a3c;--burg-light:#f8edf0;--burg-mid:#d9a8b2;
+  --rad:12px;--rad-lg:16px;--rad-pill:100px;
+  --item-h:70px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
+}
+body.dark{
+  --bg1:#1c1c1e;--bg2:#28282a;--bg3:#0d0d0f;
+  --txt1:#f5f5f7;--txt2:#aeaeb8;--txt3:#58585e;
+  --bdr:rgba(255,255,255,0.08);--bdr2:rgba(255,255,255,0.14);
+  --burg-light:#1a0a0d;--burg-mid:#4a1e26;
+}
+html,body{height:100%;overflow:hidden;}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:var(--bg3);color:var(--txt1);font-size:16px;}
+ 
+/* ── LOADING SCREEN ── */
+#loading-screen{position:fixed;inset:0;background:var(--burg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .4s;}
+#loading-screen.hidden{opacity:0;pointer-events:none;}
+.loading-logo{margin-bottom:24px;}
+.loading-text{color:rgba(255,255,255,.9);font-size:16px;font-weight:600;}
+.loading-sub{color:rgba(255,255,255,.5);font-size:13px;margin-top:6px;}
+.spinner{width:28px;height:28px;border:2.5px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-top:20px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+ 
+/* ── SYNC INDICATOR ── */
+.sync-badge{position:fixed;top:calc(var(--safe-top) + 8px);right:12px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:var(--rad-pill);z-index:50;opacity:0;transition:opacity .3s;pointer-events:none;}
+.sync-badge.show{opacity:1;}
+.sync-badge.error{background:#c0392b;}
+ 
+/* ── VIEWS ── */
+#list-view,#song-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg3);overflow:hidden;}
+#song-view{transform:translateX(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);z-index:10;}
+#song-view.visible{transform:none;}
+ 
+/* ── HEADER ── */
+.header{background:var(--burg);padding:calc(var(--safe-top) + 18px) 18px 0;flex-shrink:0;}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.wordmark{display:flex;align-items:center;gap:11px;}
+.wordmark-logo{width:36px;height:36px;flex-shrink:0;}
+.wordmark-name{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1;}
+.wordmark-sub{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;}
+.hbtns{display:flex;gap:8px;}
+.hbtn{background:rgba(255,255,255,.16);border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;}
+.hbtn:active{background:rgba(255,255,255,.28);}
+.tabs-wrap{padding:0 18px 18px;}
+.tabs{display:flex;background:rgba(0,0,0,.25);border-radius:13px;padding:3px;gap:2px;}
+.tab{flex:1;padding:9px 6px;text-align:center;font-size:13px;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer;border-radius:10px;border:none;background:none;font-family:inherit;}
+.tab.active{background:#fff;color:var(--burg);font-weight:700;}
+ 
+/* ── SEARCH ── */
+.search-wrap{background:var(--bg1);padding:11px 18px;border-bottom:0.5px solid var(--bdr);flex-shrink:0;}
+.search-inner{position:relative;}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--txt3);}
+.search-input{width:100%;padding:10px 36px 10px 34px;border:1px solid var(--bdr2);border-radius:11px;font-size:15px;background:var(--bg2);color:var(--txt1);outline:none;font-family:inherit;}
+.search-input:focus{border-color:var(--burg);}
+.search-clear{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;color:var(--txt3);cursor:pointer;display:none;padding:0;line-height:1;}
+ 
+/* ── TOOLBAR ── */
+.toolbar{display:flex;align-items:center;padding:9px 18px 5px;background:var(--bg3);flex-shrink:0;}
+.song-count{font-size:12px;color:var(--txt3);font-weight:600;}
+ 
+/* ── LIST ── */
+.vscroll-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;}
+.vscroll-inner{position:relative;width:100%;}
+.v-item{position:absolute;left:0;right:0;will-change:transform;}
+.alpha-row{height:28px;padding:0 18px;display:flex;align-items:center;font-size:11px;font-weight:700;color:var(--txt3);letter-spacing:.07em;text-transform:uppercase;background:var(--bg3);position:absolute;left:0;right:0;will-change:transform;}
+.song-item{display:flex;align-items:center;gap:13px;height:var(--item-h);padding:0 18px;background:var(--bg1);border-bottom:0.5px solid var(--bdr);cursor:pointer;}
+.song-item:active{background:var(--burg-light);}
+.song-avatar{width:42px;height:42px;min-width:42px;border-radius:11px;background:var(--burg-light);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--burg);}
+.song-info{flex:1;min-width:0;}
+.song-item-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.song-item-meta{font-size:12px;color:var(--txt2);margin-top:2px;}
+.key-badge{background:var(--burg-light);color:var(--burg);font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--rad-pill);white-space:nowrap;border:1px solid var(--burg-mid);}
+.add-fab{position:absolute;bottom:calc(22px + var(--safe-bot));right:18px;background:var(--burg);color:#fff;border:none;border-radius:50%;width:56px;height:56px;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 22px rgba(98,32,46,.5);z-index:10;}
+.add-fab:active{transform:scale(.94);}
+ 
+/* ── SET LIST ── */
+.setlist-header-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 6px;flex-shrink:0;}
+.setlist-title-label{font-size:13px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;}
+.setlist-hdr-btns{display:flex;gap:8px;}
+.clear-btn{font-size:12px;font-weight:600;color:#e03448;background:none;border:1.5px solid #e03448;border-radius:var(--rad-pill);padding:4px 13px;cursor:pointer;font-family:inherit;}
+.export-btn{font-size:12px;font-weight:600;color:var(--burg);background:none;border:1.5px solid var(--burg-mid);border-radius:var(--rad-pill);padding:4px 13px;cursor:pointer;font-family:inherit;}
+.setlist-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.setlist-items{padding-bottom:100px;}
+.set-item{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg1);border-bottom:0.5px solid var(--bdr);cursor:pointer;}
+.set-item:active{background:var(--burg-light);}
+.set-num{width:22px;min-width:22px;font-size:13px;font-weight:700;color:var(--txt3);text-align:center;}
+.set-info{flex:1;min-width:0;}
+.set-item-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.set-item-meta{font-size:12px;color:var(--txt2);margin-top:2px;}
+.set-item-avatar{width:38px;height:38px;min-width:38px;border-radius:9px;background:var(--burg-light);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--burg);}
+.set-remove{background:none;border:none;font-size:22px;color:var(--txt3);cursor:pointer;padding:0 2px;line-height:1;}
+.lang-badge{font-size:10px;font-weight:700;padding:1px 7px;border-radius:var(--rad-pill);background:var(--bg3);color:var(--txt3);}
+.setlist-empty{text-align:center;padding:64px 24px;color:var(--txt3);}
+.sl-empty-icon{font-size:40px;margin-bottom:12px;}
+.sl-empty-title{font-size:16px;font-weight:600;color:var(--txt2);margin-bottom:4px;}
+.sl-empty-sub{font-size:13px;line-height:1.6;}
+ 
+/* ── SONG VIEW ── */
+.sv-header{background:var(--bg1);border-bottom:0.5px solid var(--bdr);padding:calc(var(--safe-top) + 12px) 18px 16px;flex-shrink:0;}
+.back-btn{display:inline-flex;align-items:center;gap:5px;background:rgba(98,32,46,.1);border:none;cursor:pointer;color:var(--burg);font-size:15px;font-weight:600;padding:7px 14px 7px 10px;border-radius:var(--rad-pill);margin-bottom:12px;font-family:inherit;}
+body.dark .back-btn{background:rgba(200,100,120,.15);}
+.back-btn:active{opacity:.7;}
+.sv-title{font-size:21px;font-weight:800;color:var(--txt1);line-height:1.2;}
+.sv-author{font-size:13px;color:var(--txt2);margin-top:4px;}
+.sv-controls{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap;}
+.sv-controls label{font-size:12px;color:var(--txt2);font-weight:600;}
+.sv-select{padding:7px 11px;border:1.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:13px;font-weight:600;background:var(--bg2);color:var(--txt1);cursor:pointer;outline:none;font-family:inherit;}
+.sv-select:focus{border-color:var(--burg);}
+.pill-btn{padding:7px 15px;border:1.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:13px;font-weight:700;background:var(--bg2);color:var(--txt2);cursor:pointer;white-space:nowrap;font-family:inherit;}
+.pill-btn:active{transform:scale(.96);}
+.pill-btn.on{background:var(--burg);color:#fff;border-color:var(--burg);}
+.pill-btn.edit-pill{margin-left:auto;}
+.sv-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.act-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:13px;font-weight:700;background:var(--bg1);color:var(--txt2);cursor:pointer;white-space:nowrap;font-family:inherit;}
+.act-btn:active{transform:scale(.96);}
+.act-btn.on{background:var(--burg-light);color:var(--burg);border-color:var(--burg-mid);}
+.chords-used{margin-top:10px;font-size:12px;color:var(--txt2);}
+.chords-used span{color:var(--burg);font-weight:700;}
+ 
+/* ── SHEET ── */
+.sv-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.sheet{background:var(--bg1);margin:12px;border-radius:var(--rad-lg);border:0.5px solid var(--bdr);padding:22px 22px 80px;}
+.section-label{font-size:11px;font-weight:800;color:var(--txt3);letter-spacing:.12em;text-transform:uppercase;margin:24px 0 8px;}
+.section-label:first-child{margin-top:0;}
+.lyric-line{margin-bottom:16px;}
+.chord-row{font-size:14px;font-weight:800;color:var(--burg);min-height:20px;white-space:pre;font-family:'Courier New',Courier,monospace;letter-spacing:.02em;}
+.lyric-row{font-size:16px;color:var(--txt1);line-height:1.55;}
+.lyrics-only .chord-row{display:none;}
+.empty-chart{text-align:center;padding:52px 20px;}
+.empty-chart-icon{font-size:38px;margin-bottom:12px;}
+.empty-chart p{font-size:14px;margin-bottom:20px;line-height:1.6;color:var(--txt2);}
+.empty-chart-btn{padding:12px 26px;background:var(--burg);color:#fff;border:none;border-radius:var(--rad-pill);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+.swipe-hint{position:absolute;bottom:calc(10px + var(--safe-bot));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;pointer-events:none;opacity:0;transition:opacity .3s;}
+.swipe-hint.show{opacity:.6;}
+.swipe-dot{width:6px;height:6px;border-radius:50%;background:var(--txt3);}
+.swipe-dot.active{background:var(--burg);transform:scale(1.3);}
+ 
+/* ── MODALS ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;align-items:flex-end;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg1);border-radius:22px 22px 0 0;padding:20px 18px calc(22px + var(--safe-bot));width:100%;max-height:90vh;overflow-y:auto;animation:slideUp .25s cubic-bezier(.32,.72,0,1);}
+@keyframes slideUp{from{transform:translateY(44px);opacity:0;}to{transform:none;opacity:1;}}
+.modal-handle{width:38px;height:4px;background:var(--txt3);border-radius:2px;margin:0 auto 18px;opacity:.35;}
+.modal-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.modal h2{font-size:19px;font-weight:800;color:var(--txt1);}
+.modal-close{background:var(--bg2);border:none;border-radius:50%;width:30px;height:30px;font-size:17px;cursor:pointer;color:var(--txt2);display:flex;align-items:center;justify-content:center;}
+.modal label{font-size:13px;font-weight:700;color:var(--txt2);display:block;margin-bottom:5px;}
+.modal input,.modal textarea,.modal select{width:100%;padding:12px 14px;border:1.5px solid var(--bdr2);border-radius:var(--rad);font-size:15px;background:var(--bg2);color:var(--txt1);margin-bottom:14px;font-family:inherit;outline:none;}
+.modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--burg);}
+.modal textarea{min-height:200px;resize:vertical;font-family:'Courier New',monospace;font-size:13px;}
+.modal-hint{font-size:12px;color:var(--txt3);margin:-10px 0 14px;line-height:1.6;}
+.modal-actions{display:flex;gap:8px;margin-top:6px;}
+.btn-primary{flex:1;padding:14px;background:var(--burg);color:#fff;border:none;border-radius:var(--rad-pill);font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
+.btn-primary:active{opacity:.85;}
+.btn-secondary{flex:1;padding:14px;background:var(--bg2);color:var(--txt1);border:1.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:15px;cursor:pointer;font-family:inherit;}
+.btn-danger{padding:14px 16px;background:none;color:#e03448;border:1.5px solid #e03448;border-radius:var(--rad-pill);font-size:15px;cursor:pointer;font-family:inherit;}
+.cat-toggle{display:flex;margin-bottom:14px;background:var(--bg2);border-radius:var(--rad);padding:3px;gap:2px;}
+.cat-opt{flex:1;padding:9px;text-align:center;font-size:14px;font-weight:600;cursor:pointer;background:none;color:var(--txt2);border:none;border-radius:10px;font-family:inherit;}
+.cat-opt.active{background:var(--burg);color:#fff;font-weight:800;}
+.picker-search{width:100%;padding:12px 14px;border:1.5px solid var(--bdr2);border-radius:var(--rad);font-size:15px;background:var(--bg2);color:var(--txt1);margin-bottom:10px;outline:none;font-family:inherit;}
+.picker-search:focus{border-color:var(--burg);}
+.picker-filter{display:flex;gap:6px;margin-bottom:12px;}
+.pf-btn{padding:6px 15px;border:1.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:12px;font-weight:700;background:var(--bg2);color:var(--txt2);cursor:pointer;font-family:inherit;}
+.pf-btn.active{background:var(--burg);color:#fff;border-color:var(--burg);}
+.picker-list{max-height:360px;overflow-y:auto;border:0.5px solid var(--bdr);border-radius:var(--rad);}
+.picker-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:0.5px solid var(--bdr);cursor:pointer;}
+.picker-item:last-child{border-bottom:none;}
+.picker-item:active{background:var(--burg-light);}
+.picker-item-info{flex:1;min-width:0;}
+.picker-item-title{font-size:14px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.picker-item-meta{font-size:11px;color:var(--txt2);margin-top:2px;}
+.picker-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;background:transparent;flex-shrink:0;font-weight:700;}
+.picker-check.selected{background:var(--burg);border-color:var(--burg);}
+.chord-tabs{display:flex;background:var(--bg2);border-radius:var(--rad);padding:3px;gap:2px;margin-bottom:18px;}
+.chord-tab{flex:1;padding:9px;text-align:center;font-size:14px;font-weight:600;cursor:pointer;background:none;color:var(--txt2);border:none;border-radius:10px;font-family:inherit;}
+.chord-tab.active{background:var(--bg1);color:var(--burg);font-weight:800;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.chord-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:18px;padding-bottom:8px;}
+.chord-cell{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.chord-cell-label{font-size:14px;font-weight:800;color:var(--txt1);}
+.export-preview{background:var(--bg2);border-radius:var(--rad);padding:14px;font-family:'Courier New',monospace;font-size:12px;color:var(--txt1);max-height:260px;overflow-y:auto;margin-bottom:14px;white-space:pre-wrap;line-height:1.6;}
+ 
+/* ── PRINT ── */
+@media print{
+  @page{margin:16mm 14mm;size:A4;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  body{background:#fff!important;overflow:visible!important;height:auto!important;}
+  #list-view,#song-view .sv-header,#song-view .sv-actions,.add-fab,.modal-bg,.swipe-hint,#loading-screen,.sync-badge{display:none!important;}
+  #song-view{position:static!important;transform:none!important;height:auto!important;overflow:visible!important;display:block!important;}
+  .sv-scroll{overflow:visible!important;height:auto!important;}
+  .sheet{margin:0!important;border:none!important;padding:0!important;}
+  .lyrics-only .chord-row{display:none!important;}
+  .chord-row{color:#62202e!important;}
+  .print-only{display:block!important;}
+  .section-label{page-break-after:avoid;}
+  .lyric-line{page-break-inside:avoid;}
+}
+.print-only{display:none;margin-bottom:20px;}
+.print-title{font-size:24px;font-weight:800;margin-bottom:4px;color:#000;}
+.print-author{font-size:14px;color:#444;margin-bottom:3px;}
+.print-key{font-size:12px;color:#62202e;font-weight:700;}
+</style>
+</head>
+<body>
+ 
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="loading-logo">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+      <rect width="64" height="64" rx="16" fill="rgba(255,255,255,0.15)"/>
+      <path d="M10 22L19 44L28 30L32 38L36 30L45 44L54 22" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="32" cy="54" r="3" fill="white" opacity=".6"/>
+    </svg>
+  </div>
+  <div class="loading-text">WorshipBase</div>
+  <div class="loading-sub">Loading your library…</div>
+  <div class="spinner"></div>
+</div>
+ 
+<!-- SYNC BADGE -->
+<div class="sync-badge" id="sync-badge"></div>
+ 
+<!-- LIST VIEW -->
+<div id="list-view">
+  <div class="header">
+    <div class="header-top">
+      <div class="wordmark">
+        <svg class="wordmark-logo" viewBox="0 0 36 36" fill="none">
+          <rect width="36" height="36" rx="9" fill="rgba(255,255,255,0.16)"/>
+          <path d="M5 11L10 23L14.5 15.5L18 20L21.5 15.5L26 23L31 11" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="18" cy="28" r="1.6" fill="white" opacity=".6"/>
+        </svg>
+        <div>
+          <div class="wordmark-name">WorshipBase</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;margin-top:3px;">Chord Library</div>
+        </div>
+      </div>
+      <div class="hbtns">
+        <button class="hbtn" id="dark-btn" onclick="toggleDark()">☀</button>
+      </div>
+    </div>
+    <div class="tabs-wrap">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('english')">English</button>
+        <button class="tab" onclick="switchTab('malayalam')">Malayalam</button>
+        <button class="tab" onclick="switchTab('setlist')">Set List</button>
+      </div>
+    </div>
+  </div>
+  <div class="search-wrap" id="search-wrap">
+    <div class="search-inner">
+      <span class="search-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+      <input class="search-input" id="search-input" type="search" placeholder="Search songs or artists…" oninput="onSearch()"/>
+      <button class="search-clear" id="search-clear" onclick="clearSearch()">×</button>
+    </div>
+  </div>
+  <div class="toolbar"><span class="song-count" id="song-count"></span></div>
+  <div id="song-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;">
+    <div id="vscroll" class="vscroll-wrap"><div id="vinner" class="vscroll-inner"></div></div>
+    <button class="add-fab" onclick="openModal(null)">+</button>
+  </div>
+  <div id="setlist-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;position:relative;">
+    <div class="setlist-header-row">
+      <span class="setlist-title-label" id="set-count-label">0 songs</span>
+      <div class="setlist-hdr-btns">
+        <button class="export-btn" onclick="openExportModal()">Export</button>
+        <button class="clear-btn" onclick="clearSetList()">Clear</button>
+      </div>
+    </div>
+    <div class="setlist-scroll"><div id="setlist-items" class="setlist-items"></div></div>
+    <button class="add-fab" onclick="openPicker()">+</button>
+  </div>
+</div>
+ 
+<!-- SONG VIEW -->
+<div id="song-view">
+  <div class="sv-header">
+    <button class="back-btn" onclick="showList()">
+      <svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M8 1L1.5 7.5L8 14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span id="back-label">Back</span>
+    </button>
+    <div class="sv-title" id="sv-title"></div>
+    <div class="sv-author" id="sv-author"></div>
+    <div class="sv-controls">
+      <label>Key</label>
+      <select class="sv-select" id="key-select" onchange="transposeToKey(this.value)"></select>
+      <label>Capo</label>
+      <select class="sv-select" id="capo-select" onchange="onCapoChange(this.value)">
+        <option value="0">None</option>
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+        <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
+      </select>
+      <button class="pill-btn" id="nns-btn" onclick="toggleNNS()">NNS</button>
+      <button class="pill-btn edit-pill" onclick="openModal(currentSong)">Edit</button>
+    </div>
+    <div class="sv-actions">
+      <button class="act-btn" id="lyrics-btn" onclick="toggleLyrics()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="1.8" rx=".9" fill="currentColor"/><rect x="1" y="6" width="9" height="1.8" rx=".9" fill="currentColor"/><rect x="1" y="10" width="12" height="1.8" rx=".9" fill="currentColor"/></svg>
+        Lyrics
+      </button>
+      <button class="act-btn" onclick="openChordModal()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 9.5V9c0-1 .6-1.6 1.5-2 .6-.3 1-.7 1-1.2A1.5 1.5 0 0 0 5.5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="7" cy="11" r=".7" fill="currentColor"/></svg>
+        Chords
+      </button>
+      <button class="act-btn" onclick="exportPDF()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h5.5L11 3.5V13H3V1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 1v3h3M4.5 7h5M4.5 9.5h3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        PDF
+      </button>
+    </div>
+    <div class="chords-used" id="sv-chords"></div>
+  </div>
+  <div class="sv-scroll" id="sv-scroll">
+    <div class="print-only" id="print-header">
+      <div class="print-title" id="ph-title"></div>
+      <div class="print-author" id="ph-author"></div>
+      <div class="print-key" id="ph-key"></div>
+    </div>
+    <div class="sheet" id="sv-sheet"></div>
+  </div>
+  <div class="swipe-hint" id="swipe-hint"></div>
+</div>
+ 
+<!-- SONG MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title-row">
+      <h2 id="modal-heading">Add song</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <label>Category</label>
+    <div class="cat-toggle">
+      <button class="cat-opt active" onclick="selectCat('english',this)">English</button>
+      <button class="cat-opt" onclick="selectCat('malayalam',this)">Malayalam</button>
+    </div>
+    <label>Title</label><input type="text" id="m-title" placeholder="e.g. How Great Is Our God"/>
+    <label>Author / Artist</label><input type="text" id="m-author" placeholder="e.g. Chris Tomlin"/>
+    <label>Original key</label><select id="m-key"></select>
+    <label>Chord chart — ChordPro format <span style="color:var(--txt3);font-weight:400">(optional)</span></label>
+    <p class="modal-hint">Use [Chord] before each word inline: [G]The splendor of a [C]King. Or traditional chord-line-above-lyrics format. Both work.</p>
+    <textarea id="m-chart" placeholder="[Verse 1]&#10;[G]The splendor of a [C]King&#10;[Em]Let all the earth [C]rejoice"></textarea>
+    <div class="modal-actions">
+      <button class="btn-danger" id="delete-btn" onclick="deleteSong()" style="display:none">Delete</button>
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveSong()">Save</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- PICKER -->
+<div class="modal-bg" id="picker-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title-row"><h2>Add to set</h2><button class="modal-close" onclick="closePicker()">×</button></div>
+    <input class="picker-search" id="picker-search" type="search" placeholder="Search…" oninput="renderPicker()"/>
+    <div class="picker-filter">
+      <button class="pf-btn active" onclick="setPickerFilter('all',this)">All</button>
+      <button class="pf-btn" onclick="setPickerFilter('english',this)">English</button>
+      <button class="pf-btn" onclick="setPickerFilter('malayalam',this)">Malayalam</button>
+    </div>
+    <div class="picker-list" id="picker-list"></div>
+    <div class="modal-actions" style="margin-top:14px;"><button class="btn-secondary" onclick="closePicker()">Done</button></div>
+  </div>
+</div>
+ 
+<!-- CHORD MODAL -->
+<div class="modal-bg" id="chord-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title-row"><h2>Chord diagrams</h2><button class="modal-close" onclick="closeChordModal()">×</button></div>
+    <div class="chord-tabs">
+      <button class="chord-tab active" onclick="switchChordTab('guitar',this)">Guitar</button>
+      <button class="chord-tab" onclick="switchChordTab('piano',this)">Piano</button>
+    </div>
+    <div class="chord-grid" id="chord-grid"></div>
+  </div>
+</div>
+ 
+<!-- EXPORT MODAL -->
+<div class="modal-bg" id="export-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title-row"><h2>Export set list</h2><button class="modal-close" onclick="closeExportModal()">×</button></div>
+    <p style="font-size:13px;color:var(--txt2);margin-bottom:12px;">Copy and send to your band via WhatsApp, email or notes.</p>
+    <div class="export-preview" id="export-preview"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeExportModal()">Close</button>
+      <button class="btn-primary" onclick="copyExport()">Copy</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- Firebase SDK (compat version — works directly in HTML, no build tools needed) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+ 
+<script>
+/* ══ FIREBASE INIT ══ */
+const firebaseConfig={
+  apiKey:"AIzaSyAWHTEOh1lXkzq3kB24g3An6Aad54OMlN8",
+  authDomain:"worshipbase-17d1b.firebaseapp.com",
+  databaseURL:"https://worshipbase-17d1b-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"worshipbase-17d1b",
+  storageBucket:"worshipbase-17d1b.firebasestorage.app",
+  messagingSenderId:"137901259240",
+  appId:"1:137901259240:web:a1b3e3eecf6d72e049cc5d"
+};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+const songsRef=db.ref('songs');
+const setlistRef=db.ref('setlist');
+ 
+/* ══ SYNC BADGE ══ */
+function showSync(msg,isError){
+  const b=document.getElementById('sync-badge');
+  b.textContent=msg;b.classList.toggle('error',!!isError);
+  b.classList.add('show');clearTimeout(b._t);
+  b._t=setTimeout(()=>b.classList.remove('show'),2200);
+}
+ 
+/* ══ CONSTANTS ══ */
+const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const NOTE_ALT=['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+const NNS_NAMES=['1','2m','3m','4','5','6m','7dim'];
+const SCALE_DEGREES=[0,2,4,5,7,9,11];
+const ITEM_H=70,ALPHA_H=28,OVERSCAN=6;
+ 
+/* ══ GUITAR DATA ══ */
+const GUITAR={
+  'C':    {f:[null,3,2,0,1,0],sf:1},
+  'Cm':   {f:[null,3,5,5,4,3],sf:3,b:3},
+  'C#':   {f:[null,4,6,6,6,4],sf:4,b:4},
+  'Db':   {f:[null,4,6,6,6,4],sf:4,b:4},
+  'D':    {f:[null,null,0,2,3,2],sf:1},
+  'Dm':   {f:[null,null,0,2,3,1],sf:1},
+  'Eb':   {f:[null,6,8,8,8,6],sf:6,b:6},
+  'E':    {f:[0,2,2,1,0,0],sf:1},
+  'Em':   {f:[0,2,2,0,0,0],sf:1},
+  'F':    {f:[1,1,2,3,3,1],sf:1,b:1},
+  'Fm':   {f:[1,1,3,3,2,1],sf:1,b:1},
+  'F#':   {f:[2,2,4,4,4,2],sf:2,b:2},
+  'Gb':   {f:[2,2,4,4,4,2],sf:2,b:2},
+  'G':    {f:[3,2,0,0,0,3],sf:1},
+  'G/B':  {f:[null,2,0,0,0,3],sf:1},
+  'Gm':   {f:[3,5,5,3,3,3],sf:3,b:3},
+  'G#':   {f:[4,6,6,5,4,4],sf:4,b:4},
+  'Ab':   {f:[4,6,6,5,4,4],sf:4,b:4},
+  'A':    {f:[null,0,2,2,2,0],sf:1},
+  'Am':   {f:[null,0,2,2,1,0],sf:1},
+  'Bb':   {f:[null,1,3,3,3,1],sf:1,b:1},
+  'B':    {f:[null,2,4,4,4,2],sf:2,b:2},
+  'Bm':   {f:[null,2,4,4,3,2],sf:2,b:2},
+  'C#m':  {f:[null,4,6,6,5,4],sf:4,b:4},
+  'Dbm':  {f:[null,4,6,6,5,4],sf:4,b:4},
+  'F#m':  {f:[2,4,4,2,2,2],sf:2,b:2},
+  'Gbm':  {f:[2,4,4,2,2,2],sf:2,b:2},
+  'G#m':  {f:[4,6,6,4,4,4],sf:4,b:4},
+  'Abm':  {f:[4,6,6,4,4,4],sf:4,b:4},
+  'D7':   {f:[null,null,0,2,1,2],sf:1},
+  'G7':   {f:[3,2,0,0,0,1],sf:1},
+  'A7':   {f:[null,0,2,0,2,0],sf:1},
+  'E7':   {f:[0,2,0,1,0,0],sf:1},
+  'B7':   {f:[null,2,1,2,0,2],sf:1},
+  'C7':   {f:[null,3,2,3,1,0],sf:1},
+  'Cmaj7':{f:[null,3,2,0,0,0],sf:1},
+  'Gmaj7':{f:[3,2,0,0,0,2],sf:1},
+  'Amaj7':{f:[null,0,2,1,2,0],sf:1},
+  'Dsus2':{f:[null,null,0,2,3,0],sf:1},
+  'Asus2':{f:[null,0,2,2,0,0],sf:1},
+  'Esus4':{f:[0,2,2,2,0,0],sf:1},
+  'Dsus4':{f:[null,null,0,2,3,3],sf:1},
+};
+const PIANO_IV={'':    [0,4,7],'m':[0,3,7],'7':[0,4,7,10],'maj7':[0,4,7,11],'m7':[0,3,7,10],'sus2':[0,2,7],'sus4':[0,5,7],'dim':[0,3,6],'aug':[0,4,8],'add9':[0,4,7,14]};
+ 
+/* ══ MUSIC HELPERS ══ */
+function noteIndex(n){let i=NOTES.indexOf(n);if(i<0)i=NOTE_ALT.indexOf(n);return i;}
+function parseChord(c){const m=c.match(/^([A-G][b#]?)(.*)/);return m?{root:m[1],suffix:m[2]}:null;}
+function transposeSimple(c,st){const p=parseChord(c);if(!p)return c;let i=noteIndex(p.root);if(i<0)return c;return NOTES[(i+st+12)%12]+p.suffix;}
+function transposeChord(c,st){if(!st)return c;const sl=c.indexOf('/');if(sl>0)return transposeSimple(c.slice(0,sl),st)+'/'+transposeSimple(c.slice(sl+1),st);return transposeSimple(c,st);}
+function chordToNNS(c,kr){const sl=c.indexOf('/');const main=sl>0?c.slice(0,sl):c;const p=parseChord(main);if(!p)return c;const ci=noteIndex(p.root),ki=noteIndex(kr);if(ci<0||ki<0)return c;const semi=(ci-ki+12)%12;const di=SCALE_DEGREES.indexOf(semi);let nns;if(di>=0){nns=NNS_NAMES[di];if(p.suffix.startsWith('m')&&!nns.includes('m'))nns+='m';if(p.suffix&&!p.suffix.startsWith('m'))nns+=p.suffix;}else{nns='b'+(Math.ceil(semi/2));nns+=p.suffix;}return sl>0?nns+'/'+c.slice(sl+1):nns;}
+function isChordProLine(line){return /\[[A-G][b#]?[^\]]*\]/.test(line)&&line.replace(/\[[^\]]*\]/g,'').trim().length>0;}
+function isChordLine(line){const t=line.trim();if(!t)return false;if(/\[[A-G][b#]?[^\]]*\]/.test(t)&&t.replace(/\[[^\]]*\]/g,'').trim().length===0)return true;const wo=t.replace(/[A-G][b#]?(?:maj|min|m|aug|dim|sus|add|2|4|5|6|7|9|11|13)*(?:\/[A-G][b#]?)?/g,'').trim();return /[A-G][b#]?/.test(t)&&wo.replace(/[\s|\-\/]/g,'').length<t.replace(/\s/g,'').length*0.4;}
+function processLine(line,st,kr,nns){if(isChordProLine(line)){return line.replace(/\[([A-G][b#]?[^\]]*)\]/g,(_,ch)=>{const t=st?transposeChord(ch,st):ch;return'['+(nns?chordToNNS(t,kr):t)+']';});}return line.replace(/[A-G][b#]?(?:(?:maj|min|m|aug|dim|sus|add|\/[A-G][b#]?|[0-9])*)/g,ch=>{if(!ch||!parseChord(ch))return ch;const t=st?transposeChord(ch,st):ch;return nns?chordToNNS(t,kr):t;});}
+function getST(ok,nk){const oi=noteIndex(ok),ni=noteIndex(nk);if(oi<0||ni<0)return 0;return(ni-oi+12)%12;}
+function getAllChords(s){const set=new Set();(s.chart||'').split('\n').forEach(l=>{const cp=l.match(/\[([A-G][b#]?[^\]]*)\]/g);if(cp){cp.forEach(m=>set.add(m.slice(1,-1)));return;}if(!isChordLine(l))return;const m=l.match(/[A-G][b#]?(?:maj|min|m|aug|dim|sus|add|2|4|5|6|7|9|11|13)*(?:\/[A-G][b#]?)?/g);if(m)m.forEach(c=>set.add(c));});return[...set];}
+ 
+/* ══ SVG DIAGRAMS ══ */
+function makeGuitarSVG(name,dark){
+  const W=110,H=130,fg=dark?'#f5f5f7':'#1a1a1a',faint=dark?'rgba(255,255,255,.13)':'rgba(0,0,0,.11)',burg='#62202e',bg=dark?'#28282a':'#ffffff';
+  const p=parseChord(name);let d=GUITAR[name];if(!d&&p)d=GUITAR[p.root+(p.suffix.startsWith('m')&&!p.suffix.startsWith('maj')?'m':'')]||GUITAR[p.root];
+  if(!d)return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><rect width="${W}" height="${H}" fill="${bg}" rx="8"/><text x="${W/2}" y="${H/2+4}" text-anchor="middle" font-size="11" fill="${fg}" font-family="-apple-system,sans-serif" font-weight="600">No diagram</text></svg>`;
+  const{f:frets,sf,b:barre}=d;const L=14,R=W-10,T=38,B=H-14,SW=(R-L)/5,FH=(B-T)/4;let pts=[];
+  pts.push(`<rect width="${W}" height="${H}" fill="${bg}" rx="8"/>`);
+  if(sf>1)pts.push(`<text x="${L-3}" y="${T+FH*.65}" text-anchor="end" font-size="9" fill="${fg}" font-family="-apple-system,sans-serif" font-weight="700">${sf}fr</text>`);
+  if(sf===1)pts.push(`<rect x="${L}" y="${T-5}" width="${R-L}" height="5" fill="${fg}" rx="2"/>`);
+  for(let i=0;i<=4;i++)pts.push(`<line x1="${L}" y1="${T+i*FH}" x2="${R}" y2="${T+i*FH}" stroke="${faint}" stroke-width="1"/>`);
+  for(let i=0;i<6;i++)pts.push(`<line x1="${L+i*SW}" y1="${T}" x2="${L+i*SW}" y2="${B}" stroke="${faint}" stroke-width="1"/>`);
+  if(barre!=null){const rf=barre-sf+1;if(rf>=1&&rf<=4)pts.push(`<rect x="${L-2}" y="${T+(rf-1)*FH+3}" width="${R-L+4}" height="11" fill="${burg}" rx="5.5"/>`);}
+  frets.forEach((fret,idx)=>{const x=L+idx*SW;if(fret===null){pts.push(`<line x1="${x-4}" y1="${T-17}" x2="${x+4}" y2="${T-9}" stroke="${dark?'#666':'#ccc'}" stroke-width="1.5" stroke-linecap="round"/>`);pts.push(`<line x1="${x+4}" y1="${T-17}" x2="${x-4}" y2="${T-9}" stroke="${dark?'#666':'#ccc'}" stroke-width="1.5" stroke-linecap="round"/>`);}else if(fret===0)pts.push(`<circle cx="${x}" cy="${T-12}" r="4.5" stroke="${fg}" stroke-width="1.5" fill="none"/>`);else{const rf=fret-sf+1;if(rf>=1&&rf<=4&&!(barre!=null&&fret===barre))pts.push(`<circle cx="${x}" cy="${T+(rf-1)*FH+FH/2}" r="6" fill="${burg}"/>`);}});
+  return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${pts.join('')}</svg>`;
+}
+function makePianoSVG(name,dark){
+  const W=110,H=82,bg=dark?'#28282a':'#ffffff',burg='#62202e',wk=dark?'#f0f0f2':'#ffffff',bk=dark?'#111':'#1a1a1a',ws=dark?'rgba(255,255,255,.15)':'rgba(0,0,0,.13)';
+  const p=parseChord(name);if(!p)return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><rect width="${W}" height="${H}" fill="${bg}" rx="8"/></svg>`;
+  const ri=noteIndex(p.root);if(ri<0)return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><rect width="${W}" height="${H}" fill="${bg}" rx="8"/></svg>`;
+  let ivs=PIANO_IV[''];const sfx=p.suffix;for(const k of Object.keys(PIANO_IV)){if(k&&sfx.toLowerCase()===k.toLowerCase()){ivs=PIANO_IV[k];break;}}
+  const active=new Set(ivs.map(i=>(ri+i)%12));
+  const W_SEMIS=[0,2,4,5,7,9,11],NUM_W=14,pad=3,kW=(W-pad*2)/NUM_W,kH=H-pad*2-6,bH=kH*0.58,bkW=kW*0.6;
+  let pts=[];pts.push(`<rect width="${W}" height="${H}" fill="${bg}" rx="8"/>`);
+  for(let i=0;i<NUM_W;i++){const semi=W_SEMIS[i%7];const lit=active.has(semi);const x=pad+i*kW;pts.push(`<rect x="${x+.5}" y="${pad}" width="${kW-1}" height="${kH}" rx="2" fill="${lit?burg:wk}" stroke="${ws}" stroke-width=".5"/>`);if(lit)pts.push(`<circle cx="${x+kW/2}" cy="${pad+kH-7}" r="3" fill="white" opacity=".9"/>`);}
+  const BK_AFTER=[0,1,3,4,5];
+  for(let oct=0;oct<2;oct++){BK_AFTER.forEach(wi=>{const gi=oct*7+wi;if(gi>=NUM_W-1)return;const bSemi=(W_SEMIS[wi]+1)%12;const lit=active.has(bSemi);const x=pad+(gi+1)*kW-bkW/2;pts.push(`<rect x="${x}" y="${pad}" width="${bkW}" height="${bH}" rx="2" fill="${lit?burg:bk}"/>`);if(lit)pts.push(`<circle cx="${x+bkW/2}" cy="${pad+bH-6}" r="2.5" fill="white" opacity=".9"/>`);})}
+  return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${pts.join('')}</svg>`;
+}
+ 
+/* ══ CHORD MODAL ══ */
+let chordTab='guitar';
+function openChordModal(){if(!currentSong)return;document.getElementById('chord-modal').classList.add('open');renderChordDiagrams();}
+function closeChordModal(){document.getElementById('chord-modal').classList.remove('open');}
+function switchChordTab(t,el){chordTab=t;document.querySelectorAll('.chord-tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderChordDiagrams();}
+function renderChordDiagrams(){
+  const grid=document.getElementById('chord-grid');
+  const st=(getST(currentSong.key,currentKey)-capoFrets+12)%12;
+  const trans=[...new Set(getAllChords(currentSong).map(c=>transposeChord(c,st)))];
+  if(!trans.length){grid.innerHTML='<p style="color:var(--txt3);font-size:13px;grid-column:1/-1;text-align:center;padding:24px 0">No chords found</p>';return;}
+  grid.innerHTML=trans.map(n=>`<div class="chord-cell"><div class="chord-cell-label">${n}</div>${chordTab==='guitar'?makeGuitarSVG(n,darkMode):makePianoSVG(n,darkMode)}</div>`).join('');
+}
+ 
+/* ══ PDF + LYRICS ══ */
+function exportPDF(){if(!currentSong)return;document.getElementById('ph-title').textContent=currentSong.title;document.getElementById('ph-author').textContent=currentSong.author;document.getElementById('ph-key').textContent='Key of '+currentKey+(capoFrets>0?' · Capo '+capoFrets:'')+(nnsMode?' · NNS':'');window.print();}
+let lyricsOnly=false;
+function toggleLyrics(){lyricsOnly=!lyricsOnly;document.getElementById('sv-sheet').classList.toggle('lyrics-only',lyricsOnly);document.getElementById('lyrics-btn').classList.toggle('on',lyricsOnly);}
+let capoFrets=0;
+function onCapoChange(v){capoFrets=parseInt(v)||0;updateSongView();}
+ 
+/* ══ EXPORT ══ */
+function openExportModal(){
+  const lines=['WorshipBase — Set List',new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'}),''];
+  setList.forEach((id,i)=>{const s=songs.find(x=>x.id===id);if(!s)return;lines.push(`${i+1}. ${s.title}`);lines.push(`   ${s.author} · Key of ${s.key} · ${s.cat==='malayalam'?'Malayalam':'English'}`);lines.push('');});
+  document.getElementById('export-preview').textContent=lines.join('\n');
+  document.getElementById('export-modal').classList.add('open');
+}
+function closeExportModal(){document.getElementById('export-modal').classList.remove('open');}
+function copyExport(){const text=document.getElementById('export-preview').textContent;if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>alert('Copied!'));}else{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('Copied!');}}
+ 
+/* ══ APP STATE ══ */
+let songs=[],setList=[],currentSong=null,currentKey=null,nnsMode=false,darkMode=false;
+let editingId=null,activeTab='english',modalCat='english',pickerFilter='all',fromSetList=false;
+let vRows=[],rowCache={},debounceTimer=null;
+ 
+/* ══ FIREBASE LISTENERS ══ */
+function initFirebase(){
+  // Songs listener — fires on ANY change from ANY device
+  songsRef.on('value',snapshot=>{
+    const data=snapshot.val();
+    if(data){
+      songs=Object.entries(data).map(([fbKey,v])=>({...v,fbKey}));
+    } else {
+      // First run — seed with default songs
+      songs=[];
+      seedDefaultSongs();
+    }
+    refresh(true);
+    hideLoading();
+  },err=>{
+    console.error('Firebase error:',err);
+    showSync('Sync error — check connection',true);
+    hideLoading();
+  });
+ 
+  // Setlist listener
+  setlistRef.on('value',snapshot=>{
+    const data=snapshot.val();
+    setList=data?Object.values(data).sort((a,b)=>a.order-b.order).map(x=>x.songId):[];
+    if(activeTab==='setlist')renderSetList();
+  });
+}
+ 
+function hideLoading(){
+  const ls=document.getElementById('loading-screen');
+  ls.classList.add('hidden');
+  setTimeout(()=>ls.style.display='none',400);
+}
+ 
+/* ══ SONG CRUD ══ */
+function saveSongToFB(song){
+  // song has fbKey if editing, undefined if new
+  const {fbKey,...data}=song;
+  if(fbKey){
+    songsRef.child(fbKey).set(data)
+      .then(()=>showSync('Saved ✓'))
+      .catch(()=>showSync('Save failed',true));
+  } else {
+    songsRef.push(data)
+      .then(()=>showSync('Saved ✓'))
+      .catch(()=>showSync('Save failed',true));
+  }
+}
+function deleteSongFromFB(fbKey){
+  songsRef.child(fbKey).remove()
+    .then(()=>showSync('Deleted'))
+    .catch(()=>showSync('Delete failed',true));
+}
+function saveSetListToFB(){
+  const data={};
+  setList.forEach((id,i)=>{data[`item${i}`]={songId:id,order:i};});
+  setlistRef.set(data).catch(()=>showSync('Set list sync failed',true));
+}
+ 
+/* ══ DEFAULT SONGS (seeds Firebase on first run) ══ */
+function seedDefaultSongs(){
+  const defaults=[
+    {id:'local1',cat:'english',title:'How Great Is Our God',author:'Chris Tomlin',key:'G',chart:
+`[Verse 1]
+[G]The splendor of a [C]King, clothed in majesty
+[Em]Let all the earth [C]rejoice, all the earth rejoice
+[G]He wraps Himself in [C]light, and darkness tries to hide
+[Em]And trembles at His [C]voice, trembles at His voice
+ 
+[Chorus]
+[G]How great is our [C]God, sing with me
+[Em]How great is our [C]God, and all will see
+[G]How great, [D]how great is our [C]God
+ 
+[Bridge]
+[Em]Name above all [C]names, worthy of all [G]praise
+[Em]My heart will sing how [C]great is our [D]God`},
+    {id:'local2',cat:'english',title:'Oceans (Where Feet May Fail)',author:'Hillsong United',key:'D',chart:
+`[Verse 1]
+[D]You call me out upon the [A]waters
+[Bm]The great unknown where feet may [G]fail
+[D]And there I find You in the [A]mystery
+[Bm]In oceans deep my faith will [G]stand
+ 
+[Chorus]
+[D]And I will call upon Your [A]name
+[Bm]And keep my eyes above the [G]waves
+[D]When oceans rise my soul will [A]rest
+[Bm]In Your embrace for I am [G]Yours and You are [D]mine`},
+    {id:'local3',cat:'english',title:'Amazing Grace (My Chains Are Gone)',author:'Chris Tomlin',key:'G',chart:
+`[Verse 1]
+[G]Amazing grace how [G/B]sweet the [C]sound
+[G]That saved a [D]wretch like me
+[G]I once was [G/B]lost but [C]now am found
+[G]Was blind but [D]now I [G]see
+ 
+[Chorus]
+[C]My chains are [G]gone I've been set free
+[Em]My God my Savior [D]has ransomed me
+[G]And like a flood His [C]mercy reigns
+[G]Unending love [D]amazing [G]grace`},
+    {id:'local4',cat:'english',title:'Build My Life',author:'Pat Barrett',key:'E',chart:
+`[Verse 1]
+[E]Worthy of every song we could ever [B]sing
+[C#m]Worthy of all the praise we could ever [A]bring
+[E]Worthy of every breath we could ever [B]breathe
+[E]We live for [A]You
+ 
+[Chorus]
+[E]Holy there is no one [B]like You
+[C#m]There is none be[A]side You
+[E]Open up my eyes in [B]wonder
+[C#m]Show me who You [A]are`},
+    {id:'local5',cat:'english',title:'Goodness of God',author:'Bethel Music',key:'B',chart:
+`[Verse 1]
+[B]I love You Lord, for Your mercy never [E]fails me
+[B]All my days I've been held in Your [E]hands
+ 
+[Chorus]
+[E]Your goodness is running after [B]me
+[G#m]Your goodness is running after, it's [F#]running after [E]me
+[B]With my life laid down I'm surrendered [E]now
+[G#m]I give You everything, the [F#]goodness of [B]God`},
+    {id:'local6',cat:'english',title:'What A Beautiful Name',author:'Hillsong Worship',key:'D',chart:
+`[Verse 1]
+[D]You were the Word at the [Dsus]beginning
+[D]One with God the Lord Most [Dsus]High
+[Bm]Your hidden glory in [A]creation
+[G]Now revealed in You our [D]Christ
+ 
+[Chorus]
+[G]What a beautiful [D]Name it is
+[A]What a beautiful [Bm]Name it is
+[G]The Name of Jesus [D]Christ my King`},
+    {id:'local7',cat:'english',title:'Reckless Love',author:'Cory Asbury',key:'A',chart:
+`[Verse 1]
+[A]Before I spoke a word You were [E]singing over me
+[A]You have been so so [E]good to me
+ 
+[Chorus]
+[D]Oh the overwhelming never-ending reckless love of [A]God
+[E]Oh it chases me down, fights til I'm [F#m]found
+[D]Leaves the ninety-[A]nine`},
+    {id:'local8',cat:'english',title:'Way Maker',author:'Sinach',key:'B',chart:
+`[Verse 1]
+[B]You are here moving in our [E]midst
+[B]I worship You, I worship [E]You
+ 
+[Chorus]
+[E]Way maker, [B]miracle worker
+[F#]Promise keeper, [G#m]light in the darkness
+[E]My God, [F#]that is who You [B]are`},
+    {id:'local9',cat:'english',title:'10,000 Reasons',author:'Matt Redman',key:'G',chart:
+`[Chorus]
+[G]Bless the Lord [D]O my soul, [Em]O my [C]soul
+[G]Worship His [D]holy [C]name
+[G]Sing like never [D]before, [Em]O my [C]soul
+[G]I'll worship Your [D]holy [C]name
+ 
+[Verse 1]
+[G]The sun comes up it's a [D]new day dawning
+[Em]It's time to sing Your [C]song again`},
+    {id:'local10',cat:'english',title:'Holy Spirit',author:'Francesca Battistelli',key:'A',chart:
+`[Chorus]
+[A]Holy Spirit You are [E]welcome here
+[F#m]Come flood this place and fill the [D]atmosphere
+[A]Your glory God is what our [E]hearts long for
+[F#m]To be overcome by Your [D]presence [A]Lord`},
+    {id:'local11',cat:'english',title:'King of Kings',author:'Hillsong Worship',key:'A',chart:
+`[Chorus]
+[D]King of kings [A]Lord of lords [Bm]Light of the [G]world
+[D]Way of truth [A]life divine [Bm]for You we [G]sing
+[D]Hallelujah`},
+    {id:'local12',cat:'english',title:'Cornerstone',author:'Hillsong Worship',key:'C',chart:
+`[Verse 1]
+[C]My hope is built on [G]nothing less
+[Am]Than Jesus blood and [F]righteousness
+ 
+[Chorus]
+[C]Christ alone [G]Cornerstone [Am]weak made [F]strong
+[C]He is [G]Lord [Am]Lord of [F]all [C]`},
+    // Malayalam
+    {id:'ml1',cat:'malayalam',title:'Aakasham Bhoomiyiva Nirmicha Devadevan',author:'Unknown',key:'G',chart:''},
+    {id:'ml2',cat:'malayalam',title:'Aanandamundenikk Aanandhamundenikku',author:'Sadhu Kochukunju Upadesi',key:'Em',chart:''},
+    {id:'ml3',cat:'malayalam',title:'Aapathu Velakalil',author:'Thomas Mathew Karunagapally',key:'E',chart:''},
+    {id:'ml4',cat:'malayalam',title:'Aaraadhyane Parishuddhane',author:'Fr Jomy Kumbukattu, Fr Joseph Mukkatt',key:'Am',chart:''},
+    {id:'ml5',cat:'malayalam',title:'Aaradhanayin Naayakane',author:'Unknown',key:'Db',chart:''},
+    {id:'ml6',cat:'malayalam',title:'Aaradhichidam Kumbittaradhichidam',author:'Tomin J Thachankary',key:'G',chart:''},
+    {id:'ml7',cat:'malayalam',title:'Aaradhikkam Parishudhane',author:'Unknown',key:'D',chart:''},
+    {id:'ml8',cat:'malayalam',title:'Aaradhikkaam Namukkaradhikkaam',author:'Unknown',key:'Gm',chart:''},
+    {id:'ml9',cat:'malayalam',title:'Aaradhippan Namukku Kaaranam Undu',author:'Rev Sam T Mukhathala',key:'Fm',chart:''},
+    {id:'ml10',cat:'malayalam',title:'Aaradhippan Yogyan',author:'Graham Varghese',key:'Gm',chart:''},
+    {id:'ml11',cat:'malayalam',title:'Aaradhyan Yesupara',author:'R S Vijayaraj',key:'F',chart:''},
+    {id:'ml12',cat:'malayalam',title:'Aaradhyane Samaaraadhyane',author:'Bhakthavalsalan',key:'D',chart:''},
+    {id:'ml13',cat:'malayalam',title:'Aarppin Nadham Uyarunnitha',author:'George Koshy Mylapra',key:'F',chart:''},
+    {id:'ml14',cat:'malayalam',title:'Aaru Paranjalum Njan Ekan Aakumo',author:'Kaleb Gee George',key:'C',chart:''},
+    {id:'ml15',cat:'malayalam',title:'Aaswaasa Dhayakanai',author:'Unknown',key:'C',chart:''},
+    {id:'ml16',cat:'malayalam',title:'Aazhamaarnna Snehame',author:'Anil Adoor',key:'F',chart:''},
+    {id:'ml17',cat:'malayalam',title:'Abhishekathode Adhikarathode',author:'Pr Bineeth Joy',key:'G',chart:''},
+    {id:'ml18',cat:'malayalam',title:'Akalam Vittu Poyidathe',author:'Anil Adoor',key:'D',chart:''},
+    {id:'ml19',cat:'malayalam',title:'Akalatha Snehithan',author:'Joy Abraham',key:'F',chart:''},
+    {id:'ml20',cat:'malayalam',title:'Daivam Nallavan',author:'M E Cherian',key:'C',chart:''},
+    {id:'ml21',cat:'malayalam',title:'Daivam Pirakkunnu',author:'Fr Dr Justin Panackal',key:'G',chart:''},
+    {id:'ml22',cat:'malayalam',title:'Daivathin Snehathin Aazhamithu',author:'Rev T M Joseph',key:'G',chart:''},
+    {id:'ml23',cat:'malayalam',title:'En Aasha Neeye',author:'Brian Johnson, Phil Wickham',key:'D',chart:''},
+    {id:'ml24',cat:'malayalam',title:'En Maname',author:'Daniel Stephen, Mathew T John',key:'G',chart:''},
+    {id:'ml25',cat:'malayalam',title:'Daiva Sneham Varnichidaan',author:'P K Gopi',key:'D',chart:''},
+    {id:'ml26',cat:'malayalam',title:'Daivakrupa Manoharame',author:'P V Thommy',key:'D',chart:''},
+    {id:'ml27',cat:'malayalam',title:'Devadhi Devan Nee Rajadhirajan',author:'Evg Paulose Thudiyan',key:'D',chart:''},
+    {id:'ml28',cat:'malayalam',title:'Dinam Dinam Nee Vaazhuthuka',author:'Rev A R T Athisayam',key:'D',chart:''},
+    {id:'ml29',cat:'malayalam',title:'Dinavum Yeshuvinte Koode',author:'Rajesh Daniel Elappara',key:'Em',chart:''},
+    {id:'ml30',cat:'malayalam',title:'Ee Loka Jeevithathil',author:'R S Vijayaraj',key:'B',chart:''},
+  ];
+  defaults.forEach(s=>{const{id:_,...data}=s;songsRef.push(data);});
+  showSync('Library seeded ✓');
+}
+ 
+/* ══ SHEET RENDERER ══ */
+function renderSheet(song,tk,nns){
+  if(!song.chart||!song.chart.trim())return`<div class="empty-chart"><div class="empty-chart-icon">♩</div><p>No chord chart yet.<br>Tap <strong>Edit</strong> to add chords.</p><button class="empty-chart-btn" onclick="openModal(currentSong)">Add chord chart</button></div>`;
+  const rawST=getST(song.key,tk),st=(rawST-capoFrets+12)%12;
+  const lines=song.chart.split('\n');let html='';
+  for(let i=0;i<lines.length;i++){
+    const l=lines[i];
+    if(l.startsWith('[')){
+      if(isChordProLine(l)){
+        let cr='',lr='';
+        l.replace(/\[([A-G][b#]?[^\]]*)\]([^\[]*)/g,(_,ch,lyric)=>{const t=st?transposeChord(ch,st):ch;const cn=nns?chordToNNS(t,tk):t;const pad=Math.max(cn.length,lyric.length);cr+=cn.padEnd(pad+1);lr+=lyric.padEnd(pad+1);});
+        html+=`<div class="lyric-line"><div class="chord-row">${cr.trimEnd()}</div><div class="lyric-row">${lr.trimEnd()}</div></div>`;
+      } else {html+=`<div class="section-label">${l.replace(/[\[\]]/g,'')}</div>`;}
+    } else if(isChordProLine(l)){
+      let cr='',lr='';l.replace(/\[([A-G][b#]?[^\]]*)\]([^\[]*)/g,(_,ch,lyric)=>{const t=st?transposeChord(ch,st):ch;const cn=nns?chordToNNS(t,tk):t;const pad=Math.max(cn.length,lyric.length);cr+=cn.padEnd(pad+1);lr+=lyric.padEnd(pad+1);});
+      html+=`<div class="lyric-line"><div class="chord-row">${cr.trimEnd()}</div><div class="lyric-row">${lr.trimEnd()}</div></div>`;
+    } else if(isChordLine(l)){
+      html+=`<div class="lyric-line"><div class="chord-row">${processLine(l,st,tk,nns)}</div>`;
+      if(i+1<lines.length&&!lines[i+1].startsWith('[')&&!isChordLine(lines[i+1])&&!isChordProLine(lines[i+1])&&lines[i+1].trim()){html+=`<div class="lyric-row">${lines[i+1]}</div>`;i++;}
+      html+=`</div>`;
+    } else if(l.trim()){html+=`<div class="lyric-line"><div class="chord-row"> </div><div class="lyric-row">${l}</div></div>`;}
+  }
+  return html;
+}
+ 
+/* ══ VIRTUAL SCROLLER ══ */
+function buildRows(q){
+  const lower=q.toLowerCase();
+  const filtered=songs.filter(s=>s.cat===activeTab&&(!q||s.title.toLowerCase().includes(lower)||s.author.toLowerCase().includes(lower)));
+  const sorted=[...filtered].sort((a,b)=>a.title.localeCompare(b.title));
+  const rows=[];let lg='';
+  sorted.forEach(s=>{const g=s.title[0].toUpperCase();if(g!==lg){rows.push({type:'alpha',label:g});lg=g;}rows.push({type:'song',song:s});});
+  return{rows,total:songs.filter(s=>s.cat===activeTab).length,showing:filtered.length};
+}
+function getRowH(r){return r.type==='alpha'?ALPHA_H:ITEM_H;}
+function computeOffsets(rows){const o=new Array(rows.length+1);o[0]=0;for(let i=0;i<rows.length;i++)o[i+1]=o[i]+getRowH(rows[i]);return o;}
+function makeListNode(row){
+  if(row.type==='alpha'){const d=document.createElement('div');d.className='alpha-row';d.textContent=row.label;return d;}
+  const s=row.song;const hc=s.chart&&s.chart.trim();
+  const d=document.createElement('div');d.className='song-item';
+  d.innerHTML=`<div class="song-avatar">${s.title[0].toUpperCase()}</div><div class="song-info"><div class="song-item-title">${s.title}</div><div class="song-item-meta">${s.author}${!hc?'&nbsp;·&nbsp;<span style="color:var(--txt3)">No chords yet</span>':''}</div></div><span class="key-badge">${s.key}</span>`;
+  d.addEventListener('click',()=>openSong(s.id,false));return d;
+}
+function renderVirtual(){
+  const vEl=document.getElementById('vscroll'),vInner=document.getElementById('vinner');
+  rowCache={};vInner.innerHTML='';
+  const offsets=computeOffsets(vRows);vInner.style.height=offsets[vRows.length]+'px';
+  const paint=()=>{
+    const st=vEl.scrollTop,vh=vEl.clientHeight;
+    let lo=0,hi=vRows.length-1,start=0;
+    while(lo<=hi){const mid=(lo+hi)>>1;if(offsets[mid]<=st){start=mid;lo=mid+1;}else hi=mid-1;}
+    start=Math.max(0,start-OVERSCAN);let end=start;while(end<vRows.length&&offsets[end]<st+vh)end++;end=Math.min(vRows.length-1,end+OVERSCAN);
+    Object.keys(rowCache).forEach(k=>{const ki=parseInt(k);if(ki<start||ki>end){vInner.removeChild(rowCache[k]);delete rowCache[k];}});
+    for(let i=start;i<=end;i++)if(!rowCache[i]){const n=makeListNode(vRows[i]);n.style.top=offsets[i]+'px';n.classList.add('v-item');vInner.appendChild(n);rowCache[i]=n;}
+  };
+  vEl.onscroll=paint;paint();
+}
+function refresh(imm){if(imm){_doRefresh();return;}clearTimeout(debounceTimer);debounceTimer=setTimeout(_doRefresh,180);}
+function _doRefresh(){
+  const q=document.getElementById('search-input').value;
+  const{rows,total,showing}=buildRows(q);vRows=rows;
+  document.getElementById('song-count').textContent=q?`${showing} of ${total} songs`:`${total} song${total!==1?'s':''}`;
+  const vInner=document.getElementById('vinner');
+  if(!rows.filter(r=>r.type==='song').length){vInner.innerHTML=`<div style="text-align:center;padding:60px 24px;color:var(--txt3)"><div style="font-size:38px;margin-bottom:10px">♪</div><div style="font-size:16px;font-weight:600;color:var(--txt2);margin-bottom:4px">${q?'No songs found':'No songs yet'}</div><div style="font-size:13px">${q?'Try a different search':'Tap + to add your first song'}</div></div>`;document.getElementById('vscroll').onscroll=null;return;}
+  renderVirtual();
+}
+ 
+/* ══ SET LIST ══ */
+function renderSetList(){
+  const items=document.getElementById('setlist-items');
+  document.getElementById('set-count-label').textContent=`${setList.length} song${setList.length!==1?'s':''}`;
+  if(!setList.length){items.innerHTML=`<div class="setlist-empty"><div class="sl-empty-icon">🎵</div><div class="sl-empty-title">No songs in set</div><div class="sl-empty-sub">Tap + to add songs</div></div>`;return;}
+  items.innerHTML=setList.map((id,idx)=>{const s=songs.find(x=>x.id===id);if(!s)return'';
+    return`<div class="set-item" onclick="openSong('${id}',true)"><span class="set-num">${idx+1}</span><div class="set-item-avatar">${s.title[0].toUpperCase()}</div><div class="set-info"><div class="set-item-title">${s.title}</div><div class="set-item-meta">${s.author}&nbsp;<span class="lang-badge">${s.cat==='malayalam'?'ML':'EN'}</span>&nbsp;·&nbsp;${s.key}</div></div><button class="set-remove" onclick="event.stopPropagation();removeFromSet('${id}')">×</button></div>`;
+  }).join('');
+}
+function clearSetList(){if(!setList.length)return;if(!confirm('Clear set list?'))return;setlistRef.set(null);setList=[];renderSetList();}
+function removeFromSet(id){setList=setList.filter(x=>x!==id);saveSetListToFB();renderSetList();}
+ 
+/* ══ PICKER ══ */
+function openPicker(){document.getElementById('picker-search').value='';pickerFilter='all';document.querySelectorAll('.pf-btn').forEach((b,i)=>b.classList.toggle('active',i===0));renderPicker();document.getElementById('picker-modal').classList.add('open');}
+function closePicker(){document.getElementById('picker-modal').classList.remove('open');}
+function setPickerFilter(f,el){pickerFilter=f;document.querySelectorAll('.pf-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderPicker();}
+function renderPicker(){
+  const q=document.getElementById('picker-search').value.toLowerCase();
+  const filtered=songs.filter(s=>(pickerFilter==='all'||s.cat===pickerFilter)&&(!q||s.title.toLowerCase().includes(q)||s.author.toLowerCase().includes(q))).sort((a,b)=>a.title.localeCompare(b.title));
+  const list=document.getElementById('picker-list');
+  if(!filtered.length){list.innerHTML=`<div style="padding:24px;text-align:center;color:var(--txt3);font-size:14px">No songs found</div>`;return;}
+  list.innerHTML=filtered.map(s=>{const inSet=setList.includes(s.id);return`<div class="picker-item" onclick="toggleSetSong('${s.id}')"><div class="picker-item-info"><div class="picker-item-title">${s.title}</div><div class="picker-item-meta">${s.author}&nbsp;·&nbsp;${s.cat==='malayalam'?'Malayalam':'English'}&nbsp;·&nbsp;${s.key}</div></div><div class="picker-check${inSet?' selected':''}">${inSet?'✓':''}</div></div>`;}).join('');
+}
+function toggleSetSong(id){
+  if(setList.includes(id))setList=setList.filter(x=>x!==id);else setList.push(id);
+  saveSetListToFB();renderPicker();renderSetList();
+}
+ 
+/* ══ SWIPE ══ */
+let swipeStartX=0,swipeStartY=0;
+function getSongList(){if(fromSetList)return setList.map(id=>songs.find(s=>s.id===id)).filter(Boolean);return vRows.filter(r=>r.type==='song').map(r=>r.song);}
+function currentIndex(){return getSongList().findIndex(s=>s.id===currentSong.id);}
+function updateSwipeDots(){const list=getSongList();const ci=currentIndex();const hint=document.getElementById('swipe-hint');if(list.length<2){hint.innerHTML='';return;}hint.innerHTML=list.map((_,i)=>`<div class="swipe-dot${i===ci?' active':''}"></div>`).join('');hint.classList.add('show');setTimeout(()=>hint.classList.remove('show'),2000);}
+document.getElementById('sv-scroll').addEventListener('touchstart',e=>{swipeStartX=e.touches[0].clientX;swipeStartY=e.touches[0].clientY;},{passive:true});
+document.getElementById('sv-scroll').addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-swipeStartX,dy=e.changedTouches[0].clientY-swipeStartY;
+  if(Math.abs(dx)<Math.abs(dy)*1.5||Math.abs(dx)<60)return;
+  const list=getSongList(),ci=currentIndex();
+  if(dx<0&&ci<list.length-1)openSong(list[ci+1].id,fromSetList);
+  else if(dx>0&&ci>0)openSong(list[ci-1].id,fromSetList);
+},{passive:true});
+ 
+/* ══ NAVIGATION ══ */
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['english','malayalam','setlist'][i]===tab));
+  const ss=document.getElementById('song-section'),sl=document.getElementById('setlist-section');
+  const sw=document.getElementById('search-wrap'),tb=document.querySelector('.toolbar');
+  if(tab==='setlist'){ss.style.display='none';sl.style.display='flex';sw.style.display='none';tb.style.display='none';renderSetList();}
+  else{ss.style.display='flex';sl.style.display='none';sw.style.display='block';tb.style.display='flex';clearSearch();}
+}
+function onSearch(){document.getElementById('search-clear').style.display=document.getElementById('search-input').value?'block':'none';refresh(false);}
+function clearSearch(){document.getElementById('search-input').value='';document.getElementById('search-clear').style.display='none';refresh(true);}
+function toggleDark(){darkMode=!darkMode;document.body.classList.toggle('dark',darkMode);document.getElementById('dark-btn').textContent=darkMode?'☽':'☀';if(document.getElementById('chord-modal').classList.contains('open'))renderChordDiagrams();}
+ 
+/* ══ SONG VIEW ══ */
+function openSong(id,fromSet){
+  currentSong=songs.find(s=>s.id===id);if(!currentSong)return;
+  fromSetList=!!fromSet;currentKey=currentSong.key;nnsMode=false;lyricsOnly=false;capoFrets=0;
+  document.getElementById('sv-title').textContent=currentSong.title;
+  document.getElementById('sv-author').textContent=currentSong.author;
+  document.getElementById('key-select').innerHTML=NOTES.map(n=>`<option value="${n}"${n===currentKey?' selected':''}>${n}</option>`).join('');
+  document.getElementById('capo-select').value='0';
+  document.getElementById('nns-btn').classList.remove('on');
+  document.getElementById('lyrics-btn').classList.remove('on');
+  document.getElementById('back-label').textContent=fromSet?'Set List':'Back';
+  document.getElementById('sv-scroll').scrollTop=0;
+  updateSongView();
+  document.getElementById('song-view').classList.add('visible');
+  updateSwipeDots();
+}
+function updateSongView(){
+  const sheet=document.getElementById('sv-sheet');sheet.innerHTML=renderSheet(currentSong,currentKey,nnsMode);sheet.classList.toggle('lyrics-only',lyricsOnly);
+  const rawST=getST(currentSong.key,currentKey),st=(rawST-capoFrets+12)%12;
+  const tc=[...new Set(getAllChords(currentSong).map(c=>transposeChord(c,st)))];
+  document.getElementById('sv-chords').innerHTML=tc.length?'Chords used: <span>'+tc.join('  ')+'</span>':'';
+  document.getElementById('nns-btn').classList.toggle('on',nnsMode);
+}
+function transposeToKey(k){currentKey=k;updateSongView();}
+function toggleNNS(){nnsMode=!nnsMode;updateSongView();}
+function showList(){document.getElementById('song-view').classList.remove('visible');if(fromSetList)switchTab('setlist');else refresh(true);}
+ 
+/* ══ SONG MODAL ══ */
+function selectCat(cat,el){modalCat=cat;document.querySelectorAll('.cat-opt').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function openModal(song){
+  editingId=song?song.id:null;
+  document.getElementById('modal-heading').textContent=song?'Edit song':'Add song';
+  document.getElementById('delete-btn').style.display=song?'inline-flex':'none';
+  document.getElementById('m-key').innerHTML=NOTES.map(n=>`<option value="${n}"${song&&song.key===n?' selected':''}>${n}</option>`).join('');
+  document.getElementById('m-title').value=song?song.title:'';
+  document.getElementById('m-author').value=song?song.author:'';
+  document.getElementById('m-chart').value=song?song.chart:'';
+  modalCat=song?song.cat:activeTab==='setlist'?'english':activeTab;
+  document.querySelectorAll('.cat-opt').forEach((b,i)=>b.classList.toggle('active',['english','malayalam'][i]===modalCat));
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function saveSong(){
+  const title=document.getElementById('m-title').value.trim();
+  const author=document.getElementById('m-author').value.trim();
+  const key=document.getElementById('m-key').value;
+  const chart=document.getElementById('m-chart').value.trim();
+  if(!title){alert('Please enter a song title.');return;}
+  const songData={cat:modalCat,title,author,key,chart};
+  if(editingId){
+    // Update existing in Firebase
+    const existing=songs.find(s=>s.id===editingId);
+    if(existing&&existing.fbKey){
+      songsRef.child(existing.fbKey).update(songData)
+        .then(()=>{showSync('Saved ✓');closeModal();openSong(editingId,fromSetList);})
+        .catch(()=>showSync('Save failed',true));
+    }
+  } else {
+    songsRef.push(songData)
+      .then(ref=>{showSync('Saved ✓');closeModal();activeTab=modalCat;document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['english','malayalam','setlist'][i]===activeTab));const ss=document.getElementById('song-section'),sl=document.getElementById('setlist-section'),sw=document.getElementById('search-wrap'),tb=document.querySelector('.toolbar');ss.style.display='flex';sl.style.display='none';sw.style.display='block';tb.style.display='flex';})
+      .catch(()=>showSync('Save failed',true));
+  }
+}
+function deleteSong(){
+  if(!editingId||!confirm('Delete this song?'))return;
+  const existing=songs.find(s=>s.id===editingId);
+  if(existing&&existing.fbKey){
+    songsRef.child(existing.fbKey).remove()
+      .then(()=>{showSync('Deleted');closeModal();showList();})
+      .catch(()=>showSync('Delete failed',true));
+  }
+}
+ 
+/* ══ INIT ══ */
+initFirebase();
+</script>
+</body>
+</html>
