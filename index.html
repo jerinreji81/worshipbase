@@ -29,17 +29,19 @@ body.dark{
   --bg1:#0f1f28;--bg2:#162433;--bg3:#08131a;
   --txt1:#e4f0f5;--txt2:#6ea8be;--txt3:#3a6070;
   --bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.12);
-  --tc-light:#0a1e28;--tc-mid:#2a6080;
+  --tc-light:var(--tc-light-d,#0a1e28);--tc-mid:var(--tc-mid-d,#2a6080);
   --shadow-sm:0 1px 4px rgba(0,0,0,.25);
   --shadow-md:0 4px 16px rgba(0,0,0,.35);
   --shadow-lg:0 12px 40px rgba(0,0,0,.5);
-  --hdr-bg:#0a2030;
-  --chord-color:#5bc8ea;
+  --hdr-bg:var(--hdr-bg-d,#0a2030);
+  --chord-color:var(--chord-color-d,#5bc8ea);
 }
-html,body{height:100%;overflow:hidden;}
+html,body{height:100%;overflow:hidden;background:#fff;}
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;
-  background:var(--bg3);color:var(--txt1);font-size:16px;
+  background:var(--bg1);color:var(--txt1);font-size:16px;
   -webkit-font-smoothing:antialiased;overscroll-behavior:none;}
+body.dark{background:var(--bg1);}
+html{background:var(--bg1);}
 
 /* ── LOADING ── */
 #ls{position:fixed;inset:0;background:var(--tc);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .35s;}
@@ -65,11 +67,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 
 /* ── HEADER — contains wordmark + settings icon, then tab bar below ── */
 .hdr{background:var(--hdr-bg);padding:calc(var(--sat) + 12px) 16px 0;flex-shrink:0;transition:background .3s;}
-.hdr-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:2px;}
+.hdr-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:2px;min-height:36px;}
 .wm{display:flex;align-items:center;gap:9px;}
 .wm-name{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1;}
 .wm-sub{font-size:9px;color:rgba(255,255,255,.42);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
-.hdr-btn{background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;opacity:.85;}
+.hdr-btn{background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;opacity:.85;width:36px;height:36px;}
 .hdr-btn:active{opacity:.5;}
 
 /* ── SEGMENTED CONTROL — iOS liquid-glass style ── */
@@ -101,6 +103,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
   font-weight:700;
   box-shadow:0 1px 2px rgba(0,0,0,.05);
 }
+body.dark .tab-btn.active{
+  background:rgba(255,255,255,.15);
+  color:rgba(255,255,255,.95);
+}
 .tab-btn:active:not(.active){background:rgba(255,255,255,.09);}
 
 /* ── SONG VIEW HEADER — circle bubble back btn & menu btn ── */
@@ -119,7 +125,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
   flex-shrink:0;
   transition:background .12s;
 }
-body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,210,.2);}
+body.dark .back-btn{background:var(--tc-light);border-color:var(--tc-mid);}
 .back-btn:active{background:var(--tc-light);transform:scale(.92);}
 /* Circle bubble menu button */
 .menu-btn{
@@ -158,11 +164,14 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 .alpha-sep{height:32px;padding:0 16px;display:flex;align-items:flex-end;padding-bottom:4px;font-size:15px;font-weight:800;color:var(--txt1);background:var(--bg1);position:absolute;left:0;right:0;will-change:transform;letter-spacing:0;}
 
 /* ── SONG ROWS — bidirectional swipe ── */
-.song-row-wrap{position:absolute;left:0;right:0;height:var(--item-h);overflow:hidden;contain:strict;}
-.song-row-reveal-r{position:absolute;right:0;top:0;bottom:0;width:72px;background:var(--tc);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;}
+.song-row-wrap{position:absolute;left:0;right:0;height:var(--item-h);overflow:hidden;contain:strict;z-index:0;}
+.song-row-reveal-r{position:absolute;right:0;top:0;bottom:0;width:72px;background:var(--tc);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .1s;}
 .song-row-reveal-r svg,.song-row-reveal-l svg{color:#fff;}
 .song-row-reveal-r .rv-lbl,.song-row-reveal-l .rv-lbl{font-size:9px;color:rgba(255,255,255,.85);font-weight:600;letter-spacing:.02em;}
-.song-row-reveal-l{position:absolute;left:0;top:0;bottom:0;width:72px;background:#2d6a4f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;}
+.song-row-reveal-l{position:absolute;left:0;top:0;bottom:0;width:72px;background:#2d6a4f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .1s;}
+/* Show reveals only when item is actively swiped */
+.song-row-wrap.reveal-active .song-row-reveal-r,
+.song-row-wrap.reveal-active .song-row-reveal-l{opacity:1;pointer-events:auto;}
 .song-item{display:flex;align-items:center;gap:12px;height:var(--item-h);padding:0 16px;background:var(--bg1);border-bottom:.5px solid var(--bdr);cursor:pointer;position:relative;transform:translateX(0);will-change:transform;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
 .song-item:active:not(.swiped-r):not(.swiped-l){background:var(--tc-light);}
 .song-avatar{width:36px;height:36px;min-width:36px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--txt3);}
@@ -170,7 +179,8 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 .song-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.1px;}
 .song-meta{font-size:12px;color:var(--txt3);margin-top:2px;}
 .key-chip{background:var(--tc-light);color:var(--tc);font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--rad-pill);border:.5px solid var(--tc-mid);white-space:nowrap;}
-.add-fab{position:absolute;bottom:calc(18px + var(--sab));right:16px;background:var(--tc);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);z-index:10;padding-bottom:1px;}
+.add-fab{position:absolute;bottom:calc(18px + var(--sab));right:16px;background:var(--tc);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);z-index:10;}
+.add-fab svg{width:22px;height:22px;}
 .add-fab:active{transform:scale(.93);}
 
 /* ── ALPHABET STRIP ── */
@@ -490,7 +500,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
       <div id="vscroll" class="vs-wrap"><div id="vinner" class="vs-inner"></div></div>
       <div id="alpha-strip"></div>
     </div>
-    <button class="add-fab" onclick="requireAdmin(()=>openSongModal(null))">+</button>
+    <button class="add-fab" onclick="requireAdmin(()=>openSongModal(null))"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
   </div>
 
   <!-- SET LIST -->
@@ -505,7 +515,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="sl-scroll-host vs-host">
       <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"></div></div>
     </div>
-    <button class="add-fab" onclick="openBS('picker')">+</button>
+    <button class="add-fab" onclick="openBS('picker')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
   </div>
 
   <!-- SETTINGS -->
@@ -612,7 +622,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="sv-top">
       <!-- Circle bubble back button — no text, just chevron -->
       <button class="back-btn" onclick="showList()" id="back-btn" title="Back">
-        <svg width="11" height="16" viewBox="0 0 9 14" fill="none"><path d="M8 1L1.5 7L8 13" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="10" height="16" viewBox="0 0 10 16" fill="none" style="margin-left:-1px"><path d="M8.5 1.5L2 8L8.5 14.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <!-- Circle bubble menu button -->
       <button class="menu-btn" onclick="openBS('songmenu')">
@@ -1466,7 +1476,7 @@ function makeListNode(row){
   item.addEventListener('touchmove',e=>{
     const dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;
     if(!lockedH&&!lockedV){
-      if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)*1.5)lockedH=true;
+      if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)*1.5){lockedH=true;wrap.classList.add('reveal-active');}
       else if(Math.abs(dy)>6)lockedV=true;
     }
     if(!lockedH)return;
@@ -1477,16 +1487,20 @@ function makeListNode(row){
     item.style.transition='none';
   },{passive:true});
   item.addEventListener('touchend',e=>{
-    if(!lockedH)return;
+    if(!lockedH){
+      // If it was already swiped, keep reveal-active
+      if(!item.classList.contains('swiped-r')&&!item.classList.contains('swiped-l'))wrap.classList.remove('reveal-active');
+      return;
+    }
     const dx=e.changedTouches[0].clientX-sx;
     item.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
     const wasSR=item.classList.contains('swiped-r');
     const wasSL=item.classList.contains('swiped-l');
-    if(wasSR){if(dx<-20)resetSwipeItem(item);else{item.style.transform='translateX(72px)';}}
-    else if(wasSL){if(dx>20)resetSwipeItem(item);else{item.style.transform='translateX(-72px)';}}
+    if(wasSR){if(dx<-20){resetSwipeItem(item);wrap.classList.remove('reveal-active');}else{item.style.transform='translateX(72px)';}}
+    else if(wasSL){if(dx>20){resetSwipeItem(item);wrap.classList.remove('reveal-active');}else{item.style.transform='translateX(-72px)';}}
     else if(dx<-40){item.style.transform='translateX(-72px)';item.classList.add('swiped-l');}
     else if(dx>40){item.style.transform='translateX(72px)';item.classList.add('swiped-r');}
-    else resetSwipeItem(item);
+    else{resetSwipeItem(item);wrap.classList.remove('reveal-active');}
   },{passive:true});
 
   wrap.appendChild(revealL);wrap.appendChild(revealR);wrap.appendChild(item);
@@ -1496,6 +1510,8 @@ function resetSwipeItem(item){
   item.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
   item.style.transform='translateX(0)';
   item.classList.remove('swiped-r','swiped-l','swiped');
+  const wrap=item.closest('.song-row-wrap');
+  if(wrap)wrap.classList.remove('reveal-active');
 }
 function renderVirtual(){
   const vEl=document.getElementById('vscroll'),vIn=document.getElementById('vinner');
@@ -1699,6 +1715,10 @@ function toggleDark(){
   document.getElementById('dark-lbl').textContent=darkMode?'Light mode':'Dark mode';
   document.getElementById('mi-dark').classList.toggle('on',darkMode);
   const sw=document.getElementById('dark-sw');if(sw)sw.classList.toggle('on',darkMode);
+  // Re-apply theme so header bg and accents update for new mode
+  applyTheme(appPrefs.theme);
+  // Update html background for iPhone safe area
+  document.documentElement.style.background=darkMode?'#0f1f28':'#fff';
   if(document.getElementById('bs-chords').classList.contains('open'))renderChordDiagrams();
 }
 
@@ -1728,10 +1748,48 @@ function renderThemeSwatches(){
 }
 function applyTheme(hex){
   appPrefs.theme=hex;savePrefs();
-  // derive lighter tones
-  document.documentElement.style.setProperty('--tc',hex);
-  // generate tc2 slightly lighter, tc3 darker
-  document.documentElement.style.setProperty('--hdr-bg',darkMode?shadeColor(hex,-30):hex);
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  const root=document.documentElement;
+
+  // Core theme colour
+  root.style.setProperty('--tc',hex);
+
+  // Lighter variant (tc2)
+  const tc2=shadeColor(hex,20);
+  root.style.setProperty('--tc2',tc2);
+
+  // Darker variant (tc3)
+  const tc3=shadeColor(hex,-20);
+  root.style.setProperty('--tc3',tc3);
+
+  // Light mode accents: very light tint of the theme colour
+  const lightR=Math.round(r+(255-r)*0.9), lightG=Math.round(g+(255-g)*0.9), lightB=Math.round(b+(255-b)*0.9);
+  const tcLight=`rgb(${lightR},${lightG},${lightB})`;
+  root.style.setProperty('--tc-light',tcLight);
+
+  // Mid accent
+  const midR=Math.round(r+(255-r)*0.5), midG=Math.round(g+(255-g)*0.5), midB=Math.round(b+(255-b)*0.5);
+  const tcMid=`rgb(${midR},${midG},${midB})`;
+  root.style.setProperty('--tc-mid',tcMid);
+
+  // Faint overlay
+  root.style.setProperty('--tc-faint',`rgba(${r},${g},${b},.07)`);
+
+  // Header background
+  root.style.setProperty('--hdr-bg',darkMode?shadeColor(hex,-30):hex);
+
+  // Dark mode specific overrides (stored as custom props that body.dark reads)
+  const dkLightR=Math.round(r*0.12), dkLightG=Math.round(g*0.12), dkLightB=Math.round(b*0.12);
+  root.style.setProperty('--tc-light-d',`rgb(${dkLightR+10},${dkLightG+15},${dkLightB+20})`);
+  const dkMidR=Math.round(r*0.5), dkMidG=Math.round(g*0.5), dkMidB=Math.round(b*0.5);
+  root.style.setProperty('--tc-mid-d',`rgb(${dkMidR},${dkMidG},${dkMidB})`);
+  root.style.setProperty('--hdr-bg-d',shadeColor(hex,-30));
+
+  // Chord colour in dark mode: bright/light version of theme
+  const chordR=Math.min(255,Math.round(r+((255-r)*0.65))), chordG=Math.min(255,Math.round(g+((255-g)*0.65))), chordB=Math.min(255,Math.round(b+((255-b)*0.65)));
+  root.style.setProperty('--chord-color-d',`rgb(${chordR},${chordG},${chordB})`);
+
+  // Force re-render of swatches
   renderThemeSwatches();
 }
 function shadeColor(hex,pct){
@@ -2070,8 +2128,7 @@ function applyStoredPrefs(){
   }
   // Text size — applied to sheet when song opens, not globally
   // (sheet element may not exist yet at startup, applied in updateSongView instead)
-  // Theme
-  if(appPrefs.theme!=='#10374A')applyTheme(appPrefs.theme);
+  // Theme is applied after applyStoredPrefs() returns
   // Admin PIN override from prefs
   // (ADMIN_PIN const stays as default; we check appPrefs.adminPin in checkPin)
 }
@@ -2083,6 +2140,10 @@ function checkPin(){
 }
 
 applyStoredPrefs();
+// Always apply full theme derivation on load
+applyTheme(appPrefs.theme);
+// Set html bg for iPhone safe area
+if(darkMode)document.documentElement.style.background='#0f1f28';
 initFirebase();
 initPTR();
 </script>
