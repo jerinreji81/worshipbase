@@ -177,7 +177,17 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .xp-wrap{display:flex;align-items:center;gap:4px;}
 .xp-btn{width:28px;height:28px;border-radius:50%;background:var(--bg2);border:.5px solid var(--bdr2);color:var(--tc);font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;font-family:inherit;}
 .xp-btn:active{background:var(--tc);color:#fff;}
-.sv-sel{padding:5px 9px;border:.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:13px;font-weight:600;background:var(--bg2);color:var(--txt1);cursor:pointer;outline:none;font-family:inherit;}
+.sv-sel{
+  padding:5px 9px;
+  border:.5px solid var(--bdr2);
+  border-radius:var(--rad-pill);
+  font-size:13px;font-weight:600;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;
+  background:var(--bg2);color:var(--txt1);
+  cursor:pointer;outline:none;
+  /* Remove all native styling so it looks like our pill buttons on every platform */
+  -webkit-appearance:none;appearance:none;
+}
 .sv-sel:focus{border-color:var(--tc);}
 .pill{padding:5px 13px;border:.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:13px;font-weight:600;background:var(--bg2);color:var(--txt2);cursor:pointer;white-space:nowrap;font-family:inherit;}
 .pill:active{transform:scale(.95);}
@@ -280,6 +290,74 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .exp-pre{background:var(--bg2);border-radius:var(--rad);padding:12px;font-family:'Courier New',monospace;font-size:12px;color:var(--txt1);max-height:220px;overflow-y:auto;margin-bottom:12px;white-space:pre-wrap;line-height:1.6;}
 .pin-hint{font-size:13px;color:var(--txt2);margin-bottom:13px;line-height:1.5;}
 
+/* ── CONTEXT MENU (long press on song row) ── */
+.ctx-bg{display:none;position:fixed;inset:0;z-index:199;}
+.ctx-bg.open{display:block;}
+.ctx-menu{position:fixed;background:var(--bg1);border-radius:var(--rad-lg);box-shadow:var(--shadow-lg);z-index:200;min-width:210px;overflow:hidden;animation:ctxPop .14s cubic-bezier(.34,1.56,.64,1);}
+@keyframes ctxPop{from{opacity:0;transform:scale(.88);}to{opacity:1;transform:none;}}
+.ctx-item{display:flex;align-items:center;gap:12px;padding:13px 16px;font-size:15px;font-weight:500;color:var(--txt1);cursor:pointer;border-bottom:.5px solid var(--bdr);font-family:inherit;background:none;border-left:none;border-right:none;border-top:none;width:100%;text-align:left;}
+.ctx-item:last-child{border-bottom:none;}
+.ctx-item:active{background:var(--bg2);}
+.ctx-item svg{color:var(--txt3);flex-shrink:0;}
+
+/* ── RECENT SEARCHES ── */
+.srch-wrap{position:relative;}
+.recent-searches{position:absolute;top:100%;left:0;right:0;background:var(--bg1);border-radius:0 0 var(--rad-lg) var(--rad-lg);box-shadow:var(--shadow-md);z-index:50;overflow:hidden;display:none;}
+.recent-searches.show{display:block;}
+.rs-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 14px 4px;}
+.rs-lbl{font-size:11px;font-weight:700;color:var(--txt3);letter-spacing:.06em;text-transform:uppercase;}
+.rs-clr{background:none;border:none;font-size:11px;color:var(--tc);font-weight:600;cursor:pointer;font-family:inherit;padding:4px;}
+.rs-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-top:.5px solid var(--bdr);}
+.rs-item:active{background:var(--bg2);}
+.rs-item svg{color:var(--txt3);flex-shrink:0;}
+.rs-text{font-size:14px;color:var(--txt1);}
+
+/* ── SETTINGS SECTION ── */
+.settings-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:24px;}
+.ss-section{padding:16px 16px 6px;}
+.ss-title{font-size:11px;font-weight:700;color:var(--txt3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;padding:0 4px;}
+.ss-card{background:var(--bg1);border-radius:var(--rad-lg);overflow:hidden;box-shadow:var(--shadow-sm);}
+.ss-row{display:flex;align-items:center;padding:13px 16px;border-bottom:.5px solid var(--bdr);cursor:pointer;-webkit-user-select:none;user-select:none;}
+.ss-row:last-child{border-bottom:none;}
+.ss-row:active{background:var(--bg2);}
+.ss-row.no-tap{cursor:default;}
+.ss-row.no-tap:active{background:none;}
+.ss-ico{width:32px;height:32px;border-radius:8px;background:var(--tc-light);display:flex;align-items:center;justify-content:center;margin-right:13px;flex-shrink:0;}
+.ss-ico svg{color:var(--tc);}
+.ss-body{flex:1;min-width:0;}
+.ss-lbl{font-size:15px;font-weight:500;color:var(--txt1);}
+.ss-sub{font-size:12px;color:var(--txt3);margin-top:2px;}
+.ss-right{color:var(--txt3);font-size:13px;display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:12px;}
+.ss-val{font-size:13px;color:var(--txt2);}
+/* Toggle switch */
+.sw{width:46px;height:28px;border-radius:14px;background:var(--bg3);border:1.5px solid var(--bdr2);position:relative;cursor:pointer;transition:background .18s,border-color .18s;flex-shrink:0;}
+.sw.on{background:var(--tc);border-color:var(--tc);}
+.sw-thumb{position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:transform .18s cubic-bezier(.25,.46,.45,.94);}
+.sw.on .sw-thumb{transform:translateX(18px);}
+/* Text size slider */
+.sz-wrap{display:flex;align-items:center;gap:10px;padding:4px 0 0;}
+.sz-a{font-size:12px;color:var(--txt3);font-weight:700;width:16px;text-align:center;}
+.sz-slider{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:linear-gradient(to right,var(--tc) 0%,var(--tc) var(--pct,50%),var(--bdr2) var(--pct,50%));outline:none;cursor:pointer;}
+.sz-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--tc);cursor:pointer;box-shadow:var(--shadow-sm);}
+.sz-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--tc);cursor:pointer;border:none;box-shadow:var(--shadow-sm);}
+/* Theme swatches */
+.theme-row{display:flex;gap:10px;padding:12px 16px 14px;flex-wrap:wrap;}
+.theme-sw{width:34px;height:34px;border-radius:50%;cursor:pointer;position:relative;transition:transform .12s;}
+.theme-sw:active{transform:scale(.88);}
+.theme-sw.active::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;}
+/* About section */
+.about-logo{width:56px;height:56px;border-radius:14px;background:var(--tc);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+.about-wrap{text-align:center;padding:24px 20px 8px;}
+.about-name{font-size:18px;font-weight:800;color:var(--txt1);}
+.about-ver{font-size:13px;color:var(--txt3);margin-top:4px;}
+.about-by{font-size:13px;color:var(--txt2);margin-top:6px;}
+
+/* ── PULL TO REFRESH ── */
+.ptr-wrap{position:relative;}
+#ptr-indicator{position:absolute;top:-48px;left:50%;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:var(--bg1);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;color:var(--tc);transition:opacity .18s;opacity:0;pointer-events:none;z-index:5;}
+#ptr-indicator.show{opacity:1;}
+#ptr-indicator.spinning svg{animation:spin .7s linear infinite;}
+
 /* ── PRINT ── */
 @media print{
   @page{margin:15mm 13mm;size:A4;}
@@ -340,16 +418,21 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="srch-row">
       <div class="srch-inner">
         <span class="srch-ico"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
-        <input class="srch-inp" id="srch-inp" type="search" placeholder="Search songs or artists…" oninput="onSearch()"/>
+        <input class="srch-inp" id="srch-inp" type="search" placeholder="Search songs or artists…" oninput="onSearch()" onfocus="showRecentSearches()" onblur="hideRecentSearches()"/>
         <button class="srch-clr" id="srch-clr" onclick="clearSearch()">×</button>
       </div>
       <span class="song-count" id="song-count"></span>
+    </div>
+    <div class="recent-searches" id="recent-searches">
+      <div class="rs-hdr"><span class="rs-lbl">Recent</span><button class="rs-clr" onmousedown="event.preventDefault();clearRecentSearches()">Clear</button></div>
+      <div id="rs-list"></div>
     </div>
   </div>
 
   <!-- SONG LIST -->
   <div id="song-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
-    <div class="vs-host">
+    <div class="vs-host ptr-wrap">
+      <div id="ptr-indicator"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 2l-2 2M9 2l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 9a7 7 0 1 1-7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
       <div id="vscroll" class="vs-wrap"><div id="vinner" class="vs-inner"></div></div>
       <div id="alpha-strip"></div>
     </div>
@@ -371,34 +454,116 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <button class="add-fab" onclick="openBS('picker')">+</button>
   </div>
 
+  <!-- SETTINGS -->
+  <div id="settings-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;">
+    <div class="settings-scroll">
+
+      <div class="ss-section">
+        <div class="ss-title">Appearance</div>
+        <div class="ss-card">
+          <div class="ss-row" onclick="toggleDark()">
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="8" r="2.8" stroke="currentColor" stroke-width="1.5"/></svg></div>
+            <div class="ss-body"><div class="ss-lbl">Dark mode</div></div>
+            <div class="sw" id="dark-sw" onclick="event.stopPropagation();toggleDark()"><div class="sw-thumb"></div></div>
+          </div>
+          <div class="ss-row no-tap">
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 12h3.5L13 4.5 11.5 3 4 10.5V14H2v-2z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="ss-body">
+              <div class="ss-lbl">Text size</div>
+              <div class="sz-wrap">
+                <span class="sz-a" style="font-size:11px">A</span>
+                <input type="range" class="sz-slider" id="text-size-slider" min="85" max="125" value="100" oninput="applyTextSize(this.value)"/>
+                <span class="sz-a" style="font-size:17px">A</span>
+              </div>
+            </div>
+          </div>
+          <div class="ss-row no-tap">
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/></svg></div>
+            <div class="ss-body"><div class="ss-lbl">Colour theme</div></div>
+          </div>
+          <div class="theme-row" id="theme-swatches"></div>
+        </div>
+      </div>
+
+      <div class="ss-section">
+        <div class="ss-title">Library</div>
+        <div class="ss-card">
+          <div class="ss-row" onclick="openBS('setkey')">
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="5.5" cy="10.5" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M8.5 10.5h5M12 8.5v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <div class="ss-body"><div class="ss-lbl">Default display key</div><div class="ss-sub" id="def-key-sub">Show songs in their original key</div></div>
+            <div class="ss-right"><span class="ss-val" id="def-key-val">Original</span><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ss-row" onclick="toggleDeviceSetList()">
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 7h6M5 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <div class="ss-body"><div class="ss-lbl">Personal set list</div><div class="ss-sub">Stored on this device only (not shared)</div></div>
+            <div class="sw" id="device-sl-sw" onclick="event.stopPropagation();toggleDeviceSetList()"><div class="sw-thumb"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ss-section">
+        <div class="ss-title">Data</div>
+        <div class="ss-card">
+          <div class="ss-row" onclick="exportJSON()">
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <div class="ss-body"><div class="ss-lbl">Export library (JSON)</div><div class="ss-sub">Download all songs as a backup</div></div>
+            <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="ss-row" onclick="document.getElementById('import-file').click()">
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 10V2M8 2L5 5M8 2l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <div class="ss-body"><div class="ss-lbl">Import library (JSON)</div><div class="ss-sub">Restore from a backup file</div></div>
+            <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)"/>
+        </div>
+      </div>
+
+      <div class="ss-section">
+        <div class="ss-title">Security</div>
+        <div class="ss-card">
+          <div class="ss-row" onclick="openBS('changepin')">
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 7V5a3 3 0 1 1 6 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="10.5" r="1" fill="currentColor"/></svg></div>
+            <div class="ss-body"><div class="ss-lbl">Change admin PIN</div><div class="ss-sub">Requires current PIN</div></div>
+            <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ss-section">
+        <div class="ss-title">About</div>
+        <div class="ss-card">
+          <div style="padding:24px 20px;text-align:center;">
+            <div class="about-logo">
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none"><path d="M4 12L10 28L16.5 18L20 23L23.5 18L30 28L36 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="32" r="1.8" fill="white" opacity=".5"/></svg>
+            </div>
+            <div style="font-size:18px;font-weight:800;color:var(--txt1);">WorshipBase</div>
+            <div style="font-size:13px;color:var(--txt3);margin-top:4px;">Version 1.4.0</div>
+            <div style="font-size:13px;color:var(--txt2);margin-top:8px;">Created by <strong>Jerin Reji</strong></div>
+            <div style="font-size:12px;color:var(--txt3);margin-top:4px;line-height:1.6;">A chord library for worship bands.<br>Built with love for the church.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- BOTTOM TAB BAR -->
   <div class="tab-bar">
     <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
-      <span class="tab-ico">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-          <path d="M3 6h16M3 11h10M3 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
+      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 6h16M3 11h10M3 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
       <span class="tab-lbl">English</span>
     </button>
     <button class="tab-btn" id="tab-malayalam" onclick="switchTab('malayalam')">
-      <span class="tab-ico">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-          <path d="M3 5h16M3 9.5h7M3 14h12M3 18.5h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
+      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 5h16M3 9.5h7M3 14h12M3 18.5h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
       <span class="tab-lbl">Malayalam</span>
     </button>
     <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
-      <span class="tab-ico">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-          <rect x="3" y="4" width="4" height="4" rx="1" fill="currentColor" opacity=".5"/>
-          <rect x="3" y="10" width="4" height="4" rx="1" fill="currentColor" opacity=".75"/>
-          <rect x="3" y="16" width="4" height="4" rx="1" fill="currentColor"/>
-          <path d="M10 6h9M10 12h7M10 18h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
+      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="4" width="4" height="4" rx="1" fill="currentColor" opacity=".5"/><rect x="3" y="10" width="4" height="4" rx="1" fill="currentColor" opacity=".75"/><rect x="3" y="16" width="4" height="4" rx="1" fill="currentColor"/><path d="M10 6h9M10 12h7M10 18h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
       <span class="tab-lbl">Set List</span>
+    </button>
+    <button class="tab-btn" id="tab-settings" onclick="switchTab('settings')">
+      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="2.5" stroke="currentColor" stroke-width="2"/><path d="M11 2v2M11 18v2M2 11h2M18 11h2M4.2 4.2l1.4 1.4M16.4 16.4l1.4 1.4M4.2 17.8l1.4-1.4M16.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+      <span class="tab-lbl">Settings</span>
     </button>
   </div>
 </div>
@@ -573,6 +738,47 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 
 <div id="print-all-songs" style="display:none"></div>
 <div id="alpha-bubble"></div>
+
+<!-- CONTEXT MENU (long-press on song) -->
+<div class="ctx-bg" id="ctx-bg" onclick="closeCtx()"></div>
+<div class="ctx-menu" id="ctx-menu" style="display:none">
+  <button class="ctx-item" onclick="ctxAction('set')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 13h3L12 6 10 4 3 11v2zM10 4l2 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="ctx-set-lbl">Add to set list</span></button>
+  <button class="ctx-item" onclick="ctxAction('lyrics')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="9" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4" width="9" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/></svg>Copy lyrics</button>
+  <button class="ctx-item" onclick="ctxAction('edit')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M11 2.5l2.5 2.5L5 13.5H2.5V11L11 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Edit song</button>
+</div>
+
+<!-- DEFAULT KEY picker -->
+<div class="bs-bg" id="bs-setkey" onclick="closeBSBg(event,'setkey')">
+  <div class="bs">
+    <div class="bs-handle"></div>
+    <div class="m-tr"><h2 class="m-h2">Default display key</h2><button class="m-close" onclick="closeBS('setkey')">×</button></div>
+    <div class="m-body">
+      <p style="font-size:13px;color:var(--txt2);margin-bottom:14px;line-height:1.6;">When you open a song, it will default to this key instead of its original key. You can always transpose individually.</p>
+      <div id="defkey-options" style="display:flex;flex-wrap:wrap;gap:8px;padding-bottom:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE PIN -->
+<div class="bs-bg" id="bs-changepin" onclick="closeBSBg(event,'changepin')">
+  <div class="bs">
+    <div class="bs-handle"></div>
+    <div class="m-tr"><h2 class="m-h2">Change admin PIN</h2><button class="m-close" onclick="closeBS('changepin')">×</button></div>
+    <div class="m-body">
+      <label>Current PIN</label>
+      <input type="password" id="cp-current" placeholder="Enter current PIN" inputmode="numeric" autocomplete="off" maxlength="10"/>
+      <label>New PIN</label>
+      <input type="password" id="cp-new" placeholder="Enter new PIN (4–8 digits)" inputmode="numeric" autocomplete="off" maxlength="10"/>
+      <label>Confirm new PIN</label>
+      <input type="password" id="cp-confirm" placeholder="Repeat new PIN" inputmode="numeric" autocomplete="off" maxlength="10"/>
+      <p id="cp-err" style="font-size:12px;color:#d93448;margin-bottom:12px;display:none"></p>
+      <div class="m-acts">
+        <button class="btn-s" onclick="closeBS('changepin')">Cancel</button>
+        <button class="btn-p" onclick="changePIN()">Save PIN</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -810,14 +1016,15 @@ function exportPDF(){
   window.print();
 }
 function exportAllPDF(){
-  if(!setList.length){alert('No songs in set list.');return;}
+  const sl=getSetList();
+  if(!sl.length){alert('No songs in set list.');return;}
   closeBS('export');
   const c=document.getElementById('print-all-songs');c.style.display='block';c.innerHTML='';
-  setList.forEach((id,i)=>{
+  sl.forEach((id,i)=>{
     const s=findSongById(id);if(!s)return;
     if(i>0){const sep=document.createElement('div');sep.className='print-song-sep';c.appendChild(sep);}
     const w=document.createElement('div');
-    w.innerHTML=`<div style="margin-bottom:14px"><div class="pt">${s.title}</div><div class="pa">${s.author}</div><div class="pk">Key of ${s.key}</div></div><div class="sheet" style="padding:0">${renderSheetHTML(s,s.key,false,false,false)}</div>`;
+    w.innerHTML=`<div style="margin-bottom:14px"><div class="pt">${s.title}</div><div class="pa">${s.author}</div><div class="pk">Key of ${s.key}</div></div><div class="sheet" style="padding:0">${renderSheetHTML(s,s.key,false,false)}</div>`;
     c.appendChild(w);
   });
   setTimeout(()=>{window.print();c.innerHTML='';c.style.display='none';},120);
@@ -836,16 +1043,37 @@ function copyLyrics(){
   else{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('Lyrics copied');}
 }
 function buildExport(){
+  const sl=getSetList();
   const lines=['WorshipBase — Set List',new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'}),''];
-  setList.forEach((id,i)=>{const s=findSongById(id);if(!s)return;lines.push(`${i+1}. ${s.title}`);lines.push(`   ${s.author} · Key of ${s.key} · ${s.cat==='malayalam'?'Malayalam':'English'}`);lines.push('');});
+  sl.forEach((id,i)=>{const s=findSongById(id);if(!s)return;lines.push(`${i+1}. ${s.title}`);lines.push(`   ${s.author} · Key of ${s.key} · ${s.cat==='malayalam'?'Malayalam':'English'}`);lines.push('');});
   document.getElementById('export-preview').textContent=lines.join('\n');
 }
 function copyExport(){const t=document.getElementById('export-preview').textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>alert('Copied!'));else{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();alert('Copied!');}}
 
 /* ══ STATE ══ */
-let songs=[],setList=[],currentSong=null,currentKey=null,nnsMode=false,darkMode=false;
+let songs=[],currentSong=null,currentKey=null,nnsMode=false,darkMode=false;
 let editingId=null,activeTab='english',modalCat='english',pickerFilter='all',fromSetList=false;
 let vRows=[],rowCache={},debounceTimer=null,alphaMap={};
+let ctxSong=null;
+let _setList_shared=[],_deviceSetList=[];
+
+/* ── App settings persisted to localStorage ── */
+const PREFS_KEY='wb_prefs_v1';
+const DSL_KEY='wb_device_sl';
+let appPrefs={darkMode:false,textSize:100,theme:'#10374A',defaultKey:'original',useDeviceSetList:false,adminPin:'1234',recentSearches:[]};
+function loadPrefs(){try{const p=JSON.parse(localStorage.getItem(PREFS_KEY)||'{}');Object.assign(appPrefs,p);}catch(e){}}
+function savePrefs(){try{localStorage.setItem(PREFS_KEY,JSON.stringify(appPrefs));}catch(e){}}
+function loadDeviceSetList(){try{_deviceSetList=JSON.parse(localStorage.getItem(DSL_KEY)||'[]');}catch(e){_deviceSetList=[];}}
+function saveDeviceSetList(){try{localStorage.setItem(DSL_KEY,JSON.stringify(_deviceSetList));}catch(e){}}
+
+/* Always call getSetList() instead of using setList directly */
+function getSetList(){return appPrefs.useDeviceSetList?_deviceSetList:_setList_shared;}
+function modSetList(newArr){
+  if(appPrefs.useDeviceSetList){_deviceSetList=newArr;saveDeviceSetList();}
+  else{_setList_shared=newArr;saveSetListToFB();}
+}
+function addToSetList(id){const sl=getSetList();if(!sl.includes(id)){modSetList([...sl,id]);}}
+function removeFromSetList(id){modSetList(getSetList().filter(x=>x!==id));}
 
 function normId(id){return id==null?'':String(id);}
 function normRec(k,s){return{...s,id:normId(s.id||k),fbKey:k};}
@@ -861,12 +1089,12 @@ function initFirebase(){
   },()=>{showSync('Sync error',true);hideLoading();});
   setlistRef.on('value',snap=>{
     const d=snap.val();
-    setList=d?Object.values(d).sort((a,b)=>a.order-b.order).map(x=>normId(x.songId)).filter(Boolean):[];
+    _setList_shared=d?Object.values(d).sort((a,b)=>a.order-b.order).map(x=>normId(x.songId)).filter(Boolean):[];
     if(activeTab==='setlist')renderSetList();
   });
 }
 function hideLoading(){const l=document.getElementById('ls');l.classList.add('hidden');setTimeout(()=>l.style.display='none',380);}
-function saveSetListToFB(){const d={};setList.map(normId).filter(Boolean).forEach((id,i)=>{d[`i${i}`]={songId:id,order:i};});setlistRef.set(d).catch(()=>showSync('Sync failed',true));}
+function saveSetListToFB(){const d={};_setList_shared.map(normId).filter(Boolean).forEach((id,i)=>{d[`i${i}`]={songId:id,order:i};});setlistRef.set(d).catch(()=>showSync('Sync failed',true));}
 
 /* ══ SEED ══ */
 function seedDefaultSongs(){
@@ -978,7 +1206,7 @@ function makeListNode(row){
   const s=row.song;const hc=s.chart&&s.chart.trim();
   const wrap=document.createElement('div');wrap.className='song-row-wrap';
   const reveal=document.createElement('div');reveal.className='song-row-reveal';
-  const inSet=setList.includes(s.id);
+  const inSet=getSetList().includes(s.id);
   reveal.innerHTML=inSet
     ?`<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`
     :`<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`;
@@ -989,6 +1217,7 @@ function makeListNode(row){
     if(item.classList.contains('swiped')){resetSwipeItem(item);return;}
     openSong(s.id,false);
   });
+  setupLongPress(item,s);
   let sx=0,sy=0,lockedH=false,lockedV=false;
   item.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;lockedH=false;lockedV=false;},{passive:true});
   item.addEventListener('touchmove',e=>{
@@ -1080,11 +1309,12 @@ function jumpToAlpha(ltr){
 
 /* ══ SET LIST ══ */
 function renderSetList(){
+  const sl=getSetList();
   const ct=document.getElementById('sl-items');
-  document.getElementById('sl-count').textContent=`${setList.length} song${setList.length!==1?'s':''}`;
-  if(!setList.length){ct.innerHTML=`<div class="sl-empty"><div class="sl-ei">🎵</div><div class="sl-et">No songs in set</div><div class="sl-es">Tap + to add songs</div></div>`;return;}
+  document.getElementById('sl-count').textContent=`${sl.length} song${sl.length!==1?'s':''}`;
+  if(!sl.length){ct.innerHTML=`<div class="sl-empty"><div class="sl-ei">🎵</div><div class="sl-et">No songs in set</div><div class="sl-es">Tap + to add songs</div></div>`;return;}
   ct.innerHTML='';
-  setList.forEach((id,idx)=>{
+  sl.forEach((id,idx)=>{
     const s=findSongById(id);if(!s)return;
     const el=document.createElement('div');el.className='set-item';el.dataset.id=s.id;
     el.innerHTML=`<div class="drag-handle"><span></span><span></span><span></span></div><span class="set-num">${idx+1}</span><div class="set-av">${s.title[0].toUpperCase()}</div><div class="set-info"><div class="set-title">${s.title}</div><div class="set-meta">${s.author}&nbsp;<span class="lang-badge">${s.cat==='malayalam'?'ML':'EN'}</span>&nbsp;·&nbsp;${s.key}</div></div><button class="set-rm">×</button>`;
@@ -1131,32 +1361,41 @@ function attachDrag(ct){
     if(dragEl){dragEl.style.opacity='';dragEl=null;}
     getItems().forEach(item=>{item.style.transform='';item.style.transition='';});
     if(dropIdx!==dragIdx&&dropIdx!==-1){
-      const moved=setList.splice(dragIdx,1)[0];
-      setList.splice(dropIdx,0,moved);
-      saveSetListToFB();renderSetList();
+      const sl=[...getSetList()];
+      const moved=sl.splice(dragIdx,1)[0];
+      sl.splice(dropIdx,0,moved);
+      modSetList(sl);renderSetList();
     }
     dragEl=null;dragIdx=-1;dropIdx=-1;
   };
   document.addEventListener('touchmove',onMove,{passive:true});
   document.addEventListener('touchend',onEnd,{passive:true});
 }
-function clearSet(){if(!setList.length)return;if(!confirm('Clear set list?'))return;setlistRef.set(null);setList=[];renderSetList();}
-function removeFromSet(id){setList=setList.filter(x=>x!==id);saveSetListToFB();renderSetList();}
+function clearSet(){
+  if(!getSetList().length)return;
+  if(!confirm('Clear set list?'))return;
+  modSetList([]);
+  if(!appPrefs.useDeviceSetList)setlistRef.set(null);
+  renderSetList();
+}
+function removeFromSet(id){modSetList(getSetList().filter(x=>x!==id));renderSetList();}
 
 /* ══ PICKER ══ */
 function setPickerFilter(f,el){pickerFilter=f;document.querySelectorAll('.pf-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderPicker();}
 function renderPicker(){
+  const sl=getSetList();
   const q=document.getElementById('picker-search').value.toLowerCase();
   const filt=songs.filter(s=>(pickerFilter==='all'||s.cat===pickerFilter)&&(!q||s.title.toLowerCase().includes(q)||s.author.toLowerCase().includes(q))).sort((a,b)=>a.title.localeCompare(b.title));
   const list=document.getElementById('picker-list');
   if(!filt.length){list.innerHTML=`<div style="padding:22px;text-align:center;color:var(--txt3);font-size:14px">No songs found</div>`;return;}
-  list.innerHTML=filt.map(s=>{const inSet=setList.includes(s.id);return`<div class="pi" onclick="toggleSetSong('${s.id}')"><div class="pi-info"><div class="pi-title">${s.title}</div><div class="pi-meta">${s.author}&nbsp;·&nbsp;${s.cat==='malayalam'?'Malayalam':'English'}&nbsp;·&nbsp;${s.key}</div></div><div class="pi-ck${inSet?' sel':''}">${inSet?'✓':''}</div></div>`;}).join('');
+  list.innerHTML=filt.map(s=>{const inSet=sl.includes(s.id);return`<div class="pi" onclick="toggleSetSong('${s.id}')"><div class="pi-info"><div class="pi-title">${s.title}</div><div class="pi-meta">${s.author}&nbsp;·&nbsp;${s.cat==='malayalam'?'Malayalam':'English'}&nbsp;·&nbsp;${s.key}</div></div><div class="pi-ck${inSet?' sel':''}">${inSet?'✓':''}</div></div>`;}).join('');
 }
 function toggleSetSong(id){
-  const wasIn=setList.includes(id);
-  if(wasIn)setList=setList.filter(x=>x!==id);
-  else{setList.push(id);showToast('Added to set list');}
-  saveSetListToFB();renderPicker();renderSetList();refresh(false);
+  const sl=getSetList();
+  const wasIn=sl.includes(id);
+  if(wasIn)modSetList(sl.filter(x=>x!==id));
+  else{modSetList([...sl,id]);showToast('Added to set list');}
+  renderPicker();renderSetList();refresh(false);
 }
 
 /* ══ NAVIGATION ══ */
@@ -1164,21 +1403,250 @@ function switchTab(tab){
   activeTab=tab;
   document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
   document.getElementById('tab-'+tab)?.classList.add('active');
-  const ss=document.getElementById('song-section'),sl=document.getElementById('setlist-section');
+  const ss=document.getElementById('song-section');
+  const sl=document.getElementById('setlist-section');
+  const st=document.getElementById('settings-section');
   const sw=document.getElementById('srch-wrap');
-  if(tab==='setlist'){ss.style.display='none';sl.style.display='flex';sw.style.display='none';}
-  else{ss.style.display='flex';sl.style.display='none';sw.style.display='block';clearSearch();}
+  ss.style.display='none';sl.style.display='none';st.style.display='none';
+  sw.style.display='none';
+  if(tab==='setlist'){sl.style.display='flex';renderSetList();}
+  else if(tab==='settings'){st.style.display='flex';renderSettings();}
+  else{ss.style.display='flex';sw.style.display='block';if(tab!==activeTab)clearSearch();else refresh(true);}
 }
-function onSearch(){document.getElementById('srch-clr').style.display=document.getElementById('srch-inp').value?'block':'none';refresh(false);}
-function clearSearch(){document.getElementById('srch-inp').value='';document.getElementById('srch-clr').style.display='none';refresh(true);}
+function onSearch(){
+  document.getElementById('srch-clr').style.display=document.getElementById('srch-inp').value?'block':'none';
+  refresh(false);
+}
+function clearSearch(){
+  document.getElementById('srch-inp').value='';
+  document.getElementById('srch-clr').style.display='none';
+  refresh(true);
+}
+
+/* ══ RECENT SEARCHES ══ */
+function showRecentSearches(){
+  const rs=appPrefs.recentSearches;
+  if(!rs.length)return;
+  const list=document.getElementById('rs-list');
+  list.innerHTML=rs.slice(0,3).map(q=>`<div class="rs-item" onmousedown="event.preventDefault();applyRecentSearch('${q.replace(/'/g,"\\'")}')"><svg width="13" height="13" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span class="rs-text">${q}</span></div>`).join('');
+  document.getElementById('recent-searches').classList.add('show');
+}
+function hideRecentSearches(){setTimeout(()=>document.getElementById('recent-searches').classList.remove('show'),150);}
+function applyRecentSearch(q){document.getElementById('srch-inp').value=q;document.getElementById('srch-clr').style.display='block';refresh(true);document.getElementById('recent-searches').classList.remove('show');}
+function clearRecentSearches(){appPrefs.recentSearches=[];savePrefs();document.getElementById('recent-searches').classList.remove('show');}
+function saveRecentSearch(q){if(!q.trim())return;const rs=appPrefs.recentSearches.filter(x=>x!==q);rs.unshift(q);appPrefs.recentSearches=rs.slice(0,3);savePrefs();}
+
+/* ══ DARK MODE ══ */
 function toggleDark(){
-  darkMode=!darkMode;document.body.classList.toggle('dark',darkMode);
+  darkMode=!darkMode;appPrefs.darkMode=darkMode;savePrefs();
+  document.body.classList.toggle('dark',darkMode);
   const ico=darkMode?'☀':'🌙';
   document.getElementById('dark-ico').textContent=ico;
   document.getElementById('hdr-dark-btn').textContent=ico;
   document.getElementById('dark-lbl').textContent=darkMode?'Light mode':'Dark mode';
   document.getElementById('mi-dark').classList.toggle('on',darkMode);
+  const sw=document.getElementById('dark-sw');if(sw)sw.classList.toggle('on',darkMode);
   if(document.getElementById('bs-chords').classList.contains('open'))renderChordDiagrams();
+}
+
+/* ══ TEXT SIZE ══ */
+function applyTextSize(val){
+  const n=parseInt(val);appPrefs.textSize=n;savePrefs();
+  document.documentElement.style.setProperty('--text-scale',n/100);
+  // scale the key reading areas
+  document.querySelectorAll('.sheet,.sv-scroll').forEach(el=>el.style.fontSize=(n/100)+'em');
+  // update slider fill
+  const pct=((n-85)/(125-85)*100).toFixed(1)+'%';
+  const sl=document.getElementById('text-size-slider');
+  if(sl){sl.style.setProperty('--pct',pct);sl.value=n;}
+}
+
+/* ══ COLOUR THEMES ══ */
+const THEMES=[
+  {name:'Ocean',val:'#10374A'},{name:'Slate',val:'#2D3748'},{name:'Forest',val:'#1A4731'},
+  {name:'Berry',val:'#5B2D8E'},{name:'Crimson',val:'#7B1B2C'},{name:'Copper',val:'#7A3B0F'},
+];
+function renderThemeSwatches(){
+  const row=document.getElementById('theme-swatches');if(!row)return;
+  row.innerHTML=THEMES.map(t=>`<div class="theme-sw${t.val===appPrefs.theme?' active':''}" style="background:${t.val}" title="${t.name}" onclick="applyTheme('${t.val}')"></div>`).join('');
+}
+function applyTheme(hex){
+  appPrefs.theme=hex;savePrefs();
+  // derive lighter tones
+  document.documentElement.style.setProperty('--tc',hex);
+  // generate tc2 slightly lighter, tc3 darker
+  document.documentElement.style.setProperty('--hdr-bg',darkMode?shadeColor(hex,-30):hex);
+  renderThemeSwatches();
+}
+function shadeColor(hex,pct){
+  let R=parseInt(hex.slice(1,3),16),G=parseInt(hex.slice(3,5),16),B=parseInt(hex.slice(5,7),16);
+  R=Math.min(255,Math.max(0,R+pct));G=Math.min(255,Math.max(0,G+pct));B=Math.min(255,Math.max(0,B+pct));
+  return'#'+[R,G,B].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+/* ══ DEVICE SET LIST TOGGLE ══ */
+function toggleDeviceSetList(){
+  appPrefs.useDeviceSetList=!appPrefs.useDeviceSetList;savePrefs();
+  const sw=document.getElementById('device-sl-sw');if(sw)sw.classList.toggle('on',appPrefs.useDeviceSetList);
+  if(activeTab==='setlist')renderSetList();
+  showToast(appPrefs.useDeviceSetList?'Set list is now personal (this device)':'Set list is now shared');
+}
+
+/* ══ DEFAULT KEY ══ */
+function renderDefaultKeyOptions(){
+  const container=document.getElementById('defkey-options');if(!container)return;
+  const options=['original',...NOTES];
+  container.innerHTML=options.map(k=>{
+    const active=appPrefs.defaultKey===k;
+    return`<button onclick="setDefaultKey('${k}')" style="padding:7px 14px;border-radius:var(--rad-pill);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:.5px solid var(--bdr2);background:${active?'var(--tc)':'var(--bg2)'};color:${active?'#fff':'var(--txt1)'}">${k==='original'?'Original key':k}</button>`;
+  }).join('');
+}
+function setDefaultKey(k){
+  appPrefs.defaultKey=k;savePrefs();
+  const sub=document.getElementById('def-key-sub');
+  const val=document.getElementById('def-key-val');
+  if(sub)sub.textContent=k==='original'?'Show songs in their original key':`All songs open in key of ${k}`;
+  if(val)val.textContent=k==='original'?'Original':k;
+  renderDefaultKeyOptions();
+}
+function openBS(name){
+  closeAllBS();
+  const el=document.getElementById('bs-'+name);if(!el)return;
+  el.classList.add('open');
+  if(name==='chords')renderChordDiagrams();
+  if(name==='export')buildExport();
+  if(name==='picker'){document.getElementById('picker-search').value='';pickerFilter='all';document.querySelectorAll('.pf-btn').forEach((b,i)=>b.classList.toggle('active',i===0));renderPicker();}
+  if(name==='pin'){setTimeout(()=>{const inp=document.getElementById('pin-input');inp.value='';document.getElementById('pin-err').style.display='none';inp.focus();},160);}
+  if(name==='setkey')renderDefaultKeyOptions();
+  if(name==='changepin'){document.getElementById('cp-current').value='';document.getElementById('cp-new').value='';document.getElementById('cp-confirm').value='';document.getElementById('cp-err').style.display='none';}
+  const bs=el.querySelector('.bs');if(bs)attachSheetSwipe(bs,name);
+}
+
+/* ══ CHANGE PIN ══ */
+function changePIN(){
+  const cur=document.getElementById('cp-current').value;
+  const nw=document.getElementById('cp-new').value;
+  const cf=document.getElementById('cp-confirm').value;
+  const err=document.getElementById('cp-err');
+  if(cur!==appPrefs.adminPin){err.textContent='Current PIN is incorrect.';err.style.display='block';return;}
+  if(nw.length<4){err.textContent='New PIN must be at least 4 digits.';err.style.display='block';return;}
+  if(nw!==cf){err.textContent='New PINs do not match.';err.style.display='block';return;}
+  appPrefs.adminPin=nw;savePrefs();
+  closeBS('changepin');showToast('PIN changed ✓');
+}
+
+/* ══ JSON BACKUP ══ */
+function exportJSON(){
+  const data={version:1,exported:new Date().toISOString(),songs:songs.map(s=>({title:s.title,author:s.author,key:s.key,cat:s.cat,chart:s.chart||''}))};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='worshipbase-backup.json';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  showToast('Library exported ✓');
+}
+function importJSON(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.songs||!Array.isArray(data.songs))throw new Error('Invalid format');
+      if(!confirm(`Import ${data.songs.length} songs? This will ADD them to your existing library.`))return;
+      let count=0;
+      data.songs.forEach(s=>{
+        if(!s.title)return;
+        const ref=songsRef.push();
+        ref.set({id:ref.key,cat:s.cat||'english',title:s.title,author:s.author||'',key:s.key||'G',chart:s.chart||''});
+        count++;
+      });
+      showToast(`Imported ${count} songs ✓`);
+    }catch(err){alert('Could not read file. Make sure it is a WorshipBase JSON backup.');}
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+/* ══ SETTINGS RENDER ══ */
+function renderSettings(){
+  renderThemeSwatches();
+  const dk=appPrefs.defaultKey;
+  const sub=document.getElementById('def-key-sub');
+  const val=document.getElementById('def-key-val');
+  if(sub)sub.textContent=dk==='original'?'Show songs in their original key':`All songs open in key of ${dk}`;
+  if(val)val.textContent=dk==='original'?'Original':dk;
+  const dslSw=document.getElementById('device-sl-sw');if(dslSw)dslSw.classList.toggle('on',appPrefs.useDeviceSetList);
+  const dkSw=document.getElementById('dark-sw');if(dkSw)dkSw.classList.toggle('on',darkMode);
+  const sl=document.getElementById('text-size-slider');
+  if(sl){sl.value=appPrefs.textSize;const pct=((appPrefs.textSize-85)/(125-85)*100).toFixed(1)+'%';sl.style.setProperty('--pct',pct);}
+}
+
+/* ══ LONG PRESS CONTEXT MENU ══ */
+let longPressTimer=null;
+function setupLongPress(item,song){
+  const fire=()=>{ctxSong=song;showCtx(item,song);};
+  // Touch
+  item.addEventListener('touchstart',e=>{longPressTimer=setTimeout(()=>{if(navigator.vibrate)navigator.vibrate(10);fire();},500);},{passive:true});
+  item.addEventListener('touchend',()=>clearTimeout(longPressTimer),{passive:true});
+  item.addEventListener('touchmove',()=>clearTimeout(longPressTimer),{passive:true});
+  // Mouse (desktop right-click)
+  item.addEventListener('contextmenu',e=>{e.preventDefault();ctxSong=song;showCtx(item,song);});
+}
+function showCtx(item,song){
+  const sl=getSetList();
+  const inSet=sl.includes(song.id);
+  document.getElementById('ctx-set-lbl').textContent=inSet?'Remove from set':'Add to set list';
+  const rect=item.getBoundingClientRect();
+  const menu=document.getElementById('ctx-menu');
+  menu.style.display='block';
+  // Position below item, clamp to viewport
+  let top=rect.bottom+4;let left=rect.left+16;
+  const mh=menu.offsetHeight||160,mw=menu.offsetWidth||220;
+  if(top+mh>window.innerHeight)top=rect.top-mh-4;
+  if(left+mw>window.innerWidth)left=window.innerWidth-mw-8;
+  menu.style.top=top+'px';menu.style.left=left+'px';
+  document.getElementById('ctx-bg').classList.add('open');
+}
+function closeCtx(){document.getElementById('ctx-menu').style.display='none';document.getElementById('ctx-bg').classList.remove('open');ctxSong=null;}
+function ctxAction(action){
+  if(!ctxSong)return;closeCtx();
+  if(action==='set'){
+    const sl=getSetList();const inSet=sl.includes(ctxSong.id);
+    if(inSet)modSetList(sl.filter(x=>x!==ctxSong.id));
+    else{modSetList([...sl,ctxSong.id]);showToast('Added to set list');}
+    refresh(false);renderSetList();
+  } else if(action==='lyrics'){
+    const tmp=currentSong;currentSong=ctxSong;copyLyrics();currentSong=tmp;
+  } else if(action==='edit'){
+    requireAdmin(()=>openSongModal(ctxSong));
+  }
+}
+
+/* ══ PULL TO REFRESH ══ */
+function initPTR(){
+  const vscroll=document.getElementById('vscroll');
+  const indicator=document.getElementById('ptr-indicator');
+  let startY=0,pulling=false,threshold=60;
+  vscroll.addEventListener('touchstart',e=>{if(vscroll.scrollTop===0)startY=e.touches[0].clientY;},{passive:true});
+  vscroll.addEventListener('touchmove',e=>{
+    if(vscroll.scrollTop>0||!startY)return;
+    const dy=e.touches[0].clientY-startY;
+    if(dy>10){pulling=true;const p=Math.min(dy/threshold,1);indicator.style.opacity=p.toString();indicator.style.top=(dy/2-24)+'px';}
+  },{passive:true});
+  vscroll.addEventListener('touchend',e=>{
+    if(!pulling){startY=0;return;}
+    const dy=e.changedTouches[0].clientY-startY;
+    pulling=false;startY=0;
+    if(dy>threshold){
+      indicator.classList.add('show');indicator.classList.add('spinning');
+      songsRef.once('value',snap=>{
+        const d=snap.val();if(d)songs=Object.entries(d).map(([k,v])=>normRec(k,v));
+        refresh(true);
+        setTimeout(()=>{indicator.classList.remove('show');indicator.classList.remove('spinning');indicator.style.top='';},600);
+      });
+    } else {
+      indicator.style.opacity='0';indicator.style.top='';
+    }
+  },{passive:true});
 }
 
 /* ══ SWIPE BETWEEN SONGS ══ */
@@ -1207,7 +1675,7 @@ let edgeX=0,edgeActive=false;
 songView.addEventListener('touchstart',e=>{edgeX=e.touches[0].clientX;edgeActive=edgeX<30;},{passive:true});
 songView.addEventListener('touchend',e=>{if(!edgeActive)return;edgeActive=false;if(e.changedTouches[0].clientX-edgeX>55)showList();},{passive:true});
 
-function getSongList(){if(fromSetList)return setList.map(id=>findSongById(id)).filter(Boolean);return vRows.filter(r=>r.type==='song').map(r=>r.song);}
+function getSongList(){if(fromSetList)return getSetList().map(id=>findSongById(id)).filter(Boolean);return vRows.filter(r=>r.type==='song').map(r=>r.song);}
 function currentIndex(){return getSongList().findIndex(s=>s.id===currentSong?.id);}
 
 let swipeInProgress=false;
@@ -1234,7 +1702,14 @@ function swipeNav(nextSong,dir){
 /* ══ SONG VIEW ══ */
 function openSong(id,fromSet){
   currentSong=findSongById(id);if(!currentSong)return;
-  fromSetList=!!fromSet;currentKey=currentSong.key;nnsMode=false;lyricsOnly=false;useFlats=false;
+  fromSetList=!!fromSet;
+  // Apply default key preference
+  if(appPrefs.defaultKey==='original'||!NOTES.includes(appPrefs.defaultKey)){
+    currentKey=currentSong.key;
+  } else {
+    currentKey=appPrefs.defaultKey;
+  }
+  nnsMode=false;lyricsOnly=false;useFlats=false;
   document.getElementById('sv-title').textContent=currentSong.title;
   document.getElementById('sv-author').textContent=currentSong.author;
   document.getElementById('sv-orig-key').textContent='Originally in '+currentSong.key;
@@ -1276,6 +1751,9 @@ function showList(){
   songView.style.transition='transform .26s cubic-bezier(.25,.46,.45,.94)';
   songView.classList.remove('visible');
   setTimeout(()=>songView.style.transition='',280);
+  // Save search term to recent if it was a search result
+  const q=document.getElementById('srch-inp').value.trim();
+  if(q)saveRecentSearch(q);
   if(fromSetList)switchTab('setlist');else refresh(true);
 }
 
@@ -1309,7 +1787,9 @@ function saveSong(){
       showSync('Saved ✓');closeBS('modal');activeTab=modalCat;
       document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
       document.getElementById('tab-'+activeTab)?.classList.add('active');
-      document.getElementById('song-section').style.display='flex';document.getElementById('setlist-section').style.display='none';
+      document.getElementById('song-section').style.display='flex';
+      document.getElementById('setlist-section').style.display='none';
+      document.getElementById('settings-section').style.display='none';
       document.getElementById('srch-wrap').style.display='block';
     }).catch(()=>showSync('Save failed',true));
   }
@@ -1321,7 +1801,27 @@ function deleteSong(){
 }
 
 /* ══ INIT ══ */
+function applyStoredPrefs(){
+  loadPrefs();loadDeviceSetList();
+  // Dark mode
+  if(appPrefs.darkMode){darkMode=true;document.body.classList.add('dark');document.getElementById('dark-ico').textContent='☀';document.getElementById('hdr-dark-btn').textContent='☀';document.getElementById('dark-lbl').textContent='Light mode';document.getElementById('mi-dark').classList.add('on');}
+  // Text size
+  if(appPrefs.textSize!==100)applyTextSize(appPrefs.textSize);
+  // Theme
+  if(appPrefs.theme!=='#10374A')applyTheme(appPrefs.theme);
+  // Admin PIN override from prefs
+  // (ADMIN_PIN const stays as default; we check appPrefs.adminPin in checkPin)
+}
+// Override checkPin to use appPrefs.adminPin
+function checkPin(){
+  const v=document.getElementById('pin-input').value;
+  if(v===appPrefs.adminPin){adminUnlocked=true;closeBS('pin');if(pendingAdminAction){pendingAdminAction();pendingAdminAction=null;}}
+  else{document.getElementById('pin-err').style.display='block';document.getElementById('pin-input').value='';setTimeout(()=>document.getElementById('pin-input').focus(),50);}
+}
+
+applyStoredPrefs();
 initFirebase();
+initPTR();
 </script>
 </body>
 </html>
