@@ -76,34 +76,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .tab-bar{padding:10px 16px 14px;}
 .seg-ctrl{
   display:flex;
-  background:rgba(0,0,0,.20);
-  border-radius:12px;
+  /* Theme-tinted background: darker shade of header colour */
+  background:rgba(0,0,0,.28);
+  border-radius:11px;
   padding:3px;
   gap:2px;
-  /* Frosted glass effect where supported */
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
 }
 .tab-btn{
-  flex:1;padding:9px 4px;
+  flex:1;padding:8px 4px;
   text-align:center;
   font-size:13px;font-weight:500;
-  color:rgba(255,255,255,.55);
-  cursor:pointer;border-radius:10px;
+  color:rgba(255,255,255,.5);
+  cursor:pointer;border-radius:9px;
   border:none;background:none;
   font-family:inherit;white-space:nowrap;
-  transition:color .2s;
+  transition:color .18s,background .18s;
   -webkit-tap-highlight-color:transparent;
 }
 .tab-btn.active{
-  /* Soft frosted white — liquid glass feel, not hard white */
-  background:rgba(255,255,255,.22);
-  color:#fff;font-weight:700;
-  box-shadow:0 1px 6px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.25);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  /* Warm tinted white — reads as the theme colour, not stark white */
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.98);
+  font-weight:700;
 }
-.tab-btn:active:not(.active){background:rgba(255,255,255,.08);}
+.tab-btn:active:not(.active){background:rgba(255,255,255,.07);}
 
 /* ── SONG VIEW HEADER — circle bubble back btn & menu btn ── */
 .sv-hdr{background:var(--bg1);border-bottom:.5px solid var(--bdr);padding:calc(var(--sat) + 10px) 16px 12px;flex-shrink:0;}
@@ -160,17 +157,17 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 .alpha-sep{height:32px;padding:0 16px;display:flex;align-items:flex-end;padding-bottom:4px;font-size:15px;font-weight:800;color:var(--txt1);background:var(--bg1);position:absolute;left:0;right:0;will-change:transform;letter-spacing:0;}
 
 /* ── SONG ROWS — bidirectional swipe ── */
-.song-row-wrap{position:absolute;left:0;right:0;height:var(--item-h);overflow:hidden;}
+.song-row-wrap{position:absolute;left:0;right:0;height:var(--item-h);overflow:hidden;contain:strict;}
 .song-row-reveal-r{position:absolute;right:0;top:0;bottom:0;width:72px;background:var(--tc);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;}
 .song-row-reveal-r svg,.song-row-reveal-l svg{color:#fff;}
 .song-row-reveal-r .rv-lbl,.song-row-reveal-l .rv-lbl{font-size:9px;color:rgba(255,255,255,.85);font-weight:600;letter-spacing:.02em;}
 .song-row-reveal-l{position:absolute;left:0;top:0;bottom:0;width:72px;background:#2d6a4f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;}
 .song-item{display:flex;align-items:center;gap:12px;height:var(--item-h);padding:0 16px;background:var(--bg1);border-bottom:.5px solid var(--bdr);cursor:pointer;position:relative;transform:translateX(0);will-change:transform;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
 .song-item:active:not(.swiped-r):not(.swiped-l){background:var(--tc-light);}
-.song-avatar{width:38px;height:38px;min-width:38px;border-radius:9px;background:var(--tc-light);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--tc);}
+.song-avatar{width:36px;height:36px;min-width:36px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--txt3);}
 .song-info{flex:1;min-width:0;}
-.song-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.song-meta{font-size:12px;color:var(--txt2);margin-top:1px;}
+.song-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.1px;}
+.song-meta{font-size:12px;color:var(--txt3);margin-top:2px;}
 .key-chip{background:var(--tc-light);color:var(--tc);font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--rad-pill);border:.5px solid var(--tc-mid);white-space:nowrap;}
 .add-fab{position:absolute;bottom:calc(18px + var(--sab));right:16px;background:var(--tc);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);z-index:10;padding-bottom:1px;}
 .add-fab:active{transform:scale(.93);}
@@ -209,17 +206,7 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 .sl-es{font-size:13px;line-height:1.6;}
 .sl-items{padding-bottom:80px;}
 
-/* ── SONG VIEW ── */
-.sv-hdr{background:var(--bg1);border-bottom:.5px solid var(--bdr);padding:calc(var(--sat) + 10px) 16px 12px;flex-shrink:0;}
-.sv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.back-btn{display:inline-flex;align-items:center;gap:5px;background:var(--tc-faint);border:none;cursor:pointer;color:var(--tc);font-size:14px;font-weight:600;padding:6px 12px 6px 8px;border-radius:var(--rad-pill);font-family:inherit;}
-body.dark .back-btn{background:rgba(100,180,210,.1);}
-.back-btn:active{opacity:.6;}
-.menu-btn{background:var(--bg2);border:.5px solid var(--bdr2);border-radius:var(--rad-pill);padding:6px 13px;display:flex;align-items:center;cursor:pointer;color:var(--txt2);font-size:18px;line-height:1;font-family:inherit;letter-spacing:.06em;}
-.menu-btn:active{opacity:.6;}
-.sv-title{font-size:20px;font-weight:800;color:var(--txt1);line-height:1.2;}
-.sv-author{font-size:13px;color:var(--txt2);margin-top:2px;}
-.sv-orig-key{font-size:11px;color:var(--txt3);margin-top:2px;}
+/* ── SONG VIEW CONTROLS (sv-hdr/back-btn/menu-btn defined above) ── */
 
 /* scrollable controls + sheet */
 .sv-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
@@ -245,6 +232,10 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .pill{padding:5px 13px;border:.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:13px;font-weight:600;background:var(--bg2);color:var(--txt2);cursor:pointer;white-space:nowrap;font-family:inherit;}
 .pill:active{transform:scale(.95);}
 .pill.on{background:var(--tc);color:#fff;border-color:var(--tc);}
+.size-pill{display:flex;align-items:center;border:.5px solid var(--bdr2);border-radius:var(--rad-pill);overflow:hidden;background:var(--bg2);}
+.size-pill button{background:none;border:none;padding:5px 11px;font-size:12px;font-weight:700;color:var(--tc);cursor:pointer;font-family:inherit;line-height:1;}
+.size-pill button:active{background:var(--tc);color:#fff;}
+.size-pill-div{width:.5px;background:var(--bdr2);height:18px;align-self:center;}
 .chords-used{margin-top:7px;font-size:11px;color:var(--txt2);}
 .chords-used span{color:var(--chord-color,var(--tc));font-weight:700;}
 
@@ -463,9 +454,9 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
       </div>
       <!-- Settings icon replaces dark mode button -->
       <button class="hdr-btn" onclick="switchTab('settings')" title="Settings" id="hdr-settings-btn">
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-          <circle cx="10" cy="10" r="2.2" stroke="white" stroke-width="1.7"/>
-          <path d="M10 2v1.5M10 16.5V18M2 10h1.5M16.5 10H18M3.8 3.8l1.1 1.1M15.1 15.1l1.1 1.1M3.8 16.2l1.1-1.1M15.1 4.9l1.1-1.1" stroke="white" stroke-width="1.7" stroke-linecap="round"/>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.07a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
       </button>
     </div>
@@ -643,10 +634,10 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
           <button class="xp-btn" onclick="transposeStep(1)">+</button>
         </div>
         <button class="pill" id="nns-btn" onclick="toggleNNS()">NNS</button>
-        <!-- Text size controls inline -->
-        <div style="margin-left:auto;display:flex;align-items:center;gap:4px;">
-          <button class="xp-btn" onclick="stepTextSize(-1)" title="Smaller text" style="font-size:12px;font-weight:800;">A−</button>
-          <button class="xp-btn" onclick="stepTextSize(1)" title="Larger text" style="font-size:13px;font-weight:800;">A+</button>
+        <div class="size-pill" style="margin-left:auto;">
+          <button onclick="stepTextSize(-1)">A−</button>
+          <div class="size-pill-div"></div>
+          <button onclick="stepTextSize(1)">A+</button>
         </div>
       </div>
       <div class="chords-used" id="sv-chords"></div>
@@ -1239,18 +1230,18 @@ function seedDefaultSongs(){
   showSync('Library seeded ✓');
 }
 function getSeedSongs(){return[
-    {id:'local1',cat:'english',title:'How Great Is Our God',author:'Chris Tomlin',key:'G',chart:`[Verse 1]\n[G]The splendor of a [C]King, clothed in majesty\n[Em]Let all the earth [C]rejoice, all the earth rejoice\n[G]He wraps Himself in [C]light, and darkness tries to hide\n[Em]And trembles at His [C]voice, trembles at His voice\n\n[Chorus]\n[G]How great is our [C]God, sing with me\n[Em]How great is our [C]God, and all will see\n[G]How great, [D]how great is our [C]God\n\n[Bridge]\n[Em]Name above all [C]names, worthy of all [G]praise\n[Em]My heart will sing how [C]great is our [D]God`},
+    {id:'local1',cat:'english',title:'How Great Is Our God',author:'Chris Tomlin',key:'G',chart:`[Verse 1]\n[G]The splendor of a [C]King, clothed in majesty\n[Em]Let all the earth [C]rejoice, all the earth rejoice\n[G]He wraps Himself in [C]light, and darkness tries to hide\n[Em]And trembles at His [C]voice, trembles at His voice\n\n[Chorus]\n[G]How great is our [C]God, sing with me\n[Em]How great is our [C]God, and all will see\n[G]How great, [D]how great is our [C]God\n\n[Verse 2]\n[G]Age to age He [C]stands\n[Em]And time is in His [C]hands\n[G]Beginning and the [C]end, beginning and the end\n[Em]The Godhead three in [C]one\n[G]Father Spirit [C]Son\n[Em]The Lion and the [C]Lamb, the Lion and the Lamb\n\n[Bridge]\n[Em]Name above all [C]names, worthy of all [G]praise\n[Em]My heart will sing how [C]great is our [D]God`},
     {id:'local2',cat:'english',title:'Oceans (Where Feet May Fail)',author:'Hillsong United',key:'D',chart:`[Verse 1]\n[D]You call me out upon the [A]waters\n[Bm]The great unknown where feet may [G]fail\n[D]And there I find You in the [A]mystery\n[Bm]In oceans deep my faith will [G]stand\n\n[Chorus]\n[D]And I will call upon Your [A]name\n[Bm]And keep my eyes above the [G]waves\n[D]When oceans rise my soul will [A]rest\n[Bm]In Your embrace for I am [G]Yours and You are [D]mine`},
     {id:'local3',cat:'english',title:'Amazing Grace (My Chains Are Gone)',author:'Chris Tomlin',key:'G',chart:`[Verse 1]\n[G]Amazing grace how [G/B]sweet the [C]sound\n[G]That saved a [D]wretch like me\n[G]I once was [G/B]lost but [C]now am found\n[G]Was blind but [D]now I [G]see\n\n[Chorus]\n[C]My chains are [G]gone I've been set free\n[Em]My God my Savior [D]has ransomed me\n[G]And like a flood His [C]mercy reigns\n[G]Unending love [D]amazing [G]grace`},
     {id:'local4',cat:'english',title:'Build My Life',author:'Pat Barrett',key:'E',chart:`[Verse 1]\n[E]Worthy of every song we could ever [B]sing\n[C#m]Worthy of all the praise we could ever [A]bring\n[E]Worthy of every breath we could ever [B]breathe\n[E]We live for [A]You\n\n[Chorus]\n[E]Holy there is no one [B]like You\n[C#m]There is none be[A]side You\n[E]Open up my eyes in [B]wonder\n[C#m]Show me who You [A]are`},
     {id:'local5',cat:'english',title:'Goodness of God',author:'Bethel Music',key:'B',chart:`[Verse 1]\n[B]I love You Lord, for Your mercy never [E]fails me\n[B]All my days I've been held in Your [E]hands\n\n[Chorus]\n[E]Your goodness is running after [B]me\n[G#m]Your goodness is running after, it's [F#]running after [E]me\n[B]With my life laid down I'm surrendered [E]now\n[G#m]I give You everything, the [F#]goodness of [B]God`},
     {id:'local6',cat:'english',title:'What A Beautiful Name',author:'Hillsong Worship',key:'D',chart:`[Verse 1]\n[D]You were the Word at the [Dsus]beginning\n[D]One with God the Lord Most [Dsus]High\n[Bm]Your hidden glory in [A]creation\n[G]Now revealed in You our [D]Christ\n\n[Chorus]\n[G]What a beautiful [D]Name it is\n[A]What a beautiful [Bm]Name it is\n[G]The Name of Jesus [D]Christ my King`},
-    {id:'local7',cat:'english',title:'Reckless Love',author:'Cory Asbury',key:'A',chart:`[Verse 1]\n[A]Before I spoke a word You were [E]singing over me\n[A]You have been so so [E]good to me\n\n[Chorus]\n[D]Oh the overwhelming never-ending reckless love of [A]God\n[E]Oh it chases me down, fights til I'm [F#m]found\n[D]Leaves the ninety-[A]nine`},
-    {id:'local8',cat:'english',title:'Way Maker',author:'Sinach',key:'B',chart:`[Verse 1]\n[B]You are here moving in our [E]midst\n[B]I worship You, I worship [E]You\n\n[Chorus]\n[E]Way maker, [B]miracle worker\n[F#]Promise keeper, [G#m]light in the darkness\n[E]My God, [F#]that is who You [B]are`},
-    {id:'local9',cat:'english',title:'10,000 Reasons',author:'Matt Redman',key:'G',chart:`[Chorus]\n[G]Bless the Lord [D]O my soul, [Em]O my [C]soul\n[G]Worship His [D]holy [C]name\n\n[Verse 1]\n[G]The sun comes up it's a [D]new day dawning\n[Em]It's time to sing Your [C]song again`},
-    {id:'local10',cat:'english',title:'Holy Spirit',author:'Francesca Battistelli',key:'A',chart:`[Chorus]\n[A]Holy Spirit You are [E]welcome here\n[F#m]Come flood this place and fill the [D]atmosphere\n[A]Your glory God is what our [E]hearts long for\n[F#m]To be overcome by Your [D]presence [A]Lord`},
-    {id:'local11',cat:'english',title:'King of Kings',author:'Hillsong Worship',key:'A',chart:`[Chorus]\n[D]King of kings [A]Lord of lords [Bm]Light of the [G]world\n[D]Way of truth [A]life divine [Bm]for You we [G]sing\n[D]Hallelujah`},
-    {id:'local12',cat:'english',title:'Cornerstone',author:'Hillsong Worship',key:'C',chart:`[Verse 1]\n[C]My hope is built on [G]nothing less\n[Am]Than Jesus blood and [F]righteousness\n\n[Chorus]\n[C]Christ alone [G]Cornerstone [Am]weak made [F]strong\n[C]He is [G]Lord [Am]Lord of [F]all [C]`},
+    {id:'local7',cat:'english',title:'Reckless Love',author:'Cory Asbury',key:'A',chart:`[Verse 1]\n[A]Before I spoke a word You were [E]singing over me\n[A]You have been so so [E]good to me\n[A]Before I took a breath You breathed Your [E]life in me\n[A]You have been so so [E]kind to me\n\n[Chorus]\n[D]Oh the overwhelming never-ending reckless love of [A]God\n[E]Oh it chases me down fights 'til I'm [F#m]found\n[D]Leaves the ninety-[A]nine\n[E]I couldn't earn it I don't deserve it [F#m]still You give Yourself away\n[D]Oh the overwhelming never-ending reckless love of [A]God\n\n[Verse 2]\n[A]When I was Your foe still Your love [E]fought for me\n[A]You have been so so [E]good to me\n[A]When I felt no worth You paid it [E]all for me\n[A]You have been so so [E]kind to me\n\n[Bridge]\n[F#m]There's no shadow You won't light up\n[D]Mountain You won't climb up coming after me\n[F#m]There's no wall You won't kick down\n[E]Lie You won't tear down coming after [A]me`},
+    {id:'local8',cat:'english',title:'Way Maker',author:'Sinach',key:'B',chart:`[Verse 1]\n[B]You are here moving in our [E]midst\n[B]I worship You, I worship [E]You\n[B]You are here working in this [E]place\n[B]I worship You, I worship [E]You\n\n[Chorus]\n[E]Way maker miracle [B]worker\n[F#]Promise keeper light in the [G#m]darkness\n[E]My God that is who You [B]are\n[E]Way maker miracle [B]worker\n[F#]Promise keeper light in the [G#m]darkness\n[E]My God that is who You [B]are\n\n[Verse 2]\n[B]You are here touching every [E]heart\n[B]I worship You, I worship [E]You\n[B]You are here healing every [E]heart\n[B]I worship You, I worship [E]You\n\n[Bridge]\n[E]Even when I don't see it You're working\n[B]Even when I don't feel it You're working\n[F#]You never stop You never stop working\n[G#m]You never stop You never stop working`},
+    {id:'local9',cat:'english',title:'10,000 Reasons (Bless The Lord)',author:'Matt Redman',key:'G',chart:`[Chorus]\n[G]Bless the Lord [D]O my soul, [Em]O my [C]soul\n[G]Worship His [D]holy [C]name\n[G]Sing like never before [D]O my [Em]soul\n[C]I'll worship Your [G]holy [D]name\n\n[Verse 1]\n[G]The sun comes up it's a [D]new day dawning\n[Em]It's time to sing Your [C]song again\n[G]Whatever may pass and whatever [D]lies before me\n[Em]Let me be singing when the [C]evening comes\n\n[Verse 2]\n[G]You're rich in love and You're slow to [D]anger\n[Em]Your name is great and Your heart is [C]kind\n[G]For all Your goodness I will keep on [D]singing\n[Em]Ten thousand reasons for my [C]heart to find\n\n[Verse 3]\n[G]And on that day when my strength is [D]failing\n[Em]The end draws near and my time has [C]come\n[G]Still my soul will sing Your praise un[D]ending\n[Em]Ten thousand years and then for[C]evermore`},
+    {id:'local10',cat:'english',title:'Holy Spirit',author:'Francesca Battistelli',key:'A',chart:`[Verse 1]\n[A]There's nothing worth more that will ever come close\n[E]Nothing can compare You're our living hope\n[F#m]Your presence Lord\n\n[Verse 2]\n[A]I've tasted and seen of the sweetest of loves\n[E]Where my heart becomes free and my shame is undone\n[F#m]Your presence Lord\n\n[Chorus]\n[A]Holy Spirit You are [E]welcome here\n[F#m]Come flood this place and fill the [D]atmosphere\n[A]Your glory God is what our [E]hearts long for\n[F#m]To be overcome by Your [D]presence [A]Lord\n\n[Bridge]\n[A]Let us become more [E]aware of Your presence\n[F#m]Let us experience the [D]glory of Your goodness\n[A]Let us become more [E]aware of Your presence\n[F#m]Let us experience the [D]glory of Your [A]goodness`},
+    {id:'local11',cat:'english',title:'King of Kings',author:'Hillsong Worship',key:'A',chart:`[Verse 1]\n[A]In the darkness we were [E]waiting\n[F#m]Without hope without [D]light\n[A]Till from Heaven You came [E]running\n[F#m]There was mercy in Your [D]eyes\n\n[Verse 2]\n[A]To fulfil the law and [E]prophets\n[F#m]To a virgin came the [D]Word\n[A]From a throne of endless [E]glory\n[F#m]To a cradle in the [D]dirt\n\n[Chorus]\n[D]Praise the Father praise the [A]Son\n[F#m]Praise the Spirit three in [E]one\n[D]God of glory Majesty\n[A]Praise forever to the [E]King of kings\n\n[Verse 3]\n[A]And the promise of sal[E]vation\n[F#m]Coming now has been ful[D]filled\n[A]Holy Jesus full of [E]splendour\n[F#m]In our darkness come to [D]dwell\n\n[Bridge]\n[D]And in Your light I find my [A]worth\n[F#m]In Your mercy I find my [E]strength\n[D]And I will sing of Your great [A]love forever\n[F#m]And I will sing of Your great [E]love forever`},
+    {id:'local12',cat:'english',title:'Cornerstone',author:'Hillsong Worship',key:'C',chart:`[Verse 1]\n[C]My hope is built on [G]nothing less\n[Am]Than Jesus blood and [F]righteousness\n[C]I dare not trust the [G]sweetest frame\n[Am]But wholly trust in [F]Jesus' name\n\n[Chorus]\n[C]Christ alone [G]Cornerstone\n[Am]Weak made [F]strong in the Savior's love\n[C]Through the storm [G]He is Lord\n[Am]Lord of [F]all\n\n[Verse 2]\n[C]When darkness veils His [G]lovely face\n[Am]I rest on His un[F]changing grace\n[C]In every high and [G]stormy gale\n[Am]My anchor holds with[F]in the veil\n\n[Bridge]\n[Am]He is Lord [F]Lord of all\n[C]He is Lord [G]Lord of all\n[Am]He is Lord [F]Lord of all\n[C]He is Lord [G]Lord of all`},
     {id:'local13',cat:'english',title:'Great Are You Lord',author:'All Sons & Daughters',key:'D',chart:`[Verse 1]\n[D]You give life You are love\n[G]You bring light to the darkness\n[D]You give hope You restore\n[G]Every heart that is broken\n\n[Chorus]\n[D]Great are You Lord\n[A]It's Your breath in our lungs\n[Bm]So we pour out our praise\n[G]We pour out our praise\n[D]Great are You Lord`},
     {id:'local14',cat:'english',title:'This Is Amazing Grace',author:'Phil Wickham',key:'G',chart:`[Verse 1]\n[G]Who breaks the power of sin and darkness\n[C]Whose love is mighty and so much stronger\n[G]The King of Glory the King above all kings\n\n[Chorus]\n[G]This is amazing grace\n[C]This is unfailing love\n[G]That You would take my place\n[D]That You would bear my cross\n[Em]You laid down Your life\n[C]That I would be set free\n[G]Oh Jesus I sing for\n[D]All that You've done for [G]me`},
     {id:'local15',cat:'english',title:'No Longer Slaves',author:'Bethel Music',key:'A',chart:`[Verse 1]\n[A]You unravel me with a melody\n[E]You surround me with a song\n[F#m]Of deliverance from my enemies\n[D]Till all my fears are gone\n\n[Chorus]\n[A]I'm no longer a slave to fear\n[E]I am a child of God\n[F#m]I'm no longer a slave to fear\n[D]I am a child of God`},
@@ -1459,7 +1450,7 @@ function makeListNode(row){
   revealR.addEventListener('click',e=>{e.stopPropagation();toggleSetSong(s.id);updateRevealR();resetSwipeItem(item);});
 
   const item=document.createElement('div');item.className='song-item';
-  item.innerHTML=`<div class="song-avatar">${s.title[0].toUpperCase()}</div><div class="song-info"><div class="song-title">${s.title}</div><div class="song-meta">${s.author}${!hc?'&nbsp;·&nbsp;<span style="color:var(--txt3)">No chords</span>':''}</div></div><span class="key-chip">${s.key}</span>`;
+  item.innerHTML=`<div class="song-avatar">${s.title[0].toUpperCase()}</div><div class="song-info"><div class="song-title">${s.title}</div><div class="song-meta">${s.author} · ${s.key}${!hc?' · <span style="color:var(--txt3)">No chords</span>':''}</div></div>`;
 
   item.addEventListener('click',()=>{
     if(item.classList.contains('swiped-r')||item.classList.contains('swiped-l')){resetSwipeItem(item);return;}
