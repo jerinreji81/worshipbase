@@ -22,6 +22,7 @@ input,button,select,textarea{font-family:-apple-system,BlinkMacSystemFont,'SF Pr
   --tab-h:52px;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bot:env(safe-area-inset-bottom,0px);
+  --safe-bot-ui:env(safe-area-inset-bottom,0px);
 }
 body.dark{
   --bg1:#0f1f28;--bg2:#162433;--bg3:#08131a;
@@ -98,7 +99,7 @@ body{
 .song-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .song-meta{font-size:12px;color:var(--txt2);margin-top:1px;}
 .key-chip{background:var(--tc-light);color:var(--tc);font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--rad-pill);border:.5px solid var(--tc-mid);white-space:nowrap;}
-.add-fab{position:absolute;bottom:calc(18px + var(--safe-bot));right:16px;background:var(--tc);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(16,55,74,.42);z-index:10;}
+.add-fab{position:absolute;bottom:calc(18px + var(--safe-bot-ui));right:16px;background:var(--tc);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(16,55,74,.42);z-index:10;}
 .add-fab:active{transform:scale(.93);}
 
 /* ── ALPHABET STRIP ── */
@@ -110,17 +111,13 @@ body{
 
 /* ── BOTTOM TAB BAR ── */
 .tab-bar{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
   flex-shrink:0;
   background:var(--bg1);
   border-top:.5px solid var(--bdr);
   display:flex;
   z-index:20;
-  min-height:calc(var(--tab-h) + env(safe-area-inset-bottom,0px));
-  padding-bottom:env(safe-area-inset-bottom,0px);
+  min-height:calc(var(--tab-h) + var(--safe-bot-ui));
+  padding-bottom:var(--safe-bot-ui);
 }
 .tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--txt3);font-family:inherit;transition:color .12s;height:var(--tab-h);padding-bottom:0;}
 .tab-btn.active{color:var(--tc);}
@@ -198,7 +195,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .empty-chart-btn{padding:10px 22px;background:var(--tc);color:#fff;border:none;border-radius:var(--rad-pill);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
 
 /* ── SWIPE DOTS ── */
-.swipe-hint{position:absolute;bottom:calc(12px + var(--safe-bot));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;pointer-events:none;opacity:0;transition:opacity .25s;}
+.swipe-hint{position:absolute;bottom:calc(12px + var(--safe-bot-ui));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;pointer-events:none;opacity:0;transition:opacity .25s;}
 .swipe-hint.show{opacity:.45;}
 .swipe-dot{width:5px;height:5px;border-radius:50%;background:var(--txt3);transition:background .2s,transform .2s;}
 .swipe-dot.active{background:var(--tc);transform:scale(1.4);}
@@ -208,7 +205,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 /* ── BOTTOM SHEETS ── */
 .bs-bg{display:none;position:fixed;inset:0;height:var(--app-h);background:rgba(0,0,0,.46);z-index:100;align-items:flex-end;justify-content:center;}
 .bs-bg.open{display:flex;}
-.bs{position:fixed;left:0;right:0;bottom:0;background:var(--bg1);border-radius:20px 20px 0 0;width:100%;max-height:92dvh;overflow-y:auto;animation:bsUp .22s cubic-bezier(.32,.72,0,1);padding-bottom:env(safe-area-inset-bottom,0px);}
+.bs{position:fixed;left:0;right:0;bottom:0;background:var(--bg1);border-radius:20px 20px 0 0;width:100%;max-height:92dvh;overflow-y:auto;animation:bsUp .22s cubic-bezier(.32,.72,0,1);padding-bottom:var(--safe-bot-ui);}
 @keyframes bsUp{from{transform:translateY(48px);opacity:0;}to{transform:none;opacity:1;}}
 .bs-handle{width:34px;height:4px;background:var(--txt3);border-radius:2px;margin:12px auto 0;opacity:.25;}
 .bs-title{font-size:15px;font-weight:700;color:var(--txt1);padding:12px 20px 8px;}
@@ -564,26 +561,40 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.database(),songsRef=db.ref('songs'),setlistRef=db.ref('setlist');
 function showSync(msg,err){const b=document.getElementById('sync-badge');b.textContent=msg;b.classList.toggle('error',!!err);b.classList.add('show');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('show'),2200);}
 
-function setAppHeight(){
+const safeAreaProbe=document.createElement('div');
+safeAreaProbe.style.cssText='position:fixed;left:0;bottom:0;visibility:hidden;pointer-events:none;padding-bottom:env(safe-area-inset-bottom,0px);';
+document.body.appendChild(safeAreaProbe);
+
+function readSafeInsetBottom(){
+  return parseFloat(getComputedStyle(safeAreaProbe).paddingBottom)||0;
+}
+function isStandaloneApp(){
+  return window.navigator.standalone===true || window.matchMedia('(display-mode: standalone)').matches;
+}
+function setViewportMetrics(){
   const vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
   document.documentElement.style.setProperty('--app-h', `${vh}px`);
+  let safeBot=readSafeInsetBottom();
+  if(isStandaloneApp()) safeBot=Math.min(safeBot,34);
+  document.documentElement.style.setProperty('--safe-bot-ui', `${safeBot}px`);
 }
-function refreshAppHeightSoon(){
-  setAppHeight();
+function refreshViewportMetricsSoon(){
+  setViewportMetrics();
   requestAnimationFrame(()=>{
-    setAppHeight();
-    setTimeout(setAppHeight,60);
-    setTimeout(setAppHeight,250);
+    setViewportMetrics();
+    setTimeout(setViewportMetrics,60);
+    setTimeout(setViewportMetrics,250);
+    setTimeout(setViewportMetrics,500);
   });
 }
-window.addEventListener('load',refreshAppHeightSoon);
-window.addEventListener('resize',refreshAppHeightSoon);
-window.addEventListener('orientationchange',refreshAppHeightSoon);
-window.addEventListener('pageshow',refreshAppHeightSoon);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshAppHeightSoon();});
+window.addEventListener('load',refreshViewportMetricsSoon);
+window.addEventListener('resize',refreshViewportMetricsSoon);
+window.addEventListener('orientationchange',refreshViewportMetricsSoon);
+window.addEventListener('pageshow',refreshViewportMetricsSoon);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshViewportMetricsSoon();});
 if(window.visualViewport){
-  window.visualViewport.addEventListener('resize',refreshAppHeightSoon);
-  window.visualViewport.addEventListener('scroll',refreshAppHeightSoon);
+  window.visualViewport.addEventListener('resize',refreshViewportMetricsSoon);
+  window.visualViewport.addEventListener('scroll',refreshViewportMetricsSoon);
 }
 
 /* ── BOTTOM SHEET MANAGER ── */
