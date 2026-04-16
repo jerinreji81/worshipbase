@@ -11,6 +11,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 input,button,select,textarea{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;}
 :root{
+  --app-h:100vh;
   --tc:#10374A;--tc2:#17506c;--tc3:#0a2534;
   --tc-light:#e8f3f7;--tc-mid:#7ab8cc;--tc-faint:rgba(16,55,74,.07);
   --bg1:#ffffff;--bg2:#f3f6f8;--bg3:#e8edf0;
@@ -32,8 +33,7 @@ html{height:100%;overflow:hidden;}
 body{
   margin:0;padding:0;
   height:100%;
-  min-height:100vh;
-  min-height:100dvh;
+  min-height:var(--app-h);
   overflow:hidden;
   overscroll-behavior:none;
   font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;
@@ -41,7 +41,7 @@ body{
 }
 
 /* ── LOADING ── */
-#ls{position:fixed;inset:0;height:100dvh;background:var(--tc);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .35s ease;}
+#ls{position:fixed;inset:0;height:var(--app-h);background:var(--tc);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .35s ease;}
 #ls.hidden{opacity:0;pointer-events:none;}
 .ls-sp{width:26px;height:26px;border:2.5px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-top:20px;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -52,11 +52,11 @@ body{
 .sync-badge.error{background:#c0392b;}
 
 /* ── VIEWS ── */
-#list-view{position:fixed;inset:0;height:100dvh;display:flex;flex-direction:column;background:var(--bg3);overflow:hidden;}
+#list-view{position:fixed;inset:0;height:var(--app-h);display:flex;flex-direction:column;background:var(--bg3);overflow:hidden;}
 /* Ensure flex children can shrink properly */
 #list-view>*{flex-shrink:0;}
 #list-view #song-section,#list-view #setlist-section{flex-shrink:1;}
-#song-view{position:fixed;inset:0;height:100dvh;display:flex;flex-direction:column;background:var(--bg3);transform:translateX(100%);z-index:10;will-change:transform;}
+#song-view{position:fixed;inset:0;height:var(--app-h);display:flex;flex-direction:column;background:var(--bg3);transform:translateX(100%);z-index:10;will-change:transform;}
 #song-view.visible{transform:translateX(0);}
 
 /* ── HEADER ── */
@@ -202,7 +202,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .sv-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative;}
 
 /* ── BOTTOM SHEETS ── */
-.bs-bg{display:none;position:fixed;inset:0;height:100dvh;background:rgba(0,0,0,.46);z-index:100;align-items:flex-end;justify-content:center;}
+.bs-bg{display:none;position:fixed;inset:0;height:var(--app-h);background:rgba(0,0,0,.46);z-index:100;align-items:flex-end;justify-content:center;}
 .bs-bg.open{display:flex;}
 .bs{background:var(--bg1);border-radius:20px 20px 0 0;width:100%;max-height:92dvh;overflow-y:auto;animation:bsUp .22s cubic-bezier(.32,.72,0,1);padding-bottom:env(safe-area-inset-bottom,0px);}
 @keyframes bsUp{from{transform:translateY(48px);opacity:0;}to{transform:none;opacity:1;}}
@@ -559,6 +559,28 @@ const firebaseConfig={apiKey:"AIzaSyAWHTEOh1lXkzq3kB24g3An6Aad54OMlN8",authDomai
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database(),songsRef=db.ref('songs'),setlistRef=db.ref('setlist');
 function showSync(msg,err){const b=document.getElementById('sync-badge');b.textContent=msg;b.classList.toggle('error',!!err);b.classList.add('show');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('show'),2200);}
+
+function setAppHeight(){
+  const vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
+  document.documentElement.style.setProperty('--app-h', `${vh}px`);
+}
+function refreshAppHeightSoon(){
+  setAppHeight();
+  requestAnimationFrame(()=>{
+    setAppHeight();
+    setTimeout(setAppHeight,60);
+    setTimeout(setAppHeight,250);
+  });
+}
+window.addEventListener('load',refreshAppHeightSoon);
+window.addEventListener('resize',refreshAppHeightSoon);
+window.addEventListener('orientationchange',refreshAppHeightSoon);
+window.addEventListener('pageshow',refreshAppHeightSoon);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshAppHeightSoon();});
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize',refreshAppHeightSoon);
+  window.visualViewport.addEventListener('scroll',refreshAppHeightSoon);
+}
 
 /* ── BOTTOM SHEET MANAGER ── */
 function openBS(name){
