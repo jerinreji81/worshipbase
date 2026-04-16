@@ -52,26 +52,104 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .sync-badge.error{background:#c0392b;}
 
 /* Toast notification */
-#toast{position:fixed;bottom:calc(var(--sab) + var(--tab-h) + 12px);left:50%;transform:translateX(-50%) translateY(8px);background:rgba(16,55,74,.9);color:#fff;font-size:13px;font-weight:600;padding:8px 18px;border-radius:var(--rad-pill);z-index:400;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;white-space:nowrap;}
+#toast{position:fixed;bottom:calc(var(--sab) + 24px);left:50%;transform:translateX(-50%) translateY(8px);background:rgba(16,55,74,.9);color:#fff;font-size:13px;font-weight:600;padding:8px 18px;border-radius:var(--rad-pill);z-index:400;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;white-space:nowrap;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* ── VIEWS ── */
 #list-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg3);overflow:hidden;}
 #list-view>*{flex-shrink:0;}
-#list-view #song-section,#list-view #setlist-section{flex-shrink:1;}
+#list-view #song-section,#list-view #setlist-section,#list-view #settings-section{flex-shrink:1;}
 #song-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg3);transform:translateX(100%);z-index:10;will-change:transform;}
 #song-view.visible{transform:translateX(0);}
 
-/* ── HEADER ── */
-.hdr{background:var(--hdr-bg);padding:calc(var(--sat) + 14px) 18px 14px;flex-shrink:0;transition:background .3s;}
-.hdr-row{display:flex;align-items:center;justify-content:space-between;}
-.wm{display:flex;align-items:center;gap:10px;}
-.wm-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1;}
+/* ── HEADER — contains wordmark + settings icon, then tab bar below ── */
+.hdr{background:var(--hdr-bg);padding:calc(var(--sat) + 12px) 16px 0;flex-shrink:0;transition:background .3s;}
+.hdr-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:2px;}
+.wm{display:flex;align-items:center;gap:9px;}
+.wm-name{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1;}
 .wm-sub{font-size:9px;color:rgba(255,255,255,.42);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
-.hdr-btn{background:rgba(255,255,255,.14);border:none;border-radius:9px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;}
-.hdr-btn:active{background:rgba(255,255,255,.26);}
+.hdr-btn{background:rgba(255,255,255,.16);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;}
+.hdr-btn:active{background:rgba(255,255,255,.3);}
 
-/* ── SEARCH + SONG COUNT merged ── */
+/* ── TOP TAB BAR — lives inside the header, below the wordmark ── */
+.tab-bar{
+  display:flex;
+  padding:8px 4px 0;
+  gap:2px;
+  /* No height/safe-area padding needed — top bar, safe area is above */
+}
+.tab-btn{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  cursor:pointer;
+  border:none;
+  background:none;
+  color:rgba(255,255,255,.55);
+  font-family:inherit;
+  padding:8px 4px 10px;
+  position:relative;
+  transition:color .18s;
+  -webkit-tap-highlight-color:transparent;
+}
+.tab-btn.active{color:#fff;}
+.tab-btn:active{opacity:.7;}
+.tab-ico{display:flex;align-items:center;justify-content:center;}
+.tab-lbl{font-size:11px;font-weight:600;letter-spacing:.01em;}
+/* Active underline indicator — iOS native style */
+.tab-btn::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:50%;
+  transform:translateX(-50%) scaleX(0);
+  width:32px;height:2.5px;
+  background:#fff;
+  border-radius:2px 2px 0 0;
+  transition:transform .22s cubic-bezier(0.2,0.9,0.4,1.1);
+}
+.tab-btn.active::after{transform:translateX(-50%) scaleX(1);}
+
+/* ── SONG VIEW HEADER — circle bubble back btn & menu btn ── */
+.sv-hdr{background:var(--bg1);border-bottom:.5px solid var(--bdr);padding:calc(var(--sat) + 10px) 16px 12px;flex-shrink:0;}
+.sv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+/* Circle bubble back button — iOS native feel */
+.back-btn{
+  width:36px;height:36px;
+  border-radius:50%;
+  background:var(--bg2);
+  border:.5px solid var(--bdr2);
+  cursor:pointer;
+  color:var(--tc);
+  display:flex;align-items:center;justify-content:center;
+  font-family:inherit;
+  flex-shrink:0;
+  transition:background .12s;
+}
+body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,210,.2);}
+.back-btn:active{background:var(--tc-light);transform:scale(.92);}
+/* Circle bubble menu button */
+.menu-btn{
+  width:36px;height:36px;
+  border-radius:50%;
+  background:var(--bg2);
+  border:.5px solid var(--bdr2);
+  cursor:pointer;
+  color:var(--txt2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  font-family:inherit;
+  letter-spacing:.06em;
+  line-height:1;
+  transition:background .12s;
+}
+.menu-btn:active{background:var(--bg3);transform:scale(.92);}
+.sv-title{font-size:20px;font-weight:800;color:var(--txt1);line-height:1.2;}
+.sv-author{font-size:13px;color:var(--txt2);margin-top:2px;}
+.sv-orig-key{font-size:11px;color:var(--txt3);margin-top:2px;}
+/* ── SEARCH + SONG COUNT ── */
 .srch-wrap{background:var(--bg1);padding:9px 16px;flex-shrink:0;}
 .srch-row{display:flex;align-items:center;gap:10px;}
 .srch-inner{flex:1;position:relative;}
@@ -88,17 +166,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .v-item{position:absolute;left:0;right:0;will-change:transform;}
 .alpha-sep{height:var(--alpha-h);padding:0 16px;display:flex;align-items:center;font-size:10px;font-weight:700;color:var(--txt3);letter-spacing:.09em;text-transform:uppercase;background:var(--bg3);position:absolute;left:0;right:0;will-change:transform;}
 
-/* Song row - bidirectional swipe reveals */
+/* ── SONG ROWS — bidirectional swipe ── */
 .song-row-wrap{position:absolute;left:0;right:0;height:var(--item-h);overflow:hidden;}
-/* Right reveal: Add/remove set (swipe LEFT) */
 .song-row-reveal-r{position:absolute;right:0;top:0;bottom:0;width:72px;background:var(--tc);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;}
 .song-row-reveal-r svg,.song-row-reveal-l svg{color:#fff;}
 .song-row-reveal-r .rv-lbl,.song-row-reveal-l .rv-lbl{font-size:9px;color:rgba(255,255,255,.85);font-weight:600;letter-spacing:.02em;}
-/* Left reveal: Copy lyrics (swipe RIGHT) */
 .song-row-reveal-l{position:absolute;left:0;top:0;bottom:0;width:72px;background:#2d6a4f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;}
-.song-item{display:flex;align-items:center;gap:12px;height:var(--item-h);padding:0 16px;background:var(--bg1);border-bottom:.5px solid var(--bdr);cursor:pointer;position:relative;transform:translateX(0);will-change:transform;
-  -webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
-.song-item:active:not(.swiped){background:var(--tc-light);}
+.song-item{display:flex;align-items:center;gap:12px;height:var(--item-h);padding:0 16px;background:var(--bg1);border-bottom:.5px solid var(--bdr);cursor:pointer;position:relative;transform:translateX(0);will-change:transform;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
+.song-item:active:not(.swiped-r):not(.swiped-l){background:var(--tc-light);}
 .song-avatar{width:38px;height:38px;min-width:38px;border-radius:9px;background:var(--tc-light);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--tc);}
 .song-info{flex:1;min-width:0;}
 .song-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -114,24 +189,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 #alpha-bubble{position:fixed;right:28px;background:var(--tc);color:#fff;font-size:20px;font-weight:700;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;z-index:100;transition:opacity .18s;}
 #alpha-bubble.show{opacity:1;}
 
-/* ── BOTTOM TAB BAR — JS-controlled --sab fixes iOS PWA reopen bug ── */
-.tab-bar{
-  flex-shrink:0;
-  background:var(--bg1);
-  border-top:.5px solid var(--bdr);
-  display:flex;
-  z-index:20;
-  /* height = tab buttons + safe area, all set after JS probe */
-  height:calc(var(--tab-h) + var(--sab));
-  align-items:flex-start;
-}
-.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;border:none;background:none;color:var(--txt3);font-family:inherit;transition:color .15s;height:var(--tab-h);}
-.tab-btn.active{color:var(--tc);}
-.tab-btn:active{background:var(--tc-faint);}
-.tab-ico{display:flex;align-items:center;justify-content:center;}
-.tab-lbl{font-size:11px;font-weight:600;letter-spacing:.01em;}
-
-/* ── SET LIST ── */
 .sl-hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 16px 5px;flex-shrink:0;}
 .sl-lbl{font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;}
 .sl-btns{display:flex;gap:7px;}
@@ -404,14 +461,35 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
   <div class="hdr">
     <div class="hdr-row">
       <div class="wm">
-        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
           <rect width="30" height="30" rx="7" fill="rgba(255,255,255,0.12)"/>
           <path d="M3.5 9L8 20L12 13.5L15 17.5L18 13.5L22 20L26.5 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <circle cx="15" cy="24" r="1.4" fill="white" opacity=".5"/>
         </svg>
         <div><div class="wm-name">WorshipBase</div><div class="wm-sub">Chord Library</div></div>
       </div>
-      <button class="hdr-btn" id="hdr-dark-btn" onclick="toggleDark()" title="Toggle dark mode">☀</button>
+      <!-- Settings icon replaces dark mode button -->
+      <button class="hdr-btn" onclick="switchTab('settings')" title="Settings" id="hdr-settings-btn">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="2.2" stroke="white" stroke-width="1.7"/>
+          <path d="M10 2v1.5M10 16.5V18M2 10h1.5M16.5 10H18M3.8 3.8l1.1 1.1M15.1 15.1l1.1 1.1M3.8 16.2l1.1-1.1M15.1 4.9l1.1-1.1" stroke="white" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <!-- TOP TAB BAR — 3 tabs inside the teal header -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
+        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><path d="M3 6h16M3 11h10M3 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <span class="tab-lbl">English</span>
+      </button>
+      <button class="tab-btn" id="tab-malayalam" onclick="switchTab('malayalam')">
+        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><path d="M3 5h16M3 9.5h7M3 14h12M3 18.5h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <span class="tab-lbl">Malayalam</span>
+      </button>
+      <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
+        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><rect x="3" y="4" width="4" height="4" rx="1" fill="currentColor" opacity=".6"/><rect x="3" y="10" width="4" height="4" rx="1" fill="currentColor" opacity=".8"/><rect x="3" y="16" width="4" height="4" rx="1" fill="currentColor"/><path d="M10 6h9M10 12h7M10 18h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <span class="tab-lbl">Set List</span>
+      </button>
     </div>
   </div>
 
@@ -545,36 +623,23 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     </div>
   </div>
 
-  <!-- BOTTOM TAB BAR -->
-  <div class="tab-bar">
-    <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
-      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 6h16M3 11h10M3 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-      <span class="tab-lbl">English</span>
-    </button>
-    <button class="tab-btn" id="tab-malayalam" onclick="switchTab('malayalam')">
-      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 5h16M3 9.5h7M3 14h12M3 18.5h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-      <span class="tab-lbl">Malayalam</span>
-    </button>
-    <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
-      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="4" width="4" height="4" rx="1" fill="currentColor" opacity=".5"/><rect x="3" y="10" width="4" height="4" rx="1" fill="currentColor" opacity=".75"/><rect x="3" y="16" width="4" height="4" rx="1" fill="currentColor"/><path d="M10 6h9M10 12h7M10 18h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-      <span class="tab-lbl">Set List</span>
-    </button>
-    <button class="tab-btn" id="tab-settings" onclick="switchTab('settings')">
-      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="2.5" stroke="currentColor" stroke-width="2"/><path d="M11 2v2M11 18v2M2 11h2M18 11h2M4.2 4.2l1.4 1.4M16.4 16.4l1.4 1.4M4.2 17.8l1.4-1.4M16.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-      <span class="tab-lbl">Settings</span>
-    </button>
+    </div>
   </div>
+
 </div>
 
 <!-- ═══ SONG VIEW ═══ -->
 <div id="song-view">
   <div class="sv-hdr">
     <div class="sv-top">
-      <button class="back-btn" onclick="showList()">
-        <svg width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M8 1L1.5 7L8 13" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span id="back-label">Back</span>
+      <!-- Circle bubble back button — no text, just chevron -->
+      <button class="back-btn" onclick="showList()" id="back-btn" title="Back">
+        <svg width="11" height="16" viewBox="0 0 9 14" fill="none"><path d="M8 1L1.5 7L8 13" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <button class="menu-btn" onclick="openBS('songmenu')">···</button>
+      <!-- Circle bubble menu button -->
+      <button class="menu-btn" onclick="openBS('songmenu')">
+        <svg width="18" height="4" viewBox="0 0 18 4" fill="none"><circle cx="2" cy="2" r="2" fill="currentColor"/><circle cx="9" cy="2" r="2" fill="currentColor"/><circle cx="16" cy="2" r="2" fill="currentColor"/></svg>
+      </button>
     </div>
     <div class="sv-title" id="sv-title"></div>
     <div class="sv-author" id="sv-author"></div>
@@ -969,27 +1034,34 @@ function gSVG(name,dark){
   return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${pts.join('')}</svg>`;
 }
 function pSVG(name,dark){
-  /* Clean 8-white-key piano, one octave + one extra white key */
   const W=120,H=68,tc='#10374A',wkC=dark?'rgba(255,255,255,.92)':'#fff',bkC=dark?'#182840':'#1c1c1e',bg=dark?'#162433':'#f5f5f7',stroke=dark?'rgba(255,255,255,.15)':'rgba(0,0,0,.13)';
   const p=parseChord(name);if(!p)return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><rect width="${W}" height="${H}" fill="${bg}" rx="8"/></svg>`;
   const ri=noteIdx(p.root);if(ri<0)return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><rect width="${W}" height="${H}" fill="${bg}" rx="8"/></svg>`;
   let ivs=PIV[''];for(const k of Object.keys(PIV)){if(k&&p.suffix.toLowerCase()===k.toLowerCase()){ivs=PIV[k];break;}}
-  const act=new Set(ivs.map(i=>(ri+i)%12));
-  // 8 white keys: C D E F G A B C
-  const WHITE_SEMIS=[0,2,4,5,7,9,11,12]; // 12 = C of next octave
+  // Deduplicate: only keep unique pitch classes (mod 12)
+  // Exception: intervals >= 12 (e.g. add9=14) are kept as-is since they need a second octave
+  const seen=new Set();
+  const dedupedIvs=ivs.filter(iv=>{
+    const pc=(ri+iv)%12;
+    if(seen.has(pc))return false;
+    seen.add(pc);return true;
+  });
+  const act=new Set(dedupedIvs.map(i=>(ri+i)%12));
+  // 8 white keys: C D E F G A B C — but we deduplicate the 8th against the 1st
+  const WHITE_SEMIS=[0,2,4,5,7,9,11,0]; // last 0 = octave C, semitone same as first
   const NW=8;const pad=4;
   const kW=(W-pad*2)/NW;const kH=H-pad*2;
   const bH=kH*0.58;const bW=kW*0.55;
   let pts=[`<rect width="${W}" height="${H}" fill="${bg}" rx="8"/>`];
-  // White keys
+  // Track which white key slots are lit (slot 0 and slot 7 both = C, same pitch class)
   for(let i=0;i<NW;i++){
-    const semi=WHITE_SEMIS[i]%12;const lit=act.has(semi);
+    const semi=WHITE_SEMIS[i];const lit=act.has(semi);
     const x=pad+i*kW;
     pts.push(`<rect x="${x+.5}" y="${pad}" width="${kW-1}" height="${kH}" rx="2" fill="${lit?tc:wkC}" stroke="${stroke}" stroke-width=".5"/>`);
     if(lit)pts.push(`<circle cx="${x+kW/2}" cy="${pad+kH-7}" r="3" fill="white" opacity=".95"/>`);
   }
-  // Black keys: between pairs that have them (C-D, D-E, F-G, G-A, A-B)
-  const BLACK_AFTER=[0,1,3,4,5];// indices into WHITE_SEMIS where a black key follows
+  // Black keys
+  const BLACK_AFTER=[0,1,3,4,5];
   BLACK_AFTER.forEach(wi=>{
     if(wi>=NW-1)return;
     const bSemi=(WHITE_SEMIS[wi]+1)%12;const lit=act.has(bSemi);
@@ -1029,31 +1101,56 @@ function exportPDF(){
 function exportAllPDF(){
   const sl=getSetList();
   if(!sl.length){alert('No songs in set list.');return;}
-  // Get the chosen export key
   const exportKey=document.getElementById('export-key-sel')?.value||'original';
   closeBS('export');
+
+  // Build print content
   const c=document.getElementById('print-all-songs');
-  c.innerHTML='';c.style.display='block';
+  c.innerHTML='';
   sl.forEach((id,i)=>{
     const s=findSongById(id);if(!s)return;
     if(i>0){const sep=document.createElement('div');sep.className='print-song-sep';c.appendChild(sep);}
-    // Determine key: 'original' means use song's key, else use chosen key
     const printKey=exportKey==='original'?s.key:exportKey;
-    const st=getST(s.key,printKey);
     const w=document.createElement('div');w.className='print-song-wrap';
     w.innerHTML=`<div class="print-song-hdr"><div class="pt">${s.title}</div><div class="pa">${s.author}</div><div class="pk">Key of ${printKey}${s.key!==printKey?' (originally '+s.key+')':''}</div></div><div class="sheet" style="padding:0 0 20px;">${renderSheetHTML(s,printKey,false,useFlats)}</div>`;
     c.appendChild(w);
   });
-  // Use requestAnimationFrame to ensure DOM is fully painted before printing
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
+
+  // On iOS PWA, window.print() only prints visible content.
+  // We hide the app views and show only the print container, then restore.
+  const listView=document.getElementById('list-view');
+  const songView=document.getElementById('song-view');
+  const prevListDisplay=listView.style.display;
+  const prevSongDisplay=songView.style.display;
+  listView.style.display='none';
+  songView.style.display='none';
+  c.style.display='block';
+  c.style.position='fixed';
+  c.style.inset='0';
+  c.style.zIndex='9998';
+  c.style.background='#fff';
+  c.style.overflowY='auto';
+  c.style.padding='20px';
+
+  // Two rAF + delay to ensure paint before print dialog
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      window.print();
+      // Restore after a brief delay (print dialog may be async on some platforms)
       setTimeout(()=>{
-        window.print();
-        // Clean up after print dialog closes
-        setTimeout(()=>{c.innerHTML='';c.style.display='none';},500);
-      },100);
-    });
-  });
+        listView.style.display=prevListDisplay;
+        songView.style.display=prevSongDisplay;
+        c.style.display='none';
+        c.style.position='';
+        c.style.inset='';
+        c.style.zIndex='';
+        c.style.background='';
+        c.style.overflowY='';
+        c.style.padding='';
+        c.innerHTML='';
+      },800);
+    },120);
+  }));
 }
 function copyLyrics(){
   if(!currentSong?.chart)return;
@@ -1114,8 +1211,13 @@ function findSongById(id){const n=normId(id);return songs.find(s=>normId(s.id)==
 function initFirebase(){
   songsRef.on('value',snap=>{
     const d=snap.val();
-    if(d)songs=Object.entries(d).map(([k,v])=>normRec(k,v));
-    else{songs=[];seedDefaultSongs();}
+    if(d){
+      songs=Object.entries(d).map(([k,v])=>normRec(k,v));
+      // Migration: write any seed songs that are missing from Firebase
+      migrateMissingSongs(d);
+    } else {
+      songs=[];seedDefaultSongs();
+    }
     refresh(true);hideLoading();
   },()=>{showSync('Sync error',true);hideLoading();});
   setlistRef.on('value',snap=>{
@@ -1127,9 +1229,28 @@ function initFirebase(){
 function hideLoading(){const l=document.getElementById('ls');l.classList.add('hidden');setTimeout(()=>l.style.display='none',380);}
 function saveSetListToFB(){const d={};_setList_shared.map(normId).filter(Boolean).forEach((id,i)=>{d[`i${i}`]={songId:id,order:i};});setlistRef.set(d).catch(()=>showSync('Sync failed',true));}
 
+// Check for missing seed songs and write them to Firebase
+function migrateMissingSongs(existingData){
+  // Build set of existing IDs
+  const existingIds=new Set(Object.values(existingData).map(s=>normId(s.id)));
+  // Get full seed list
+  const allSeeds=getSeedSongs();
+  let count=0;
+  allSeeds.forEach(s=>{
+    if(!existingIds.has(s.id)){
+      songsRef.child(s.id).set(s);
+      count++;
+    }
+  });
+  if(count>0)showSync(`Added ${count} new songs ✓`);
+}
+
 /* ══ SEED ══ */
 function seedDefaultSongs(){
-  const D=[
+  getSeedSongs().forEach(s=>songsRef.child(s.id).set(s));
+  showSync('Library seeded ✓');
+}
+function getSeedSongs(){return[
     {id:'local1',cat:'english',title:'How Great Is Our God',author:'Chris Tomlin',key:'G',chart:`[Verse 1]\n[G]The splendor of a [C]King, clothed in majesty\n[Em]Let all the earth [C]rejoice, all the earth rejoice\n[G]He wraps Himself in [C]light, and darkness tries to hide\n[Em]And trembles at His [C]voice, trembles at His voice\n\n[Chorus]\n[G]How great is our [C]God, sing with me\n[Em]How great is our [C]God, and all will see\n[G]How great, [D]how great is our [C]God\n\n[Bridge]\n[Em]Name above all [C]names, worthy of all [G]praise\n[Em]My heart will sing how [C]great is our [D]God`},
     {id:'local2',cat:'english',title:'Oceans (Where Feet May Fail)',author:'Hillsong United',key:'D',chart:`[Verse 1]\n[D]You call me out upon the [A]waters\n[Bm]The great unknown where feet may [G]fail\n[D]And there I find You in the [A]mystery\n[Bm]In oceans deep my faith will [G]stand\n\n[Chorus]\n[D]And I will call upon Your [A]name\n[Bm]And keep my eyes above the [G]waves\n[D]When oceans rise my soul will [A]rest\n[Bm]In Your embrace for I am [G]Yours and You are [D]mine`},
     {id:'local3',cat:'english',title:'Amazing Grace (My Chains Are Gone)',author:'Chris Tomlin',key:'G',chart:`[Verse 1]\n[G]Amazing grace how [G/B]sweet the [C]sound\n[G]That saved a [D]wretch like me\n[G]I once was [G/B]lost but [C]now am found\n[G]Was blind but [D]now I [G]see\n\n[Chorus]\n[C]My chains are [G]gone I've been set free\n[Em]My God my Savior [D]has ransomed me\n[G]And like a flood His [C]mercy reigns\n[G]Unending love [D]amazing [G]grace`},
@@ -1260,9 +1381,7 @@ function seedDefaultSongs(){
     {id:'ml28',cat:'malayalam',title:'Dinam Dinam Nee Vaazhuthuka',author:'Rev A R T Athisayam',key:'D',chart:''},
     {id:'ml29',cat:'malayalam',title:'Dinavum Yeshuvinte Koode',author:'Rajesh Daniel Elappara',key:'Em',chart:''},
     {id:'ml30',cat:'malayalam',title:'Ee Loka Jeevithathil',author:'R S Vijayaraj',key:'B',chart:''},
-  ];
-  D.forEach(s=>songsRef.child(s.id).set(s));showSync('Library seeded ✓');
-}
+  ];}/* end getSeedSongs */
 
 /* ══ SHEET RENDERER ══ */
 function renderCPBlock(l,st,tk,nns,flat){
@@ -1427,6 +1546,7 @@ function _doRefresh(){
 }
 
 /* ══ ALPHABET STRIP ══ */
+let _lastAlphaLtr='';
 function buildAlphaStrip(offs){
   const strip=document.getElementById('alpha-strip');strip.innerHTML='';
   const letters=Object.keys(alphaMap);if(!letters.length)return;
@@ -1448,16 +1568,15 @@ function buildAlphaStrip(offs){
     const ltr=letters[idx];
     if(ltr!==_lastAlphaLtr){
       _lastAlphaLtr=ltr;
-      // Haptic feedback on iOS
-      if(navigator.vibrate)navigator.vibrate(8);
-      else if(window.webkit?.messageHandlers?.haptic)window.webkit.messageHandlers.haptic.postMessage('selection');
+      // Haptic: try Web Vibration API (Android), fallback to WKWebView handler (iOS native wrapper)
+      try{if(window.navigator&&navigator.vibrate)navigator.vibrate(8);}catch(e){}
+      try{if(window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.haptic)window.webkit.messageHandlers.haptic.postMessage({style:'selection'});}catch(e){}
     }
     bubble.textContent=ltr;bubble.classList.add('show');
     bubble.style.top=(y-21)+'px';
     jumpToAlpha(ltr);
-  }
-}
-let _lastAlphaLtr='';
+  }/* end handleAlphaTouch */
+}/* end buildAlphaStrip */
 function jumpToAlpha(ltr){
   const idx=alphaMap[ltr];if(idx==null)return;
   document.getElementById('vscroll').scrollTop=computeOffsets(vRows)[idx];
@@ -1558,7 +1677,7 @@ function toggleSetSong(id){
 function switchTab(tab){
   activeTab=tab;
   document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
-  document.getElementById('tab-'+tab)?.classList.add('active');
+  if(tab!=='settings')document.getElementById('tab-'+tab)?.classList.add('active');
   const ss=document.getElementById('song-section');
   const sl=document.getElementById('setlist-section');
   const st=document.getElementById('settings-section');
@@ -1567,7 +1686,7 @@ function switchTab(tab){
   sw.style.display='none';
   if(tab==='setlist'){sl.style.display='flex';renderSetList();}
   else if(tab==='settings'){st.style.display='flex';renderSettings();}
-  else{ss.style.display='flex';sw.style.display='block';if(tab!==activeTab)clearSearch();else refresh(true);}
+  else{ss.style.display='flex';sw.style.display='block';refresh(true);}
 }
 function onSearch(){
   document.getElementById('srch-clr').style.display=document.getElementById('srch-inp').value?'block':'none';
@@ -1596,9 +1715,7 @@ function saveRecentSearch(q){if(!q.trim())return;const rs=appPrefs.recentSearche
 function toggleDark(){
   darkMode=!darkMode;appPrefs.darkMode=darkMode;savePrefs();
   document.body.classList.toggle('dark',darkMode);
-  const ico=darkMode?'☀':'🌙';
-  document.getElementById('dark-ico').textContent=ico;
-  document.getElementById('hdr-dark-btn').textContent=ico;
+  document.getElementById('dark-ico').textContent=darkMode?'☀':'🌙';
   document.getElementById('dark-lbl').textContent=darkMode?'Light mode':'Dark mode';
   document.getElementById('mi-dark').classList.toggle('on',darkMode);
   const sw=document.getElementById('dark-sw');if(sw)sw.classList.toggle('on',darkMode);
@@ -1877,7 +1994,7 @@ function openSong(id,fromSet){
   document.getElementById('mi-lyrics').classList.remove('on');
   document.getElementById('mi-flats').classList.remove('on');
   if(darkMode)document.getElementById('mi-dark').classList.add('on');
-  document.getElementById('back-label').textContent=fromSet?'Set List':'Back';
+  // back button is icon-only now, no label to update
   svScrollEl.scrollTop=0;
   updateSongView();
   if(!swipeInProgress){
@@ -1965,7 +2082,12 @@ function deleteSong(){
 function applyStoredPrefs(){
   loadPrefs();loadDeviceSetList();
   // Dark mode
-  if(appPrefs.darkMode){darkMode=true;document.body.classList.add('dark');document.getElementById('dark-ico').textContent='☀';document.getElementById('hdr-dark-btn').textContent='☀';document.getElementById('dark-lbl').textContent='Light mode';document.getElementById('mi-dark').classList.add('on');}
+  if(appPrefs.darkMode){
+    darkMode=true;document.body.classList.add('dark');
+    document.getElementById('dark-ico').textContent='☀';
+    document.getElementById('dark-lbl').textContent='Light mode';
+    document.getElementById('mi-dark').classList.add('on');
+  }
   // Text size — applied to sheet when song opens, not globally
   // (sheet element may not exist yet at startup, applied in updateSongView instead)
   // Theme
