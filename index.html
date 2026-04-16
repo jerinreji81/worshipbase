@@ -70,7 +70,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .song-count{font-size:11px;color:var(--txt3);font-weight:600;letter-spacing:.01em;}
 
 /* ── VIRTUAL LIST ── */
-.vs-wrap{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative;}
+/* vs-wrap must fill its parent absolutely so overflow:auto actually works */
+.vs-host{flex:1;position:relative;overflow:hidden;min-height:0;}
+.vs-wrap{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
 .vs-inner{position:relative;width:100%;}
 .v-item{position:absolute;left:0;right:0;will-change:transform;}
 
@@ -98,10 +100,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 #alpha-bubble.show{opacity:1;}
 
 /* ── BOTTOM TAB BAR ── */
-.tab-bar{flex-shrink:0;background:var(--bg1);border-top:.5px solid var(--bdr);display:flex;flex-direction:column;z-index:20;}
-.tab-bar-inner{display:flex;height:var(--tab-h);}
-.tab-bar-safe{height:var(--safe-bot);background:var(--bg1);min-height:0;}
-.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--txt3);font-family:inherit;transition:color .12s;}
+/* The tab bar sits at bottom of the fixed viewport.
+   We extend its background colour into the iOS home indicator zone
+   using padding-bottom so content stays above it. */
+.tab-bar{
+  flex-shrink:0;
+  background:var(--bg1);
+  border-top:.5px solid var(--bdr);
+  display:flex;
+  z-index:20;
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--txt3);font-family:inherit;transition:color .12s;height:var(--tab-h);padding-bottom:0;}
 .tab-btn.active{color:var(--tc);}
 .tab-btn:active{background:var(--tc-faint);}
 .tab-ico{display:flex;align-items:center;justify-content:center;}
@@ -113,7 +123,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .sl-btns{display:flex;gap:7px;}
 .sl-export-btn{font-size:12px;font-weight:600;color:var(--tc);background:none;border:.5px solid var(--tc-mid);border-radius:var(--rad-pill);padding:4px 11px;cursor:pointer;font-family:inherit;}
 .sl-clear-btn{font-size:12px;font-weight:600;color:#d93448;background:none;border:.5px solid #d93448;border-radius:var(--rad-pill);padding:4px 11px;cursor:pointer;font-family:inherit;}
-.sl-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.sl-scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .sl-items{padding-bottom:80px;}
 
 /* Drag-reorder set items */
@@ -320,7 +330,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 
   <!-- SONG LIST -->
   <div id="song-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
-    <div style="flex:1;position:relative;overflow:hidden;min-height:0;">
+    <div class="vs-host">
       <div id="vscroll" class="vs-wrap"><div id="vinner" class="vs-inner"></div></div>
       <!-- ALPHABET STRIP -->
       <div id="alpha-strip"></div>
@@ -329,7 +339,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
   </div>
 
   <!-- SET LIST -->
-  <div id="setlist-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;position:relative;">
+  <div id="setlist-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
     <div class="sl-hdr">
       <span class="sl-lbl" id="sl-count">0 songs</span>
       <div class="sl-btns">
@@ -337,27 +347,26 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
         <button class="sl-clear-btn" onclick="clearSet()">Clear</button>
       </div>
     </div>
-    <div class="sl-scroll"><div id="sl-items" class="sl-items"></div></div>
+    <div class="vs-host">
+      <div class="sl-scroll" style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"></div></div>
+    </div>
     <button class="add-fab" onclick="openBS('picker')">+</button>
   </div>
 
   <!-- TAB BAR -->
   <div class="tab-bar">
-    <div class="tab-bar-inner">
-      <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
-        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h8M4 14h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-        <span class="tab-lbl">English</span>
-      </button>
-      <button class="tab-btn" id="tab-malayalam" onclick="switchTab('malayalam')">
-        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 5h12M4 9h6M4 13h10M4 17h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-        <span class="tab-lbl">Malayalam</span>
-      </button>
-      <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
-        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 5l-2 1v3l2-1V5z" fill="currentColor" opacity=".5"/><path d="M6 10l-2 1v3l2-1v-3z" fill="currentColor" opacity=".7"/><path d="M6 15l-2 1v3l2-1v-3z" fill="currentColor"/><path d="M9 6h8M9 11h6M9 16h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-        <span class="tab-lbl">Set List</span>
-      </button>
-    </div>
-    <div class="tab-bar-safe"></div>
+    <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
+      <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h8M4 14h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <span class="tab-lbl">English</span>
+    </button>
+    <button class="tab-btn" id="tab-malayalam" onclick="switchTab('malayalam')">
+      <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 5h12M4 9h6M4 13h10M4 17h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <span class="tab-lbl">Malayalam</span>
+    </button>
+    <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
+      <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 5l-2 1v3l2-1V5z" fill="currentColor" opacity=".5"/><path d="M6 10l-2 1v3l2-1v-3z" fill="currentColor" opacity=".7"/><path d="M6 15l-2 1v3l2-1v-3z" fill="currentColor"/><path d="M9 6h8M9 11h6M9 16h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <span class="tab-lbl">Set List</span>
+    </button>
   </div>
 </div>
 
