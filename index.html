@@ -560,44 +560,45 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.database(),songsRef=db.ref('songs'),setlistRef=db.ref('setlist');
 function showSync(msg,err){const b=document.getElementById('sync-badge');b.textContent=msg;b.classList.toggle('error',!!err);b.classList.add('show');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('show'),2200);}
 
-/* ── DYNAMIC SAFE AREA & HEIGHT FIX (prevents bottom gap on iOS standalone) ── */
-function getActualSafeBottom() {
-  const probe = document.createElement('div');
-  probe.style.cssText = 'position:fixed; left:0; bottom:0; visibility:hidden; pointer-events:none; padding-bottom: env(safe-area-inset-bottom, 0px);';
-  document.body.appendChild(probe);
-  const val = parseFloat(getComputedStyle(probe).paddingBottom) || 0;
-  probe.remove();
-  return val;
-}
-
+/* ── DYNAMIC HEIGHT FIX + FORCE REPAINT FOR SAFE AREA ── */
 function setAppHeight() {
-  // Use visualViewport for accurate height (covers keyboard, address bar changes)
   const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
   document.documentElement.style.setProperty('--app-h', `${vh}px`);
-  
-  // Read and apply the REAL safe area inset (works even after app restart)
-  const safeBottom = getActualSafeBottom();
-  document.documentElement.style.setProperty('--safe-bot', `${safeBottom}px`);
 }
 
-function refreshAppHeightSoon() {
+// Force a repaint of bottom elements to make iOS recompute env(safe-area-inset-bottom)
+function forceRepaint() {
+  const tabBar = document.querySelector('.tab-bar');
+  if (tabBar) {
+    // Toggle a trivial style to trigger repaint
+    tabBar.style.transform = 'translateZ(0)';
+    setTimeout(() => { tabBar.style.transform = ''; }, 20);
+  }
+  // Also touch the body background
+  document.body.style.display = 'none';
+  document.body.offsetHeight; // force reflow
+  document.body.style.display = '';
+}
+
+function refreshLayout() {
   setAppHeight();
-  requestAnimationFrame(() => {
-    setAppHeight();
-    setTimeout(setAppHeight, 60);
-    setTimeout(setAppHeight, 250);
-  });
+  forceRepaint();
 }
 
-// Attach all necessary events
-window.addEventListener('load', refreshAppHeightSoon);
-window.addEventListener('resize', refreshAppHeightSoon);
-window.addEventListener('orientationchange', refreshAppHeightSoon);
-window.addEventListener('pageshow', refreshAppHeightSoon);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshAppHeightSoon(); });
+// Initial set
+refreshLayout();
+
+// Re-measure on all relevant events
+window.addEventListener('load', refreshLayout);
+window.addEventListener('resize', refreshLayout);
+window.addEventListener('orientationchange', refreshLayout);
+window.addEventListener('pageshow', refreshLayout);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) refreshLayout();
+});
 if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', refreshAppHeightSoon);
-  window.visualViewport.addEventListener('scroll', refreshAppHeightSoon);
+  window.visualViewport.addEventListener('resize', refreshLayout);
+  window.visualViewport.addEventListener('scroll', refreshLayout);
 }
 
 /* ── BOTTOM SHEET MANAGER ── */
