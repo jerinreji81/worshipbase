@@ -1,8 +1,8 @@
-<html lang="en" style="--sat: 0px; --sab: 0px; --vvh: 772px;"><head>
+<html lang="en" style="--sat: 0px; --sab: 0px;"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WorshipBase">
 <title>WorshipBase</title>
@@ -22,9 +22,6 @@ input,button,select,textarea{font-family:-apple-system,BlinkMacSystemFont,'SF Pr
   --item-h:66px;--alpha-h:24px;--tab-h:52px;
   /* --sat / --sab set by JS probe — robust iOS PWA safe area fix */
   --sat:0px;--sab:0px;
-  --tab-bar-base:58px;
-  --tab-bar-h:calc(var(--tab-bar-base) + var(--sab));
-  --tab-bar-bleed:120px;
   --hdr-bg:var(--tc);
 }
 body.dark{
@@ -38,15 +35,10 @@ body.dark{
   --hdr-bg:#0a2030;
   --chord-color:#5bc8ea;
 }
-html,body{height:100%;overflow:hidden;background:#ffffff;}
-html{background:#ffffff;}
+html,body{height:100%;overflow:hidden;}
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;
-  background:var(--bg1);background-color:#ffffff;color:var(--txt1);font-size:16px;
-  min-height:100dvh;
-  padding-bottom:var(--sab);
+  background:var(--bg1);color:var(--txt1);font-size:16px;
   -webkit-font-smoothing:antialiased;overscroll-behavior:none;}
-body.dark{background-color:#0f1f28;}
-html.dark{background:#0f1f28;}
 
 /* ── LOADING ── */
 #ls{position:fixed;inset:0;background:var(--tc);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .35s;}
@@ -64,8 +56,7 @@ html.dark{background:#0f1f28;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* ── VIEWS ── */
-#list-view{position:fixed;inset:0;padding-bottom:var(--tab-bar-h);display:flex;flex-direction:column;background:var(--bg1);background-color:#ffffff;overflow:hidden;}
-body.dark #list-view{background-color:#0f1f28;}
+#list-view{position:fixed;inset:0;padding-bottom:var(--tab-bar-h);display:flex;flex-direction:column;background:var(--bg1);overflow:hidden;}
 #list-view>*{flex-shrink:0;}
 #list-view #song-section,#list-view #setlist-section,#list-view #settings-section{flex-shrink:1;}
 #song-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg1);transform:translateX(100%);z-index:10;will-change:transform;}
@@ -83,30 +74,30 @@ body.dark #list-view{background-color:#0f1f28;}
 /* ── FIXED BOTTOM TAB BAR ── */
 .tab-bar{
   position:fixed;
-  left:0;right:0;
-  bottom:0;
+  left:0;right:0;bottom:0;
   z-index:50;
   background:var(--bg1);
-  background-color:#ffffff;
   border-top:.5px solid var(--bdr);
   display:flex;
   min-height:var(--tab-bar-base);
-  height:var(--tab-bar-h);
   padding-bottom:var(--sab);
-  transform:translateZ(0);
-  will-change:transform;
 }
-body.dark .tab-bar{background-color:#0f1f28;}
-.tab-bar::after{
-  content:"";
-  position:absolute;
-  left:0;right:0;
-  top:100%;
-  height:var(--tab-bar-bleed);
-  background:inherit;
-  background-color:inherit;
+body::after{
+  content:'';
+  position:fixed;
+  left:0;right:0;bottom:0;
+  height:var(--sab);
+  background:var(--bg1);
+  pointer-events:none;
+  z-index:49;
+}
+body.song-open .tab-bar,
+body.song-open #tab-bar{
+  transform:translateY(calc(100% + var(--sab) + 8px));
+  opacity:0;
   pointer-events:none;
 }
+
 .tab-btn{
   flex:1;
   display:flex;flex-direction:column;
@@ -124,6 +115,8 @@ body.dark .tab-btn.active{color:#5bc8ea;}
 .tab-btn:active{opacity:.6;}
 .tab-ico{display:flex;align-items:center;justify-content:center;}
 .tab-lbl{font-size:10px;font-weight:600;letter-spacing:.01em;}
+/* Tab bar height for content padding calculation */
+:root{--tab-bar-base:58px;--tab-bar-h:calc(var(--tab-bar-base) + var(--sab));}
 
 /* ── SONG VIEW HEADER — circle bubble back btn & menu btn ── */
 .sv-hdr{background:var(--bg1);border-bottom:.5px solid var(--bdr);padding:calc(var(--sat) + 10px) 16px 12px;flex-shrink:0;}
@@ -882,8 +875,6 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 */
 (function initSafeArea(){
   const root=document.documentElement;
-  const body=document.body;
-  const isStandalone=window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
   const probeTop=document.createElement('div');
   probeTop.style.cssText='position:fixed;top:0;left:0;width:1px;height:env(safe-area-inset-top,0px);pointer-events:none;opacity:0;z-index:-1;';
   const probeBot=document.createElement('div');
@@ -891,61 +882,63 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
   root.appendChild(probeTop);
   root.appendChild(probeBot);
 
-  function setThemeColor(){
-    const meta=document.querySelector('meta[name="theme-color"]');
-    if(!meta) return;
-    meta.setAttribute('content', body.classList.contains('dark') ? '#0f1f28' : '#ffffff');
+  function orientKey(){
+    const portrait=(window.matchMedia && window.matchMedia('(orientation: portrait)').matches) ||
+      window.innerHeight>=window.innerWidth;
+    return portrait?'p':'l';
+  }
+
+  function readStoredInset(){
+    try{
+      return parseFloat(localStorage.getItem('wb_safe_bottom_'+orientKey())||'0')||0;
+    }catch(e){ return 0; }
+  }
+
+  function storeInset(px){
+    try{
+      localStorage.setItem('wb_safe_bottom_'+orientKey(), String(px));
+    }catch(e){}
+  }
+
+  function applyInsets(sat,sab){
+    root.style.setProperty('--sat', Math.max(0, sat)+'px');
+    root.style.setProperty('--sab', Math.max(0, sab)+'px');
+  }
+
+  function rawMeasure(){
+    const sat=Math.round(probeTop.getBoundingClientRect().height||0);
+    const sab=Math.round(probeBot.getBoundingClientRect().height||0);
+    return {sat,sab};
   }
 
   function measure(){
-    const sat=Math.round(probeTop.getBoundingClientRect().height||0);
-    let sab=Math.round(probeBot.getBoundingClientRect().height||0);
-    const vv=window.visualViewport;
-    const vvHeight=vv ? Math.round(vv.height) : 0;
-    const innerH=Math.round(window.innerHeight||0);
-    const screenH=Math.round((window.screen && window.screen.height) || 0);
-
-    // In iOS standalone, env(safe-area-inset-bottom) can temporarily report 0 after relaunch.
-    // Keep the last good value instead of collapsing the layout back to zero.
-    const lastSab=parseInt(root.style.getPropertyValue('--sab')) || 0;
-    if(isStandalone && sab===0 && lastSab>0){
-      sab=lastSab;
-    }
-
-    // If visualViewport is reporting a smaller usable height while standalone,
-    // prefer the previously known safe area instead of shrinking the footer.
-    if(isStandalone && vvHeight && innerH && vvHeight < innerH && lastSab>0){
-      sab=Math.max(sab,lastSab);
-    }
-
-    root.style.setProperty('--sat', sat + 'px');
-    root.style.setProperty('--sab', sab + 'px');
-    root.style.setProperty('--vvh', (vvHeight || innerH || screenH) + 'px');
-    setThemeColor();
+    const m=rawMeasure();
+    const stored=readStoredInset();
+    let sab=m.sab;
+    // In standalone iOS, reopen can briefly report 0. Keep last good value instead.
+    if(sab===0 && stored>0) sab=stored;
+    if(sab>stored) storeInset(sab);
+    applyInsets(m.sat, Math.max(sab, stored));
   }
 
-  function measureBurst(){
+  function scheduleMeasure(){
     measure();
-    requestAnimationFrame(measure);
-    setTimeout(measure,50);
-    setTimeout(measure,150);
-    setTimeout(measure,300);
-    setTimeout(measure,600);
+    setTimeout(measure, 50);
+    setTimeout(measure, 150);
+    setTimeout(measure, 350);
+    setTimeout(measure, 700);
   }
 
-  measureBurst();
-  window.addEventListener('load', measureBurst, {passive:true});
-  window.addEventListener('focus', measureBurst, {passive:true});
-  window.addEventListener('resize', measureBurst, {passive:true});
-  window.addEventListener('orientationchange', measureBurst, {passive:true});
-  window.addEventListener('pageshow', measureBurst, {passive:true});
-  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) measureBurst(); }, {passive:true});
+  scheduleMeasure();
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) scheduleMeasure(); });
+  window.addEventListener('focus',scheduleMeasure,{passive:true});
+  window.addEventListener('resize',scheduleMeasure,{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(scheduleMeasure,120),{passive:true});
+  window.addEventListener('pageshow',scheduleMeasure,{passive:true});
   if(window.visualViewport){
-    window.visualViewport.addEventListener('resize', measureBurst, {passive:true});
-    window.visualViewport.addEventListener('scroll', measureBurst, {passive:true});
+    window.visualViewport.addEventListener('resize',scheduleMeasure,{passive:true});
+    window.visualViewport.addEventListener('scroll',scheduleMeasure,{passive:true});
   }
-  window.__refreshSafeArea=measureBurst;
-  new MutationObserver(setThemeColor).observe(body,{attributes:true,attributeFilter:['class']});
 })();
 
 /* ══ FIREBASE ══ */
@@ -2051,6 +2044,7 @@ function openSong(id,fromSet){
   // back button is icon-only now, no label to update
   svScrollEl.scrollTop=0;
   updateSongView();
+  document.body.classList.add('song-open');
   if(!swipeInProgress){
     if(!songView.classList.contains('visible')){
       songView.style.transition='transform .3s cubic-bezier(0.2,0.9,0.4,1.05)';
@@ -2080,6 +2074,7 @@ function transposeStep(d){
 }
 function toggleNNS(){nnsMode=!nnsMode;updateSongView();}
 function showList(){
+  document.body.classList.remove('song-open');
   songView.style.transition='transform .26s cubic-bezier(.25,.46,.45,.94)';
   songView.classList.remove('visible');
   setTimeout(()=>songView.style.transition='',280);
