@@ -21,7 +21,9 @@ input,button,select,textarea{font-family:-apple-system,BlinkMacSystemFont,'SF Pr
   --shadow-lg:0 10px 36px rgba(0,0,0,.14);
   --rad:12px;--rad-lg:16px;--rad-pill:999px;
   --item-h:70px;--alpha-h:28px;
-  --sat:0px;--sab:0px;
+  /* Safe area: CSS env() as primary, JS probe as enhancement */
+  --sat:env(safe-area-inset-top,0px);
+  --sab:env(safe-area-inset-bottom,0px);
   --hdr-bg:#10374A;
 }
 body.dark{
@@ -54,14 +56,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* ── VIEWS ── */
-#list-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg3);overflow:hidden;}
+#list-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg1);overflow:hidden;}
 #list-view>*{flex-shrink:0;}
 #list-view #song-section,#list-view #setlist-section,#list-view #settings-section{flex-shrink:1;}
-#song-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg3);transform:translateX(100%);z-index:10;will-change:transform;}
+#song-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg1);transform:translateX(100%);z-index:10;will-change:transform;}
 #song-view.visible{transform:translateX(0);}
 
 /* ── HEADER ── */
-.hdr{background:var(--hdr-bg);padding:calc(var(--sat)+14px) 18px 0;flex-shrink:0;transition:background .3s;}
+.hdr{background:var(--hdr-bg);padding:max(calc(var(--sat)+14px),28px) 18px 0;flex-shrink:0;transition:background .3s;}
 .hdr-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:4px;}
 .wm{display:flex;align-items:center;gap:9px;}
 .wm-name{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.2px;line-height:1;}
@@ -69,44 +71,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .hdr-btn{background:rgba(255,255,255,.14);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;transition:background .12s;}
 .hdr-btn:active{background:rgba(255,255,255,.28);}
 
-/* ── TOP SEGMENTED TABS ── */
-.tab-bar{display:flex;padding:10px 14px 0;gap:3px;}
+/* ── TOP SEGMENTED TABS — v6 style inset pill ── */
+.tab-bar{padding:10px 16px 14px;}
+.seg-ctrl{
+  display:flex;
+  background:rgba(0,0,0,.22);
+  border-radius:12px;
+  padding:3px;
+  gap:2px;
+}
 .tab-btn{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;cursor:pointer;border:none;background:none;
-  color:rgba(255,255,255,.52);font-family:inherit;
-  padding:7px 4px 10px;position:relative;
-  transition:color .18s;-webkit-tap-highlight-color:transparent;
+  flex:1;padding:9px 6px;
+  text-align:center;
+  font-size:13px;font-weight:500;
+  color:rgba(255,255,255,.5);
+  cursor:pointer;border-radius:9px;
+  border:none;background:none;
+  font-family:inherit;
+  transition:color .18s;
+  -webkit-tap-highlight-color:transparent;
+  white-space:nowrap;
 }
-.tab-btn.active{color:#fff;}
-.tab-btn:active{opacity:.7;}
-.tab-ico{display:flex;align-items:center;justify-content:center;}
-.tab-lbl{font-size:11px;font-weight:600;letter-spacing:.01em;}
-.tab-btn::after{
-  content:'';position:absolute;bottom:0;left:50%;
-  transform:translateX(-50%) scaleX(0);
-  width:28px;height:2.5px;background:rgba(255,255,255,.9);
-  border-radius:2px 2px 0 0;
-  transition:transform .22s cubic-bezier(0.2,0.9,0.4,1.1);
+.tab-btn.active{
+  background:#fff;
+  color:var(--tc);
+  font-weight:700;
+  box-shadow:0 1px 4px rgba(0,0,0,.18);
 }
-.tab-btn.active::after{transform:translateX(-50%) scaleX(1);}
+.tab-btn:active:not(.active){background:rgba(255,255,255,.1);}
 
 /* ── SEARCH ── */
-.srch-wrap{background:var(--hdr-bg);padding:10px 14px 12px;flex-shrink:0;}
+.srch-wrap{background:var(--bg1);padding:10px 16px 10px;border-bottom:.5px solid var(--bdr);flex-shrink:0;}
 .srch-row{display:flex;align-items:center;gap:10px;}
 .srch-inner{flex:1;position:relative;}
-.srch-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(255,255,255,.5);}
+.srch-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--txt3);}
 .srch-inp{
   width:100%;padding:9px 34px 9px 36px;
-  border:none;border-radius:var(--rad-pill);
-  font-size:15px;background:rgba(255,255,255,.13);
-  color:#fff;outline:none;font-family:inherit;
-  transition:background .18s;
+  border:1px solid var(--bdr2);border-radius:var(--rad-pill);
+  font-size:15px;background:var(--bg2);
+  color:var(--txt1);outline:none;font-family:inherit;
 }
-.srch-inp::placeholder{color:rgba(255,255,255,.45);}
-.srch-inp:focus{background:rgba(255,255,255,.2);}
-.srch-clr{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:16px;color:rgba(255,255,255,.6);cursor:pointer;display:none;padding:0;line-height:1;}
-.song-count{font-size:11px;color:rgba(255,255,255,.5);font-weight:600;white-space:nowrap;flex-shrink:0;}
+.srch-inp::placeholder{color:var(--txt3);}
+.srch-inp:focus{border-color:var(--tc);}
+.srch-clr{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:16px;color:var(--txt3);cursor:pointer;display:none;padding:0;line-height:1;}
+.song-count{font-size:11px;color:var(--txt3);font-weight:600;white-space:nowrap;flex-shrink:0;}
 
 /* ── VIRTUAL LIST ── */
 .vs-host{flex:1;position:relative;overflow:hidden;min-height:0;}
@@ -117,9 +125,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 /* Alpha separator — big bold standalone letter, Apple Music style */
 .alpha-sep{
   height:var(--alpha-h);padding:0 16px;
-  display:flex;align-items:flex-end;padding-bottom:2px;
-  font-size:13px;font-weight:700;color:var(--txt1);
-  background:var(--bg3);position:absolute;left:0;right:0;will-change:transform;
+  display:flex;align-items:flex-end;padding-bottom:3px;
+  font-size:16px;font-weight:800;color:var(--txt1);
+  background:var(--bg1);position:absolute;left:0;right:0;will-change:transform;
+  /* Strong standalone letter divider — no grey background, no lines */
 }
 
 /* ── SONG ROWS — grouped card style ── */
@@ -150,16 +159,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 
 /* FAB — softer, pill shape */
 .add-fab{
-  position:absolute;bottom:calc(20px + var(--sab));right:16px;
+  position:absolute;bottom:calc(22px + var(--sab));right:18px;
   background:var(--tc);color:#fff;border:none;
-  border-radius:28px;height:50px;padding:0 20px;
-  font-size:22px;font-weight:300;
+  border-radius:50%;width:54px;height:54px;
+  font-size:28px;font-weight:300;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 20px rgba(16,55,74,.35);z-index:10;
-  gap:6px;
+  box-shadow:0 4px 22px rgba(16,55,74,.40);z-index:10;
 }
-.add-fab:active{transform:scale(.95);opacity:.9;}
-.add-fab-lbl{font-size:14px;font-weight:600;letter-spacing:.01em;}
+.add-fab:active{transform:scale(.93);}
+.add-fab-lbl{display:none;}
 
 /* ── ALPHABET STRIP ── */
 #alpha-strip{position:absolute;right:0;top:0;bottom:0;width:18px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;z-index:20;padding:4px 0;touch-action:none;user-select:none;-webkit-user-select:none;}
@@ -194,7 +202,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .sl-items{padding-bottom:80px;}
 
 /* ── SONG VIEW HEADER ── single definition, no duplicates ── */
-.sv-hdr{background:var(--bg1);border-bottom:.5px solid var(--bdr);padding:calc(var(--sat)+12px) 16px 12px;flex-shrink:0;}
+.sv-hdr{background:var(--bg1);border-bottom:.5px solid var(--bdr);padding:max(calc(var(--sat)+12px),26px) 16px 12px;flex-shrink:0;}
 .sv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 /* Circle bubble buttons — definitive, no override */
 .back-btn{
@@ -458,20 +466,13 @@ body.dark .ss-ico svg{color:#5bc4e8;}
         </svg>
       </button>
     </div>
-    <!-- TOP TAB BAR — 3 tabs inside the teal header -->
+    <!-- SEGMENTED CONTROL — v6 style -->
     <div class="tab-bar">
-      <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
-        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><path d="M3 6h16M3 11h10M3 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-        <span class="tab-lbl">English</span>
-      </button>
-      <button class="tab-btn" id="tab-malayalam" onclick="switchTab('malayalam')">
-        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><path d="M3 5h16M3 9.5h7M3 14h12M3 18.5h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-        <span class="tab-lbl">Malayalam</span>
-      </button>
-      <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
-        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><rect x="3" y="4" width="4" height="4" rx="1" fill="currentColor" opacity=".6"/><rect x="3" y="10" width="4" height="4" rx="1" fill="currentColor" opacity=".8"/><rect x="3" y="16" width="4" height="4" rx="1" fill="currentColor"/><path d="M10 6h9M10 12h7M10 18h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-        <span class="tab-lbl">Set List</span>
-      </button>
+      <div class="seg-ctrl">
+        <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">English</button>
+        <button class="tab-btn" id="tab-malayalam" onclick="switchTab('malayalam')">Malayalam</button>
+        <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">Set List</button>
+      </div>
     </div>
   </div>
 
@@ -494,7 +495,7 @@ body.dark .ss-ico svg{color:#5bc4e8;}
       <div id="vscroll" class="vs-wrap"><div id="vinner" class="vs-inner"></div></div>
       <div id="alpha-strip"></div>
     </div>
-    <button class="add-fab" onclick="requireAdmin(()=>openSongModal(null))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg><span class="add-fab-lbl">Add song</span></button>
+    <button class="add-fab" onclick="requireAdmin(()=>openSongModal(null))">+</button>
   </div>
 
   <!-- SET LIST -->
@@ -509,7 +510,7 @@ body.dark .ss-ico svg{color:#5bc4e8;}
     <div class="sl-scroll-host vs-host">
       <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"></div></div>
     </div>
-    <button class="add-fab" onclick="openBS('picker')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg><span class="add-fab-lbl">Add song</span></button>
+    <button class="add-fab" onclick="openBS('picker')">+</button>
   </div>
 
   <!-- SETTINGS -->
