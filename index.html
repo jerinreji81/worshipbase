@@ -18,7 +18,7 @@ input,button,select,textarea{font-family:-apple-system,BlinkMacSystemFont,'SF Pr
   --bdr:rgba(16,55,74,.08);--bdr2:rgba(16,55,74,.15);
   --rad:10px;--rad-lg:14px;--rad-pill:999px;
   --item-h:66px;--alpha-h:24px;
-  --tab-h:calc(52px + var(--safe-bot));
+  --tab-h:52px;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bot:env(safe-area-inset-bottom,0px);
 }
@@ -44,6 +44,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 
 /* ── VIEWS ── */
 #list-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg3);overflow:hidden;}
+/* Ensure flex children can shrink properly */
+#list-view>*{flex-shrink:0;}
+#list-view #song-section,#list-view #setlist-section{flex-shrink:1;}
 #song-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg3);transform:translateX(100%);z-index:10;will-change:transform;}
 #song-view.visible{transform:translateX(0);}
 
@@ -67,7 +70,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .song-count{font-size:11px;color:var(--txt3);font-weight:600;letter-spacing:.01em;}
 
 /* ── VIRTUAL LIST ── */
-.vs-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;}
+.vs-wrap{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative;}
 .vs-inner{position:relative;width:100%;}
 .v-item{position:absolute;left:0;right:0;will-change:transform;}
 
@@ -95,8 +98,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 #alpha-bubble.show{opacity:1;}
 
 /* ── BOTTOM TAB BAR ── */
-.tab-bar{flex-shrink:0;background:var(--bg1);border-top:.5px solid var(--bdr);display:flex;height:var(--tab-h);z-index:20;}
-.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding-bottom:var(--safe-bot);border:none;background:none;color:var(--txt3);font-family:inherit;transition:color .12s;}
+.tab-bar{flex-shrink:0;background:var(--bg1);border-top:.5px solid var(--bdr);display:flex;flex-direction:column;z-index:20;}
+.tab-bar-inner{display:flex;height:var(--tab-h);}
+.tab-bar-safe{height:var(--safe-bot);background:var(--bg1);min-height:0;}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--txt3);font-family:inherit;transition:color .12s;}
 .tab-btn.active{color:var(--tc);}
 .tab-btn:active{background:var(--tc-faint);}
 .tab-ico{display:flex;align-items:center;justify-content:center;}
@@ -147,7 +152,7 @@ body.dark .back-btn{background:rgba(100,180,210,.1);}
 .sv-ctrls{background:var(--bg1);padding:10px 16px 10px;border-bottom:.5px solid var(--bdr);}
 .sv-ctrl-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
-.sv-sel{padding:5px 22px 5px 9px;border:.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:13px;font-weight:600;background:var(--bg2);color:var(--txt1);cursor:pointer;outline:none;font-family:inherit;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238eaab8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;}
+.sv-sel{padding:5px 9px;border:.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:13px;font-weight:600;background:var(--bg2);color:var(--txt1);cursor:pointer;outline:none;font-family:inherit;}
 .sv-sel:focus{border-color:var(--tc);}
 .pill{padding:5px 13px;border:.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:13px;font-weight:600;background:var(--bg2);color:var(--txt2);cursor:pointer;white-space:nowrap;font-family:inherit;}
 .pill:active{transform:scale(.95);}
@@ -176,6 +181,8 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .swipe-hint.show{opacity:.45;}
 .swipe-dot{width:5px;height:5px;border-radius:50%;background:var(--txt3);transition:background .2s,transform .2s;}
 .swipe-dot.active{background:var(--tc);transform:scale(1.4);}
+/* sv-scroll must be scrollable and not blocked */
+.sv-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative;}
 
 /* ── BOTTOM SHEETS ── */
 .bs-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.46);z-index:100;align-items:flex-end;justify-content:center;}
@@ -184,12 +191,17 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 @keyframes bsUp{from{transform:translateY(48px);opacity:0;}to{transform:none;opacity:1;}}
 .bs-handle{width:34px;height:4px;background:var(--txt3);border-radius:2px;margin:12px auto 0;opacity:.25;}
 .bs-title{font-size:15px;font-weight:700;color:var(--txt1);padding:12px 20px 8px;}
-.mi{display:flex;align-items:center;gap:13px;padding:14px 20px;font-size:16px;font-weight:500;color:var(--txt1);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:inherit;border-top:.5px solid var(--bdr);}
+.mi{display:flex;align-items:center;padding:14px 20px;font-size:16px;font-weight:500;color:var(--txt1);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:inherit;border-top:.5px solid var(--bdr);}
 .mi:first-of-type{border-top:none;}
 .mi:active{background:var(--bg2);}
 .mi.on{color:var(--tc);}
-.mi svg,.mi .mi-ico{flex-shrink:0;color:var(--txt3);font-size:17px;}
+/* Fixed-width icon wrapper ensures all labels align */
+.mi-icon-wrap{width:28px;min-width:28px;display:flex;align-items:center;justify-content:center;margin-right:12px;}
+.mi svg,.mi .mi-ico{color:var(--txt3);font-size:17px;}
 .mi.on svg,.mi.on .mi-ico{color:var(--tc);}
+/* Toggle indicator for on states */
+.mi-check{margin-left:auto;font-size:14px;color:var(--tc);display:none;}
+.mi.on .mi-check{display:block;}
 .bs-cancel{display:block;width:calc(100% - 32px);margin:8px 16px calc(8px + var(--safe-bot));padding:14px;background:var(--bg2);border:none;border-radius:var(--rad-pill);font-size:15px;font-weight:700;color:var(--txt1);cursor:pointer;font-family:inherit;text-align:center;}
 .bs-cancel:active{opacity:.7;}
 
@@ -292,6 +304,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
           <div class="wm-sub">Chord Library</div>
         </div>
       </div>
+      <button onclick="toggleDark()" id="hdr-dark-btn" style="background:rgba(255,255,255,.14);border:none;border-radius:9px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;" title="Toggle dark mode">☀</button>
     </div>
   </div>
 
@@ -306,8 +319,8 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
   <div class="toolbar" id="list-toolbar"><span class="song-count" id="song-count"></span></div>
 
   <!-- SONG LIST -->
-  <div id="song-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;">
-    <div style="flex:1;position:relative;overflow:hidden;">
+  <div id="song-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
+    <div style="flex:1;position:relative;overflow:hidden;min-height:0;">
       <div id="vscroll" class="vs-wrap"><div id="vinner" class="vs-inner"></div></div>
       <!-- ALPHABET STRIP -->
       <div id="alpha-strip"></div>
@@ -330,18 +343,21 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 
   <!-- TAB BAR -->
   <div class="tab-bar">
-    <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
-      <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h8M4 14h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-      <span class="tab-lbl">English</span>
-    </button>
-    <button class="tab-btn" id="tab-malayalam" onclick="switchTab('malayalam')">
-      <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 5h12M4 9h6M4 13h10M4 17h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-      <span class="tab-lbl">Malayalam</span>
-    </button>
-    <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
-      <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 5l-2 1v3l2-1V5z" fill="currentColor" opacity=".5"/><path d="M6 10l-2 1v3l2-1v-3z" fill="currentColor" opacity=".7"/><path d="M6 15l-2 1v3l2-1v-3z" fill="currentColor"/><path d="M9 6h8M9 11h6M9 16h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-      <span class="tab-lbl">Set List</span>
-    </button>
+    <div class="tab-bar-inner">
+      <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
+        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h8M4 14h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+        <span class="tab-lbl">English</span>
+      </button>
+      <button class="tab-btn" id="tab-malayalam" onclick="switchTab('malayalam')">
+        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 5h12M4 9h6M4 13h10M4 17h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+        <span class="tab-lbl">Malayalam</span>
+      </button>
+      <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
+        <span class="tab-ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 5l-2 1v3l2-1V5z" fill="currentColor" opacity=".5"/><path d="M6 10l-2 1v3l2-1v-3z" fill="currentColor" opacity=".7"/><path d="M6 15l-2 1v3l2-1v-3z" fill="currentColor"/><path d="M9 6h8M9 11h6M9 16h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+        <span class="tab-lbl">Set List</span>
+      </button>
+    </div>
+    <div class="tab-bar-safe"></div>
   </div>
 </div>
 
@@ -389,30 +405,31 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="bs-handle"></div>
     <div class="bs-title">Song options</div>
     <button class="mi" id="mi-lyrics" onclick="toggleLyrics();closeBS('songmenu')">
-      <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="2" y="4" width="13" height="1.8" rx=".9" fill="currentColor"/><rect x="2" y="8" width="9" height="1.8" rx=".9" fill="currentColor"/><rect x="2" y="12" width="13" height="1.8" rx=".9" fill="currentColor"/></svg>
-      Lyrics only
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="2" y="4" width="13" height="1.8" rx=".9" fill="currentColor"/><rect x="2" y="8" width="9" height="1.8" rx=".9" fill="currentColor"/><rect x="2" y="12" width="13" height="1.8" rx=".9" fill="currentColor"/></svg></span>
+      Lyrics only<span class="mi-check">✓</span>
     </button>
     <button class="mi" onclick="openBS('chords');closeBS('songmenu')">
-      <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 11V10c0-1.2.75-1.85 1.85-2.3.65-.3 1.15-.9 1.15-1.6A1.9 1.9 0 0 0 6.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8.5" cy="13" r=".9" fill="currentColor"/></svg>
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 11V10c0-1.2.75-1.85 1.85-2.3.65-.3 1.15-.9 1.15-1.6A1.9 1.9 0 0 0 6.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8.5" cy="13" r=".9" fill="currentColor"/></svg></span>
       Chord diagrams
     </button>
     <button class="mi" onclick="exportPDF();closeBS('songmenu')">
-      <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M4 2h7.5l3.5 3.5V15H4V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M11 2v4h4M6 9h5M6 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M4 2h7.5l3.5 3.5V15H4V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M11 2v4h4M6 9h5M6 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
       Export PDF (this song)
     </button>
     <button class="mi" id="mi-flats" onclick="toggleFlats();closeBS('songmenu')">
-      <span class="mi-ico">♭</span> Use flats
+      <span class="mi-icon-wrap"><span class="mi-ico">♭</span></span>
+      Use flats<span class="mi-check">✓</span>
     </button>
     <button class="mi" id="mi-copy-lyrics" onclick="copyLyrics();closeBS('songmenu')">
-      <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/></svg>
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/></svg></span>
       Copy lyrics
     </button>
     <button class="mi" id="mi-dark" onclick="toggleDark();closeBS('songmenu')">
-      <span class="mi-ico" id="dark-ico">🌙</span>
-      <span id="dark-lbl">Dark mode</span>
+      <span class="mi-icon-wrap"><span class="mi-ico" id="dark-ico">🌙</span></span>
+      <span id="dark-lbl">Dark mode</span><span class="mi-check">✓</span>
     </button>
     <button class="mi" onclick="requireAdmin(()=>{closeBS('songmenu');openSongModal(currentSong);})">
-      <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M12 3l2 2L5.5 13H3.5v-2L12 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M12 3l2 2L5.5 13H3.5v-2L12 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
       Edit song
     </button>
     <button class="bs-cancel" onclick="closeBS('songmenu')">Cancel</button>
@@ -863,35 +880,66 @@ let swipeRevealEl=null,swipeRevealStartX=0;
 function makeListNode(row){
   if(row.type==='alpha'){const d=document.createElement('div');d.className='alpha-sep';d.textContent=row.label;return d;}
   const s=row.song;const hc=s.chart&&s.chart.trim();
-  // Song row with swipe-to-reveal
   const wrap=document.createElement('div');wrap.className='song-row-wrap';
   const reveal=document.createElement('div');reveal.className='song-row-reveal';
   const inSet=setList.includes(s.id);
   reveal.innerHTML=inSet
     ?`<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`
     :`<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`;
-  reveal.title=inSet?'Remove from set':'Add to set';
-  reveal.addEventListener('click',e=>{e.stopPropagation();toggleSetSong(s.id);});
+  reveal.addEventListener('click',e=>{e.stopPropagation();toggleSetSong(s.id);resetSwipeItem(item);});
+  
   const item=document.createElement('div');item.className='song-item';
   item.innerHTML=`<div class="song-avatar">${s.title[0].toUpperCase()}</div><div class="song-info"><div class="song-title">${s.title}</div><div class="song-meta">${s.author}${!hc?'&nbsp;·&nbsp;<span style="color:var(--txt3)">No chords</span>':''}</div></div><span class="key-chip">${s.key}</span>`;
-  item.addEventListener('click',()=>{if(item.classList.contains('swiped')){item.style.transform='translateX(0)';item.classList.remove('swiped');return;}openSong(s.id,false);});
-  // Touch swipe-left on item
-  let sx=0,sy=0,moved=false;
-  item.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;moved=false;},{passive:true});
+  
+  item.addEventListener('click',()=>{
+    if(item.classList.contains('swiped')){resetSwipeItem(item);return;}
+    openSong(s.id,false);
+  });
+  
+  // Smooth horizontal swipe — only activates when gesture is clearly horizontal
+  let sx=0,sy=0,startedH=false,lockedH=false,lockedV=false;
+  item.addEventListener('touchstart',e=>{
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+    startedH=false;lockedH=false;lockedV=false;
+  },{passive:true});
+  
   item.addEventListener('touchmove',e=>{
-    const dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;
-    if(!moved&&Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy)){moved=true;}
-    if(moved){const clamped=Math.max(-80,Math.min(0,dx-(item.classList.contains('swiped')?-80:0)));item.style.transform=`translateX(${clamped}px)`;item.style.transition='none';}
+    const dx=e.touches[0].clientX-sx;
+    const dy=e.touches[0].clientY-sy;
+    if(!lockedH&&!lockedV){
+      if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)*1.5){lockedH=true;}
+      else if(Math.abs(dy)>6){lockedV=true;}
+    }
+    if(!lockedH)return;
+    // Apply transform smoothly
+    const base=item.classList.contains('swiped')?-80:0;
+    const clamped=Math.max(-80,Math.min(10,base+dx));
+    item.style.transform=`translateX(${clamped}px)`;
+    item.style.transition='none';
   },{passive:true});
+  
   item.addEventListener('touchend',e=>{
-    if(!moved)return;
+    if(!lockedH)return;
     const dx=e.changedTouches[0].clientX-sx;
-    item.style.transition='transform .2s ease';
-    if(dx<-40){item.style.transform='translateX(-80px)';item.classList.add('swiped');}
-    else{item.style.transform='translateX(0)';item.classList.remove('swiped');}
+    item.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
+    if(item.classList.contains('swiped')){
+      // Already open — close on right swipe, keep open otherwise
+      if(dx>20){resetSwipeItem(item);}
+      else{item.style.transform='translateX(-80px)';}
+    } else {
+      // Not open — open on left swipe past threshold
+      if(dx<-40){item.style.transform='translateX(-80px)';item.classList.add('swiped');}
+      else{resetSwipeItem(item);}
+    }
   },{passive:true});
+  
   wrap.appendChild(reveal);wrap.appendChild(item);
   return wrap;
+}
+function resetSwipeItem(item){
+  item.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
+  item.style.transform='translateX(0)';
+  item.classList.remove('swiped');
 }
 function renderVirtual(){
   const vEl=document.getElementById('vscroll'),vIn=document.getElementById('vinner');
@@ -1056,83 +1104,101 @@ function onSearch(){document.getElementById('srch-clr').style.display=document.g
 function clearSearch(){document.getElementById('srch-inp').value='';document.getElementById('srch-clr').style.display='none';refresh(true);}
 function toggleDark(){
   darkMode=!darkMode;document.body.classList.toggle('dark',darkMode);
-  document.getElementById('dark-ico').textContent=darkMode?'☀':'🌙';
+  const ico=darkMode?'☀':'🌙';
+  document.getElementById('dark-ico').textContent=ico;
+  document.getElementById('hdr-dark-btn').textContent=ico;
   document.getElementById('dark-lbl').textContent=darkMode?'Light mode':'Dark mode';
   document.getElementById('mi-dark').classList.toggle('on',darkMode);
   if(document.getElementById('bs-chords').classList.contains('open'))renderChordDiagrams();
 }
 
-/* ── SMOOTH SWIPE — no list-view flash ── */
+/* ── SWIPE BETWEEN SONGS ── */
+// Swipe detection directly on sv-scroll (no overlay layer needed)
+// The key insight: we only fire navigation on horizontal gestures, 
+// and we NEVER expose the list view during transition (we use a solid overlay layer)
 const songView=document.getElementById('song-view');
-let txX=0,txY=0,txT=0,txLocked=false;
+const svScrollEl=document.getElementById('sv-scroll');
+let swTouchX=0,swTouchY=0,swTouchT=0,swIsHoriz=false,swStarted=false;
 
-// Invisible capture overlay so list view never shows through
-const capLayer=document.createElement('div');
-capLayer.style.cssText='position:absolute;inset:0;z-index:2;';
-document.getElementById('sv-scroll').style.position='relative';
-document.getElementById('sv-scroll').appendChild(capLayer);
-
-capLayer.addEventListener('touchstart',e=>{txX=e.touches[0].clientX;txY=e.touches[0].clientY;txT=Date.now();txLocked=false;},{passive:true});
-capLayer.addEventListener('touchmove',e=>{
-  if(txLocked)return;
-  const dx=e.touches[0].clientX-txX,dy=e.touches[0].clientY-txY;
-  if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.4)txLocked=true;
+svScrollEl.addEventListener('touchstart',e=>{
+  swTouchX=e.touches[0].clientX;
+  swTouchY=e.touches[0].clientY;
+  swTouchT=Date.now();
+  swIsHoriz=false;swStarted=true;
 },{passive:true});
-capLayer.addEventListener('touchend',e=>{
-  if(!txLocked)return;txLocked=false;
-  const dx=e.changedTouches[0].clientX-txX;
-  const vel=Math.abs(dx)/(Date.now()-txT);
-  if(Math.abs(dx)<38&&vel<0.18)return;
+
+svScrollEl.addEventListener('touchmove',e=>{
+  if(!swStarted||swIsHoriz)return;
+  const dx=e.touches[0].clientX-swTouchX;
+  const dy=e.touches[0].clientY-swTouchY;
+  // Only lock in as horizontal if clearly horizontal gesture
+  if(Math.abs(dx)>14&&Math.abs(dx)>Math.abs(dy)*2.0){
+    swIsHoriz=true;
+  }
+},{passive:true});
+
+svScrollEl.addEventListener('touchend',e=>{
+  if(!swStarted||!swIsHoriz){swStarted=false;return;}
+  swStarted=false;swIsHoriz=false;
+  const dx=e.changedTouches[0].clientX-swTouchX;
+  const vel=Math.abs(dx)/(Date.now()-swTouchT);
+  // Require meaningful gesture
+  if(Math.abs(dx)<50&&vel<0.2)return;
   const list=getSongList(),ci=currentIndex();
   if(dx<0&&ci<list.length-1)swipeNav(list[ci+1],'left');
   else if(dx>0&&ci>0)swipeNav(list[ci-1],'right');
 },{passive:true});
-// Tap-through
-capLayer.addEventListener('click',e=>{
-  capLayer.style.pointerEvents='none';
-  const t=document.elementFromPoint(e.clientX,e.clientY);
-  capLayer.style.pointerEvents='';
-  if(t&&t!==capLayer)t.click();
-});
 
-// ── Back-edge swipe (returns to list) ── */
-let edgeStartX=0,edgeActive=false;
+// Back-edge swipe from left edge (< 30px) returns to list
+let edgeX=0,edgeActive=false;
 songView.addEventListener('touchstart',e=>{
-  edgeStartX=e.touches[0].clientX;
-  edgeActive=edgeStartX<28;// only trigger from left 28px edge
+  edgeX=e.touches[0].clientX;edgeActive=edgeX<30;
 },{passive:true});
 songView.addEventListener('touchend',e=>{
   if(!edgeActive)return;edgeActive=false;
-  const dx=e.changedTouches[0].clientX-edgeStartX;
-  if(dx>50)showList();
+  if(e.changedTouches[0].clientX-edgeX>55)showList();
 },{passive:true});
 
 function getSongList(){if(fromSetList)return setList.map(id=>findSongById(id)).filter(Boolean);return vRows.filter(r=>r.type==='song').map(r=>r.song);}
 function currentIndex(){return getSongList().findIndex(s=>s.id===currentSong?.id);}
 
+let swipeInProgress=false;
 function swipeNav(nextSong,dir){
-  const DUR=260;
-  // A fixed overlay that represents the incoming song — prevents list bleedthrough
-  const layer=document.createElement('div');
-  layer.style.cssText=`position:fixed;inset:0;z-index:9;background:var(--bg3);transform:translateX(${dir==='left'?'100%':'-100%'});will-change:transform;`;
-  document.body.appendChild(layer);
-  // Slide current out + layer in simultaneously
+  if(swipeInProgress)return;
+  swipeInProgress=true;
+  const DUR=280;
+  
+  // Solid overlay prevents list from showing through at any point
+  const cover=document.createElement('div');
+  cover.style.cssText='position:fixed;inset:0;z-index:9;background:var(--bg3);pointer-events:none;';
+  document.body.appendChild(cover);
+  
+  // Slide song view out — using transform only, no class changes during animation
   songView.style.transition=`transform ${DUR}ms cubic-bezier(.25,.46,.45,.94)`;
-  songView.style.transform=`translateX(${dir==='left'?'-55%':'55%'})`;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    layer.style.transition=`transform ${DUR}ms cubic-bezier(.25,.46,.45,.94)`;
-    layer.style.transform='translateX(0)';
-  }));
+  songView.style.transform=`translateX(${dir==='left'?'-45%':'45%'})`;
+  
   setTimeout(()=>{
-    layer.remove();
+    // Populate new song while hidden behind cover
     songView.style.transition='none';
     songView.style.transform=`translateX(${dir==='left'?'100%':'-100%'})`;
     openSong(nextSong.id,fromSetList);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      songView.style.transition=`transform ${DUR}ms cubic-bezier(.25,.46,.45,.94)`;
-      songView.style.transform='translateX(0)';
-      setTimeout(()=>{songView.style.transition='';songView.style.transform='';},DUR+20);
-    }));
+    
+    // Brief RAF to ensure DOM has updated
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        // Slide new song in
+        songView.style.transition=`transform ${DUR}ms cubic-bezier(.25,.46,.45,.94)`;
+        songView.style.transform='translateX(0)';
+        
+        // Remove cover slightly before animation ends
+        setTimeout(()=>{
+          cover.remove();
+          songView.style.transition='';
+          songView.style.transform='';
+          swipeInProgress=false;
+        },DUR+10);
+      });
+    });
   },DUR);
 }
 
@@ -1155,13 +1221,21 @@ function openSong(id,fromSet){
   document.getElementById('nns-btn').classList.remove('on');
   document.getElementById('mi-lyrics').classList.remove('on');
   document.getElementById('mi-flats').classList.remove('on');
+  if(darkMode)document.getElementById('mi-dark').classList.add('on');
   document.getElementById('back-label').textContent=fromSet?'Set List':'Back';
-  document.getElementById('sv-scroll').scrollTop=0;
+  svScrollEl.scrollTop=0;
   updateSongView();
-  if(!songView.classList.contains('visible')){
-    songView.style.transition='transform .3s cubic-bezier(.25,.46,.45,.94)';
+  // During swipe navigation, the caller handles the transition
+  // Only do slide-in when opening fresh from the list
+  if(!swipeInProgress){
+    if(!songView.classList.contains('visible')){
+      songView.style.transition='transform .3s cubic-bezier(.25,.46,.45,.94)';
+      songView.classList.add('visible');
+      setTimeout(()=>{songView.style.transition='';},320);
+    }
+  } else {
+    // Ensure it's marked visible for swipe nav
     songView.classList.add('visible');
-    setTimeout(()=>songView.style.transition='',320);
   }
   updateSwipeDots();
 }
