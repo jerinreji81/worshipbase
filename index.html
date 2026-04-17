@@ -1,10 +1,12 @@
-<html lang="en" style="--sat: 0px; --sab: 0px;"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="WorshipBase">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#ffffff"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="WorshipBase"/>
 <title>WorshipBase</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -52,11 +54,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .sync-badge.error{background:#c0392b;}
 
 /* Toast notification */
-#toast{position:fixed;bottom:calc(var(--tab-bar-h) + 12px);left:50%;transform:translateX(-50%) translateY(8px);background:rgba(16,55,74,.9);color:#fff;font-size:13px;font-weight:600;padding:8px 18px;border-radius:var(--rad-pill);z-index:400;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;white-space:nowrap;}
+#toast{position:fixed;bottom:calc(var(--tab-h) + 22px);left:50%;transform:translateX(-50%) translateY(8px);background:rgba(16,55,74,.9);color:#fff;font-size:13px;font-weight:600;padding:8px 18px;border-radius:var(--rad-pill);z-index:400;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;white-space:nowrap;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* ── VIEWS ── */
-#list-view{position:fixed;inset:0;padding-bottom:var(--tab-bar-h);display:flex;flex-direction:column;background:var(--bg1);overflow:hidden;}
+#list-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg1);overflow:hidden;}
 #list-view>*{flex-shrink:0;}
 #list-view #song-section,#list-view #setlist-section,#list-view #settings-section{flex-shrink:1;}
 #song-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg1);transform:translateX(100%);z-index:10;will-change:transform;}
@@ -71,31 +73,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .hdr-btn{background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;opacity:.85;}
 .hdr-btn:active{opacity:.5;}
 
-/* ── FIXED BOTTOM TAB BAR ── */
+/* ── BOTTOM TAB BAR — buttons sit close to home indicator, minimal gap ── */
 .tab-bar{
-  position:fixed;
-  left:0;right:0;bottom:0;
-  z-index:50;
+  flex-shrink:0;
   background:var(--bg1);
   border-top:.5px solid var(--bdr);
   display:flex;
-  min-height:var(--tab-bar-base);
-  padding-bottom:var(--sab);
-}
-body::after{
-  content:'';
-  position:fixed;
-  left:0;right:0;bottom:0;
-  height:var(--sab);
-  background:var(--bg1);
-  pointer-events:none;
-  z-index:49;
+  z-index:20;
+  /* Total height = button row + small clearance from home indicator (10px max).
+     We deliberately do NOT use full --sab here; iOS reports ~34px which leaves
+     a huge visual gap below the buttons. 10px is enough to clear the indicator. */
+  height:calc(var(--tab-h) + 10px);
+  align-items:flex-start;
 }
 body.song-open .tab-bar,
 body.song-open #tab-bar{
-  transform:translateY(calc(100% + var(--sab) + 8px));
-  opacity:0;
-  pointer-events:none;
+  display:none;
 }
 
 .tab-btn{
@@ -103,11 +96,11 @@ body.song-open #tab-bar{
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   gap:3px;
-  padding:9px 4px 8px;
   cursor:pointer;border:none;background:none;
   color:var(--txt3);
   font-family:inherit;
   transition:color .15s;
+  height:var(--tab-h);
   -webkit-tap-highlight-color:transparent;
 }
 .tab-btn.active{color:var(--tc);}
@@ -115,8 +108,6 @@ body.dark .tab-btn.active{color:#5bc8ea;}
 .tab-btn:active{opacity:.6;}
 .tab-ico{display:flex;align-items:center;justify-content:center;}
 .tab-lbl{font-size:10px;font-weight:600;letter-spacing:.01em;}
-/* Tab bar height for content padding calculation */
-:root{--tab-bar-base:58px;--tab-bar-h:calc(var(--tab-bar-base) + var(--sab));}
 
 /* ── SONG VIEW HEADER — circle bubble back btn & menu btn ── */
 .sv-hdr{background:var(--bg1);border-bottom:.5px solid var(--bdr);padding:calc(var(--sat) + 10px) 16px 12px;flex-shrink:0;}
@@ -167,7 +158,7 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 
 /* ── VIRTUAL LIST ── */
 .vs-host{flex:1;position:relative;overflow:hidden;min-height:0;}
-.vs-wrap{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:var(--tab-bar-h);}
+.vs-wrap{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
 .vs-inner{position:relative;width:100%;}
 .v-item{position:absolute;left:0;right:0;will-change:transform;}
 .alpha-sep{height:32px;padding:0 16px;display:flex;align-items:flex-end;padding-bottom:4px;font-size:15px;font-weight:800;color:var(--txt1);background:var(--bg1);position:absolute;left:0;right:0;will-change:transform;letter-spacing:0;}
@@ -185,7 +176,7 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 .song-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.1px;}
 .song-meta{font-size:12px;color:var(--txt3);margin-top:2px;}
 .key-chip{background:var(--tc-light);color:var(--tc);font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--rad-pill);border:.5px solid var(--tc-mid);white-space:nowrap;}
-.add-fab{position:absolute;bottom:calc(var(--tab-bar-h) + 12px);right:16px;background:var(--tc);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);z-index:10;padding-bottom:1px;}
+.add-fab{position:absolute;bottom:18px;right:16px;background:var(--tc);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);z-index:10;padding-bottom:1px;}
 .add-fab:active{transform:scale(.93);}
 
 /* ── ALPHABET STRIP ── */
@@ -220,7 +211,7 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 .sl-ei{font-size:36px;margin-bottom:10px;}
 .sl-et{font-size:15px;font-weight:600;color:var(--txt2);margin-bottom:3px;}
 .sl-es{font-size:13px;line-height:1.6;}
-.sl-items{padding-bottom:calc(var(--tab-bar-h) + 20px);}
+.sl-items{padding-bottom:20px;}
 
 /* ── SONG VIEW CONTROLS (sv-hdr/back-btn/menu-btn defined above) ── */
 
@@ -370,7 +361,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .rs-text{font-size:14px;color:var(--txt1);}
 
 /* ── SETTINGS SECTION ── */
-.settings-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--tab-bar-h) + 16px);}
+.settings-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:16px;}
 .ss-section{padding:16px 16px 6px;}
 .ss-title{font-size:11px;font-weight:700;color:var(--txt3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;padding:0 4px;}
 .ss-card{background:var(--bg1);border-radius:var(--rad-lg);overflow:hidden;box-shadow:var(--shadow-sm);}
@@ -443,11 +434,11 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 <body>
 
 <!-- LOADING -->
-<div id="ls" class="hidden" style="display: none;">
+<div id="ls">
   <svg width="60" height="60" viewBox="0 0 60 60" fill="none" style="margin-bottom:20px">
-    <rect width="60" height="60" rx="14" fill="rgba(255,255,255,0.12)"></rect>
-    <path d="M9 20L17 42L25.5 28L30 36L34.5 28L43 42L51 20" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-    <circle cx="30" cy="51" r="2.5" fill="white" opacity=".5"></circle>
+    <rect width="60" height="60" rx="14" fill="rgba(255,255,255,0.12)"/>
+    <path d="M9 20L17 42L25.5 28L30 36L34.5 28L43 42L51 20" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="30" cy="51" r="2.5" fill="white" opacity=".5"/>
   </svg>
   <div style="color:rgba(255,255,255,.9);font-size:17px;font-weight:800;">WorshipBase</div>
   <div style="color:rgba(255,255,255,.42);font-size:13px;margin-top:5px;">Loading your library…</div>
@@ -462,16 +453,16 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="hdr-row">
       <div class="wm">
         <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
-          <rect width="30" height="30" rx="7" fill="rgba(255,255,255,0.12)"></rect>
-          <path d="M3.5 9L8 20L12 13.5L15 17.5L18 13.5L22 20L26.5 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-          <circle cx="15" cy="24" r="1.4" fill="white" opacity=".5"></circle>
+          <rect width="30" height="30" rx="7" fill="rgba(255,255,255,0.12)"/>
+          <path d="M3.5 9L8 20L12 13.5L15 17.5L18 13.5L22 20L26.5 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="15" cy="24" r="1.4" fill="white" opacity=".5"/>
         </svg>
         <div><div class="wm-name">WorshipBase</div><div class="wm-sub">Chord Library</div></div>
       </div>
       <!-- Dark mode toggle in header -->
       <button class="hdr-btn" onclick="toggleDark()" id="hdr-dark-btn" title="Toggle dark mode">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="dark-ico-svg">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
       </button>
     </div>
@@ -481,22 +472,22 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
   <div class="srch-wrap" id="srch-wrap">
     <div class="srch-row">
       <div class="srch-inner">
-        <span class="srch-ico"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"></circle><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
-        <input class="srch-inp" id="srch-inp" type="search" placeholder="Search songs or artists…" oninput="onSearch()">
+        <span class="srch-ico"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+        <input class="srch-inp" id="srch-inp" type="search" placeholder="Search songs or artists…" oninput="onSearch()"/>
         <button class="srch-clr" id="srch-clr" onclick="clearSearch()">×</button>
       </div>
-      <span class="song-count" id="song-count">114 songs</span>
+      <span class="song-count" id="song-count"></span>
     </div>
   </div>
 
   <!-- SONG LIST -->
   <div id="song-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
     <div class="vs-host ptr-wrap">
-      <div id="ptr-indicator"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 2l-2 2M9 2l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 9a7 7 0 1 1-7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
-      <div id="vscroll" class="vs-wrap"><div id="vinner" class="vs-inner" style="height: 8228px;"><div class="alpha-sep v-item" style="top: 0px;">1</div><div class="song-row-wrap v-item" style="top: 32px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">1</div><div class="song-info"><div class="song-title">10,000 Reasons</div><div class="song-meta">Matt Redman · G</div></div></div></div><div class="alpha-sep v-item" style="top: 98px;">A</div><div class="song-row-wrap v-item" style="top: 130px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">A</div><div class="song-info"><div class="song-title">Alive</div><div class="song-meta">Hillsong Young &amp; Free · E</div></div></div></div><div class="song-row-wrap v-item" style="top: 196px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">A</div><div class="song-info"><div class="song-title">All Because Of Jesus</div><div class="song-meta">Fee · E</div></div></div></div><div class="song-row-wrap v-item" style="top: 262px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">A</div><div class="song-info"><div class="song-title">All Heaven Declares</div><div class="song-meta">Tricia Richards · D</div></div></div></div><div class="song-row-wrap v-item" style="top: 328px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">A</div><div class="song-info"><div class="song-title">All The Poor And Powerless</div><div class="song-meta">All Sons &amp; Daughters · E</div></div></div></div><div class="song-row-wrap v-item" style="top: 394px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">A</div><div class="song-info"><div class="song-title">All Who Are Thirsty</div><div class="song-meta">Brenton Brown · D</div></div></div></div><div class="song-row-wrap v-item" style="top: 460px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">A</div><div class="song-info"><div class="song-title">Amazing Grace (My Chains Are Gone)</div><div class="song-meta">Chris Tomlin · G</div></div></div></div><div class="song-row-wrap v-item" style="top: 526px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">A</div><div class="song-info"><div class="song-title">Amazing Grace (My Chains Are Gone)</div><div class="song-meta">Chris Tomlin · G</div></div></div></div><div class="song-row-wrap v-item" style="top: 592px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">A</div><div class="song-info"><div class="song-title">Arise My Love</div><div class="song-meta">Eddie Espinosa · G</div></div></div></div><div class="song-row-wrap v-item" style="top: 658px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">A</div><div class="song-info"><div class="song-title">At The Cross</div><div class="song-meta">Hillsong Worship · G</div></div></div></div><div class="alpha-sep v-item" style="top: 724px;">B</div><div class="song-row-wrap v-item" style="top: 756px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">B</div><div class="song-info"><div class="song-title">Battle Belongs</div><div class="song-meta">Phil Wickham · G</div></div></div></div><div class="song-row-wrap v-item" style="top: 822px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">B</div><div class="song-info"><div class="song-title">Be Thou My Vision</div><div class="song-meta">Traditional Irish · D</div></div></div></div><div class="song-row-wrap v-item" style="top: 888px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">B</div><div class="song-info"><div class="song-title">Beautiful</div><div class="song-meta">Phil Wickham · G</div></div></div></div><div class="song-row-wrap v-item" style="top: 954px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar">B</div><div class="song-info"><div class="song-title">Before The Throne Of God Above</div><div class="song-meta">Charitie Lees Smith · D</div></div></div></div></div></div>
-      <div id="alpha-strip"><div class="alpha-letter">1</div><div class="alpha-letter">A</div><div class="alpha-letter">B</div><div class="alpha-letter">C</div><div class="alpha-letter">D</div><div class="alpha-letter">E</div><div class="alpha-letter">F</div><div class="alpha-letter">G</div><div class="alpha-letter">H</div><div class="alpha-letter">I</div><div class="alpha-letter">J</div><div class="alpha-letter">K</div><div class="alpha-letter">L</div><div class="alpha-letter">M</div><div class="alpha-letter">N</div><div class="alpha-letter">O</div><div class="alpha-letter">P</div><div class="alpha-letter">R</div><div class="alpha-letter">S</div><div class="alpha-letter">T</div><div class="alpha-letter">W</div><div class="alpha-letter">Y</div></div>
+      <div id="ptr-indicator"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 2l-2 2M9 2l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 9a7 7 0 1 1-7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <div id="vscroll" class="vs-wrap"><div id="vinner" class="vs-inner"></div></div>
+      <div id="alpha-strip"></div>
     </div>
-    <button class="add-fab" onclick="requireAdmin(()=&gt;openSongModal(null))">+</button>
+    <button class="add-fab" onclick="requireAdmin(()=>openSongModal(null))">+</button>
   </div>
 
   <!-- SET LIST -->
@@ -522,23 +513,23 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
         <div class="ss-title">Appearance</div>
         <div class="ss-card">
           <div class="ss-row" onclick="toggleDark()">
-            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><circle cx="8" cy="8" r="2.8" stroke="currentColor" stroke-width="1.5"></circle></svg></div>
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="8" r="2.8" stroke="currentColor" stroke-width="1.5"/></svg></div>
             <div class="ss-body"><div class="ss-lbl">Dark mode</div></div>
             <div class="sw" id="dark-sw" onclick="event.stopPropagation();toggleDark()"><div class="sw-thumb"></div></div>
           </div>
           <div class="ss-row no-tap">
-            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 12h3.5L13 4.5 11.5 3 4 10.5V14H2v-2z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 12h3.5L13 4.5 11.5 3 4 10.5V14H2v-2z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="ss-body">
               <div class="ss-lbl">Text size</div>
               <div class="sz-wrap">
                 <span class="sz-a" style="font-size:11px">A</span>
-                <input type="range" class="sz-slider" id="text-size-slider" min="85" max="125" value="100" oninput="applyTextSize(this.value)">
+                <input type="range" class="sz-slider" id="text-size-slider" min="85" max="125" value="100" oninput="applyTextSize(this.value)"/>
                 <span class="sz-a" style="font-size:17px">A</span>
               </div>
             </div>
           </div>
           <div class="ss-row no-tap">
-            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"></circle><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"></circle></svg></div>
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/></svg></div>
             <div class="ss-body"><div class="ss-lbl">Colour theme</div></div>
           </div>
           <div class="theme-row" id="theme-swatches"></div>
@@ -549,12 +540,12 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
         <div class="ss-title">Library</div>
         <div class="ss-card">
           <div class="ss-row" onclick="openBS('setkey')">
-            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="5.5" cy="10.5" r="3" stroke="currentColor" stroke-width="1.5"></circle><path d="M8.5 10.5h5M12 8.5v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></div>
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="5.5" cy="10.5" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M8.5 10.5h5M12 8.5v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
             <div class="ss-body"><div class="ss-lbl">Default display key</div><div class="ss-sub" id="def-key-sub">Show songs in their original key</div></div>
-            <div class="ss-right"><span class="ss-val" id="def-key-val">Original</span><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+            <div class="ss-right"><span class="ss-val" id="def-key-val">Original</span><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           </div>
           <div class="ss-row" onclick="toggleDeviceSetList()">
-            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="2" stroke="currentColor" stroke-width="1.5"></rect><path d="M5 7h6M5 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></div>
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3" width="13" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 7h6M5 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
             <div class="ss-body"><div class="ss-lbl">Personal set list</div><div class="ss-sub">Stored on this device only (not shared)</div></div>
             <div class="sw" id="device-sl-sw" onclick="event.stopPropagation();toggleDeviceSetList()"><div class="sw-thumb"></div></div>
           </div>
@@ -565,16 +556,16 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
         <div class="ss-title">Data</div>
         <div class="ss-card">
           <div class="ss-row" onclick="exportJSON()">
-            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></div>
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
             <div class="ss-body"><div class="ss-lbl">Export library (JSON)</div><div class="ss-sub">Download all songs as a backup</div></div>
-            <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+            <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           </div>
           <div class="ss-row" onclick="document.getElementById('import-file').click()">
-            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 10V2M8 2L5 5M8 2l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></div>
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 10V2M8 2L5 5M8 2l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
             <div class="ss-body"><div class="ss-lbl">Import library (JSON)</div><div class="ss-sub">Restore from a backup file</div></div>
-            <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+            <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           </div>
-          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)"/>
         </div>
       </div>
 
@@ -582,9 +573,9 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
         <div class="ss-title">Security</div>
         <div class="ss-card">
           <div class="ss-row" onclick="openBS('changepin')">
-            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M5 7V5a3 3 0 1 1 6 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><circle cx="8" cy="10.5" r="1" fill="currentColor"></circle></svg></div>
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 7V5a3 3 0 1 1 6 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="10.5" r="1" fill="currentColor"/></svg></div>
             <div class="ss-body"><div class="ss-lbl">Change admin PIN</div><div class="ss-sub">Requires current PIN</div></div>
-            <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+            <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           </div>
         </div>
       </div>
@@ -594,7 +585,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
         <div class="ss-card">
           <div style="padding:24px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;">
             <div style="width:56px;height:56px;border-radius:14px;background:var(--tc);display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
-              <svg width="32" height="32" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"></circle></svg>
+              <svg width="32" height="32" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg>
             </div>
             <div style="font-size:18px;font-weight:800;color:var(--txt1);text-align:center;">WorshipBase</div>
             <div style="font-size:13px;color:var(--txt3);margin-top:4px;text-align:center;">Version 1.5.0</div>
@@ -608,28 +599,28 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
   </div>
 
     </div>
-  
+  </div>
 
   <!-- FIXED BOTTOM TAB BAR -->
   <div class="tab-bar" id="tab-bar">
     <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
-      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span>
+      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
       <span class="tab-lbl">English</span>
     </button>
     <button class="tab-btn" id="tab-malayalam" onclick="switchTab('malayalam')">
-      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 5h16M4 10h7M4 15h13M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span>
+      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 5h16M4 10h7M4 15h13M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
       <span class="tab-lbl">Malayalam</span>
     </button>
     <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
-      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="4" height="4" rx="1" fill="currentColor" opacity=".5"></rect><rect x="3" y="11" width="4" height="4" rx="1" fill="currentColor" opacity=".75"></rect><rect x="3" y="17" width="4" height="4" rx="1" fill="currentColor"></rect><path d="M11 7h10M11 13h8M11 19h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span>
+      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="4" height="4" rx="1" fill="currentColor" opacity=".5"/><rect x="3" y="11" width="4" height="4" rx="1" fill="currentColor" opacity=".75"/><rect x="3" y="17" width="4" height="4" rx="1" fill="currentColor"/><path d="M11 7h10M11 13h8M11 19h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
       <span class="tab-lbl">Set List</span>
     </button>
     <button class="tab-btn" id="tab-settings" onclick="switchTab('settings')">
-      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.07a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+      <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.07a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
       <span class="tab-lbl">Settings</span>
     </button>
   </div>
-
+</div>
 
 <!-- ═══ SONG VIEW ═══ -->
 <div id="song-view">
@@ -637,11 +628,11 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="sv-top">
       <!-- Circle bubble back button — no text, just chevron -->
       <button class="back-btn" onclick="showList()" id="back-btn" title="Back">
-        <svg width="11" height="16" viewBox="0 0 9 14" fill="none"><path d="M8 1L1.5 7L8 13" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <svg width="11" height="16" viewBox="0 0 9 14" fill="none"><path d="M8 1L1.5 7L8 13" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <!-- Circle bubble menu button -->
       <button class="menu-btn" onclick="openBS('songmenu')">
-        <svg width="18" height="4" viewBox="0 0 18 4" fill="none"><circle cx="2" cy="2" r="2" fill="currentColor"></circle><circle cx="9" cy="2" r="2" fill="currentColor"></circle><circle cx="16" cy="2" r="2" fill="currentColor"></circle></svg>
+        <svg width="18" height="4" viewBox="0 0 18 4" fill="none"><circle cx="2" cy="2" r="2" fill="currentColor"/><circle cx="9" cy="2" r="2" fill="currentColor"/><circle cx="16" cy="2" r="2" fill="currentColor"/></svg>
       </button>
     </div>
     <div class="sv-title" id="sv-title"></div>
@@ -685,19 +676,19 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="bs-handle"></div>
     <div class="bs-title">Song options</div>
     <button class="mi" id="mi-lyrics" onclick="toggleLyrics();closeBS('songmenu')">
-      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="2" y="4" width="13" height="1.8" rx=".9" fill="currentColor"></rect><rect x="2" y="8" width="9" height="1.8" rx=".9" fill="currentColor"></rect><rect x="2" y="12" width="13" height="1.8" rx=".9" fill="currentColor"></rect></svg></span>
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="2" y="4" width="13" height="1.8" rx=".9" fill="currentColor"/><rect x="2" y="8" width="9" height="1.8" rx=".9" fill="currentColor"/><rect x="2" y="12" width="13" height="1.8" rx=".9" fill="currentColor"/></svg></span>
       Lyrics only<span class="mi-check">✓</span>
     </button>
     <button class="mi" id="mi-copy-lyrics" onclick="copyLyrics();closeBS('songmenu')">
-      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"></rect></svg></span>
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/></svg></span>
       Copy lyrics
     </button>
     <button class="mi" onclick="openBS('chords');closeBS('songmenu')">
-      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.5"></circle><path d="M6.5 11V10c0-1.2.75-1.85 1.85-2.3.65-.3 1.15-.9 1.15-1.6A1.9 1.9 0 0 0 6.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><circle cx="8.5" cy="13" r=".9" fill="currentColor"></circle></svg></span>
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 11V10c0-1.2.75-1.85 1.85-2.3.65-.3 1.15-.9 1.15-1.6A1.9 1.9 0 0 0 6.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8.5" cy="13" r=".9" fill="currentColor"/></svg></span>
       Chord diagrams
     </button>
     <button class="mi" onclick="exportPDF();closeBS('songmenu')">
-      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M4 2h7.5l3.5 3.5V15H4V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path><path d="M11 2v4h4M6 9h5M6 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M4 2h7.5l3.5 3.5V15H4V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M11 2v4h4M6 9h5M6 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
       Export PDF (this song)
     </button>
     <button class="mi" id="mi-flats" onclick="toggleFlats();closeBS('songmenu')">
@@ -708,8 +699,8 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
       <span class="mi-icon-wrap"><span class="mi-ico" id="dark-ico">🌙</span></span>
       <span id="dark-lbl">Dark mode</span><span class="mi-check">✓</span>
     </button>
-    <button class="mi" onclick="requireAdmin(()=&gt;{closeBS('songmenu');openSongModal(currentSong);})">
-      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M12 3l2 2L5.5 13H3.5v-2L12 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></span>
+    <button class="mi" onclick="requireAdmin(()=>{closeBS('songmenu');openSongModal(currentSong);})">
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M12 3l2 2L5.5 13H3.5v-2L12 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
       Edit song
     </button>
     <button class="bs-cancel" onclick="closeBS('songmenu')">Cancel</button>
@@ -724,14 +715,12 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="m-body">
       <label>Category</label>
       <div class="cat-toggle"><button class="cat-opt active" onclick="selectCat('english',this)">English</button><button class="cat-opt" onclick="selectCat('malayalam',this)">Malayalam</button></div>
-      <label>Title</label><input type="text" id="m-title" placeholder="e.g. How Great Is Our God">
-      <label>Author / Artist</label><input type="text" id="m-author" placeholder="e.g. Chris Tomlin">
+      <label>Title</label><input type="text" id="m-title" placeholder="e.g. How Great Is Our God"/>
+      <label>Author / Artist</label><input type="text" id="m-author" placeholder="e.g. Chris Tomlin"/>
       <label>Original key</label><select id="m-key"></select>
       <label>Chord chart <span style="color:var(--txt3);font-weight:400">(optional)</span></label>
       <p class="m-hint">ChordPro: [G]The splendor of a [C]King. Or chord-above-lyrics. Blank lines = verse gaps.</p>
-      <textarea id="m-chart" placeholder="[Verse 1]
-[G]The splendor of a [C]King
-[Em]Let all the earth [C]rejoice"></textarea>
+      <textarea id="m-chart" placeholder="[Verse 1]&#10;[G]The splendor of a [C]King&#10;[Em]Let all the earth [C]rejoice"></textarea>
       <div class="m-acts">
         <button class="btn-d" id="delete-btn" onclick="deleteSong()" style="display:none">Delete</button>
         <button class="btn-s" onclick="closeBS('modal')">Cancel</button>
@@ -747,7 +736,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Add to set</h2><button class="m-close" onclick="closeBS('picker')">×</button></div>
     <div class="m-body">
-      <input class="psr" id="picker-search" type="search" placeholder="Search…" oninput="renderPicker()">
+      <input class="psr" id="picker-search" type="search" placeholder="Search…" oninput="renderPicker()"/>
       <div class="pf-row">
         <button class="pf-btn active" onclick="setPickerFilter('all',this)">All</button>
         <button class="pf-btn" onclick="setPickerFilter('english',this)">English</button>
@@ -804,7 +793,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="m-body">
       <p class="pin-hint">Enter the admin PIN to add or edit songs. Everyone can manage the set list without a PIN.</p>
       <label>PIN</label>
-      <input type="password" id="pin-input" placeholder="Enter PIN" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="10" onkeydown="if(event.key==='Enter')checkPin()">
+      <input type="password" id="pin-input" placeholder="Enter PIN" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="10" onkeydown="if(event.key==='Enter')checkPin()"/>
       <p id="pin-err" style="font-size:12px;color:#d93448;margin-top:-8px;margin-bottom:12px;display:none">Incorrect PIN. Try again.</p>
       <div class="m-acts">
         <button class="btn-s" onclick="closeBS('pin');pendingAdminAction=null">Cancel</button>
@@ -820,9 +809,9 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 <!-- CONTEXT MENU (long-press on song) -->
 <div class="ctx-bg" id="ctx-bg" onclick="closeCtx()"></div>
 <div class="ctx-menu" id="ctx-menu" style="display:none">
-  <button class="ctx-item" onclick="ctxAction('set')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 13h3L12 6 10 4 3 11v2zM10 4l2 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg><span id="ctx-set-lbl">Add to set list</span></button>
-  <button class="ctx-item" onclick="ctxAction('lyrics')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="9" height="11" rx="2" stroke="currentColor" stroke-width="1.4"></rect><rect x="1" y="4" width="9" height="11" rx="2" stroke="currentColor" stroke-width="1.4"></rect></svg>Copy lyrics</button>
-  <button class="ctx-item" onclick="ctxAction('edit')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M11 2.5l2.5 2.5L5 13.5H2.5V11L11 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>Edit song</button>
+  <button class="ctx-item" onclick="ctxAction('set')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 13h3L12 6 10 4 3 11v2zM10 4l2 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="ctx-set-lbl">Add to set list</span></button>
+  <button class="ctx-item" onclick="ctxAction('lyrics')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="9" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4" width="9" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/></svg>Copy lyrics</button>
+  <button class="ctx-item" onclick="ctxAction('edit')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M11 2.5l2.5 2.5L5 13.5H2.5V11L11 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Edit song</button>
 </div>
 
 <!-- DEFAULT KEY picker -->
@@ -844,11 +833,11 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
     <div class="m-tr"><h2 class="m-h2">Change admin PIN</h2><button class="m-close" onclick="closeBS('changepin')">×</button></div>
     <div class="m-body">
       <label>Current PIN</label>
-      <input type="password" id="cp-current" placeholder="Enter current PIN" inputmode="numeric" autocomplete="off" maxlength="10">
+      <input type="password" id="cp-current" placeholder="Enter current PIN" inputmode="numeric" autocomplete="off" maxlength="10"/>
       <label>New PIN</label>
-      <input type="password" id="cp-new" placeholder="Enter new PIN (4–8 digits)" inputmode="numeric" autocomplete="off" maxlength="10">
+      <input type="password" id="cp-new" placeholder="Enter new PIN (4–8 digits)" inputmode="numeric" autocomplete="off" maxlength="10"/>
       <label>Confirm new PIN</label>
-      <input type="password" id="cp-confirm" placeholder="Repeat new PIN" inputmode="numeric" autocomplete="off" maxlength="10">
+      <input type="password" id="cp-confirm" placeholder="Repeat new PIN" inputmode="numeric" autocomplete="off" maxlength="10"/>
       <p id="cp-err" style="font-size:12px;color:#d93448;margin-bottom:12px;display:none"></p>
       <div class="m-acts">
         <button class="btn-s" onclick="closeBS('changepin')">Cancel</button>
@@ -2157,6 +2146,5 @@ applyStoredPrefs();
 initFirebase();
 initPTR();
 </script>
-
-
-</body><div style="position: fixed; top: 0px; left: 0px; width: 1px; height: env(safe-area-inset-top,0px); pointer-events: none; opacity: 0; z-index: -1;"></div><div style="position: fixed; bottom: 0px; left: 0px; width: 1px; height: env(safe-area-inset-bottom,0px); pointer-events: none; opacity: 0; z-index: -1;"></div></html>
+</body>
+</html>
