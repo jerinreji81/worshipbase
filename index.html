@@ -38,22 +38,24 @@ input,button,select,textarea{font-family:-apple-system,BlinkMacSystemFont,'SF Pr
   --hdr-bg:var(--tc);
 }
 body.dark{
-  --bg1:#10161d;--bg2:#171f28;--bg3:#0d1319;
-  --txt1:#e8eef3;--txt2:#a8b7c5;--txt3:#6f8190;
-  --bdr:rgba(255,255,255,.07);--bdr2:rgba(255,255,255,.12);
-  --tc-light:#131b22;--tc-mid:rgba(255,255,255,.16);
+  --bg1:#0b1117;--bg2:#111922;--bg3:#18222d;
+  --txt1:#edf3f7;--txt2:#b6c4cf;--txt3:#728394;
+  --bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.12);
+  --tc-light:#101922;--tc-mid:#2f485c;
   --shadow-sm:0 1px 4px rgba(0,0,0,.28);
-  --shadow-md:0 6px 18px rgba(0,0,0,.34);
-  --shadow-lg:0 14px 40px rgba(0,0,0,.44);
-  --hdr-bg:#131a21;
-  /* Dark mode palette is generated from the chosen theme and kept soft. */
-  --accent:#b7dff0;
-  --accent-strong:#c8eaf8;
-  --accent-soft:#90b8c8;
-  --accent-bg:rgba(183,223,240,.14);
-  --accent-border:rgba(183,223,240,.28);
-  --chord-color:#cdefff;
-  --accent-fg:#0f161c;
+  --shadow-md:0 8px 24px rgba(0,0,0,.38);
+  --shadow-lg:0 16px 44px rgba(0,0,0,.48);
+  --hdr-bg:#101821;
+  /* Dark mode uses a palette derived from the chosen theme.
+     JS sets these dynamically so every theme becomes a soft modern accent system. */
+  --accent:#9fd8bf;
+  --accent-strong:#8bcfaf;
+  --accent-surface:rgba(159,216,191,.14);
+  --accent-surface-strong:rgba(159,216,191,.22);
+  --accent-border:rgba(159,216,191,.36);
+  --chord-color:#c9f7df;
+  --accent-bg:rgba(159,216,191,.16);
+  --accent-fg:#08131a;
 }
 /* Light mode accent = the theme colour itself */
 :root{--accent:var(--tc);--accent-bg:var(--tc-light);--accent-fg:#ffffff;}
@@ -61,6 +63,8 @@ html,body{height:100vh;overflow:hidden;}
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;
   background:var(--bg1);color:var(--txt1);font-size:16px;
   -webkit-font-smoothing:antialiased;overscroll-behavior:none;}
+body{transition:background-color .24s ease,color .24s ease;}
+.song-item,.set-item,.pill,.set-key-btn,.key-chip,.in-set-pill,.song-avatar,.back-btn,.menu-btn,.sv-sel,.sl-export-btn,.scroll-top-btn,.bs,.ss-card{transition:background-color .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease;}
 
 /* ── LOADING ── */
 #ls{position:fixed;inset:0;background:var(--tc);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .35s;}
@@ -124,7 +128,7 @@ body.song-open #tab-bar{
   -webkit-tap-highlight-color:transparent;
 }
 .tab-btn.active{color:var(--tc);}
-body.dark .tab-btn.active{color:var(--accent);}
+body.dark .tab-btn.active{color:#5bc8ea;}
 .tab-btn:active{opacity:.6;}
 .tab-ico{display:flex;align-items:center;justify-content:center;}
 .tab-ico svg{width:24px;height:24px;}
@@ -465,56 +469,128 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .pa{font-size:13px;color:#555;margin-bottom:2px;}
 .pk{font-size:11px;color:#10374A;font-weight:700;}
 
-/* ── DARK MODE: restrained accent system with soft tinted surfaces ── */
-body.dark .back-btn{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent);}
-body.dark .menu-btn{background:var(--bg2);border-color:var(--bdr2);}
-body.dark .xp-btn{color:var(--accent);background:var(--accent-bg);border-color:var(--accent-border);}
-body.dark .xp-btn:active{background:var(--accent);color:var(--accent-fg);}
-body.dark .size-pill{background:var(--bg2);border-color:var(--bdr2);}
-body.dark .size-pill button{color:var(--accent);}
-body.dark .size-pill button:active{background:var(--accent);color:var(--accent-fg);}
-body.dark .pill.on{background:var(--accent-bg);color:var(--accent-strong);border-color:var(--accent-border);}
-body.dark .sl-export-btn{color:var(--accent);border-color:var(--accent-border);background:var(--accent-bg);}
-body.dark .song-avatar{color:var(--accent);background:var(--accent-bg);border-color:var(--accent-border);}
-body.dark .in-set-pill{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent-strong);}
-body.dark .set-key-btn{color:var(--accent);background:var(--bg2);border-color:var(--bdr2);}
-body.dark .set-key-btn.override{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent-strong);}
-body.dark .key-chip{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent-strong);}
-body.dark .alpha-letter:active{color:var(--accent);}
-body.dark #alpha-bubble{background:var(--accent);color:var(--accent-fg);}
-body.dark .chords-used span{color:var(--chord-color);}
-body.dark .srch-inp:focus{border-color:var(--accent-border);box-shadow:0 0 0 3px rgba(255,255,255,.02),0 0 0 1px var(--accent-bg) inset;}
-body.dark .sv-sel:focus{border-color:var(--accent-border);}
-body.dark .mi.on{color:var(--accent-strong);background:var(--accent-bg);}
-body.dark .mi.on svg,body.dark .mi.on .mi-ico{color:var(--accent);}
-body.dark .mi-check{color:var(--accent);}
-body.dark .sw.on{background:var(--accent);border-color:var(--accent);}
-body.dark .ss-ico{background:var(--bg2);}
-body.dark .ss-ico svg{color:var(--accent-soft);}
-body.dark .empty-chart-btn{background:var(--accent);color:var(--accent-fg);}
-body.dark .bs-handle{background:rgba(255,255,255,.18);}
-body.dark .btn-p{background:var(--accent);color:var(--accent-fg);}
-body.dark .btn-s{background:var(--bg2);}
-body.dark .cat-opt.active{background:var(--accent-bg);color:var(--accent-strong);}
-body.dark .pi-ck.sel{background:var(--accent);border-color:var(--accent);}
-body.dark .chord-tab.active{color:var(--accent-strong);background:var(--accent-bg);}
+/* ── DARK MODE: modern accent palette with neutral surfaces ── */
+body.dark .hdr{border-bottom:.5px solid rgba(255,255,255,.04);}
 body.dark .tab-btn.active{color:var(--accent);}
-body.dark .song-row-reveal-r{background:color-mix(in srgb, var(--accent) 68%, #12181f 32%);}
-body.dark .song-row-reveal-r svg{color:var(--accent-fg);}
-body.dark .song-row-reveal-r .rv-lbl{color:rgba(15,22,28,.92);}
-body.dark #ptr-indicator{color:var(--accent);background:var(--bg2);}
+body.dark .back-btn{
+  color:var(--accent);
+  background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.08);
+}
+body.dark .menu-btn{
+  color:var(--txt2);
+  background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.08);
+}
+body.dark .song-avatar{
+  color:var(--accent);
+  background:rgba(255,255,255,.035);
+  border-color:rgba(255,255,255,.08);
+}
+body.dark .key-chip,
+body.dark .in-set-pill,
+body.dark .set-key-btn.override,
+body.dark .sl-export-btn,
+body.dark .pf-btn.active,
+body.dark .mi.on,
+body.dark .cat-opt.active{
+  color:var(--accent);
+  background:var(--accent-surface);
+  border-color:var(--accent-border);
+}
+body.dark .sl-export-btn{border-width:1px;}
+body.dark .set-key-btn{
+  color:var(--txt2);
+  background:rgba(255,255,255,.035);
+  border-color:rgba(255,255,255,.1);
+}
+body.dark .pill{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.09);color:var(--txt2);}
+body.dark .pill.on{
+  background:var(--accent-surface);
+  color:var(--accent);
+  border-color:var(--accent-border);
+}
+body.dark .xp-btn,
+body.dark .size-pill,
+body.dark .sv-sel,
+body.dark .m-body input,
+body.dark .m-body textarea,
+body.dark .m-body select,
+body.dark .psr,
+body.dark .picker-list{
+  background:rgba(255,255,255,.035);
+  border-color:rgba(255,255,255,.09);
+}
+body.dark .xp-btn,
+body.dark .size-pill button{color:var(--accent);}
+body.dark .xp-btn:active,
+body.dark .size-pill button:active,
+body.dark .btn-p,
+body.dark .empty-chart-btn,
+body.dark .sw.on,
+body.dark .add-fab{
+  background:var(--accent-strong);
+  color:var(--accent-fg);
+  border-color:transparent;
+}
+body.dark .btn-p,
+body.dark .empty-chart-btn{box-shadow:0 8px 20px rgba(0,0,0,.22);}
 body.dark .theme-sw.active::after{color:var(--accent-fg);}
-body.dark .sz-slider{background:linear-gradient(to right,var(--accent) 0%,var(--accent) var(--pct,50%),var(--bdr2) var(--pct,50%));}
-body.dark .sz-slider::-webkit-slider-thumb{background:var(--accent);}
-body.dark .sz-slider::-moz-range-thumb{background:var(--accent);}
-body.dark .scroll-top-btn{color:var(--accent);background:var(--bg2);border-color:var(--accent-border);}
-body.dark .add-fab{background:var(--accent);color:var(--accent-fg);}
-body.dark .sync-badge{background:rgba(8,10,12,.72);}
-body.dark #toast{background:rgba(12,16,20,.92);}
-body.dark .hdr,body.dark .sv-hdr{background:var(--hdr-bg);}
-body.dark .sec-lbl{background:var(--bg2);}
-body.dark .theme-sw{box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;}
-
+body.dark .alpha-letter:active,
+body.dark .mi.on svg,
+body.dark .mi.on .mi-ico,
+body.dark .mi-check,
+body.dark .ss-ico svg,
+body.dark .tab-btn.active,
+body.dark .scroll-top-btn,
+body.dark #ptr-indicator,
+body.dark .chord-tab.active,
+body.dark .back-btn,
+body.dark .xp-btn,
+body.dark .size-pill button{color:var(--accent);}
+body.dark .song-row-reveal-r{
+  background:var(--accent-strong);
+}
+body.dark .song-row-reveal-r svg{color:var(--accent-fg);}
+body.dark .song-row-reveal-r .rv-lbl{color:rgba(8,19,26,.78);}
+body.dark #alpha-bubble{background:var(--accent-strong);color:var(--accent-fg);}
+body.dark .chords-used span,
+body.dark .sheet .chord-row,
+body.dark .chord-row{color:var(--chord-color);}
+body.dark .srch-inp:focus,
+body.dark .sv-sel:focus,
+body.dark .m-body input:focus,
+body.dark .m-body textarea:focus,
+body.dark .m-body select:focus,
+body.dark .psr:focus{
+  border-color:var(--accent-border);
+  box-shadow:0 0 0 3px rgba(255,255,255,0), 0 0 0 1px var(--accent-border);
+}
+body.dark .ss-row:active,
+body.dark .rs-item:active,
+body.dark .ctx-item:active,
+body.dark .mi:active,
+body.dark .song-item:active:not(.swiped-r):not(.swiped-l),
+body.dark .set-item:active:not(.is-dragging){
+  background:rgba(255,255,255,.04);
+}
+body.dark .scroll-top-btn{
+  background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.1);
+}
+body.dark .chord-tab.active{
+  background:var(--accent-surface);
+  box-shadow:none;
+}
+body.dark .sec-lbl,
+body.dark .lang-badge,
+body.dark .bs-cancel,
+body.dark .recent-searches,
+body.dark #ptr-indicator,
+body.dark .ss-ico{
+  background:rgba(255,255,255,.04);
+}
+body.dark .sync-badge{background:rgba(0,0,0,.55);}
 /* ── Scroll to top button (both modes) ── */
 .scroll-top-btn{
   position:absolute;
@@ -2073,46 +2149,28 @@ function applyTheme(hex){
   const root=document.documentElement;
   root.style.setProperty('--tc',hex);
   if(darkMode){
-    const palette=makeDarkPalette(hex);
-    root.style.setProperty('--hdr-bg',palette.header);
-    root.style.setProperty('--accent',palette.accent);
-    root.style.setProperty('--accent-strong',palette.accentStrong);
-    root.style.setProperty('--accent-soft',palette.accentSoft);
-    root.style.setProperty('--accent-bg',palette.accentBg);
-    root.style.setProperty('--accent-border',palette.accentBorder);
-    root.style.setProperty('--chord-color',palette.chord);
-    root.style.setProperty('--accent-fg',palette.accentFg);
+    const pal=buildDarkPalette(hex);
+    root.style.setProperty('--hdr-bg',pal.hdrBg);
+    root.style.setProperty('--accent',pal.accent);
+    root.style.setProperty('--accent-strong',pal.accentStrong);
+    root.style.setProperty('--accent-surface',pal.accentSurface);
+    root.style.setProperty('--accent-surface-strong',pal.accentSurfaceStrong);
+    root.style.setProperty('--accent-border',pal.accentBorder);
+    root.style.setProperty('--accent-bg',pal.accentSurface);
+    root.style.setProperty('--chord-color',pal.chord);
+    root.style.setProperty('--accent-fg','#08131a');
   } else {
     root.style.setProperty('--hdr-bg',hex);
     root.style.removeProperty('--accent');
     root.style.removeProperty('--accent-strong');
-    root.style.removeProperty('--accent-soft');
-    root.style.removeProperty('--accent-bg');
+    root.style.removeProperty('--accent-surface');
+    root.style.removeProperty('--accent-surface-strong');
     root.style.removeProperty('--accent-border');
+    root.style.removeProperty('--accent-bg');
     root.style.removeProperty('--chord-color');
     root.style.removeProperty('--accent-fg');
   }
   renderThemeSwatches();
-}
-function makeDarkPalette(hex){
-  const {h,s,l}=hexToHsl(hex);
-  const accent=hslToHex(h,Math.min(34,Math.max(18,s*0.52)),78);
-  const accentStrong=hslToHex(h,Math.min(42,Math.max(22,s*0.58)),84);
-  const accentSoft=hslToHex(h,Math.min(26,Math.max(14,s*0.40)),70);
-  const chord=hslToHex(h,Math.min(48,Math.max(24,s*0.64)),86);
-  const header=hslToHex(h,Math.min(18,Math.max(8,s*0.28)),12);
-  const a=hexToRgb(accent);
-  const b=hexToRgb(accentSoft);
-  return{
-    accent,
-    accentStrong,
-    accentSoft,
-    chord,
-    header,
-    accentBg:`rgba(${a.r},${a.g},${a.b},.14)`,
-    accentBorder:`rgba(${b.r},${b.g},${b.b},.28)`,
-    accentFg:'#0f161c'
-  };
 }
 function hexToRgb(hex){
   const h=hex.replace('#','');
@@ -2124,30 +2182,39 @@ function hexToRgb(hex){
 }
 function hexToHsl(hex){
   const {r,g,b}=hexToRgb(hex);
-  const rn=r/255,gn=g/255,bn=b/255;
-  const max=Math.max(rn,gn,bn),min=Math.min(rn,gn,bn);
-  let h,s,l=(max+min)/2;
-  if(max===min){h=s=0;}else{
+  let rn=r/255, gn=g/255, bn=b/255;
+  let max=Math.max(rn,gn,bn), min=Math.min(rn,gn,bn);
+  let h, s, l=(max+min)/2;
+  if(max===min){h=s=0;}
+  else{
     const d=max-min;
-    s=l>0.5?d/(2-max-min):d/(max+min);
+    s=l>0.5 ? d/(2-max-min) : d/(max+min);
     switch(max){
-      case rn:h=(gn-bn)/d+(gn<bn?6:0);break;
-      case gn:h=(bn-rn)/d+2;break;
-      default:h=(rn-gn)/d+4;break;
+      case rn: h=(gn-bn)/d + (gn<bn ? 6 : 0); break;
+      case gn: h=(bn-rn)/d + 2; break;
+      default: h=(rn-gn)/d + 4; break;
     }
     h*=60;
   }
-  return{h, s:s*100, l:l*100};
+  return {h:Math.round(h||0), s:Math.round((s||0)*100), l:Math.round(l*100)};
 }
-function hslToHex(h,s,l){
-  s/=100;l/=100;
-  const c=(1-Math.abs(2*l-1))*s;
-  const x=c*(1-Math.abs((h/60)%2-1));
-  const m=l-c/2;
-  let r=0,g=0,b=0;
-  if(h<60){r=c;g=x;}else if(h<120){r=x;g=c;}else if(h<180){g=c;b=x;}else if(h<240){g=x;b=c;}else if(h<300){r=x;b=c;}else{r=c;b=x;}
-  const toHex=v=>Math.round((v+m)*255).toString(16).padStart(2,'0');
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+function hsl(h,s,l){ return `hsl(${Math.round(h)}, ${Math.round(s)}%, ${Math.round(l)}%)`; }
+function hsla(h,s,l,a){ return `hsla(${Math.round(h)}, ${Math.round(s)}%, ${Math.round(l)}%, ${a})`; }
+function clamp(n,min,max){ return Math.max(min,Math.min(max,n)); }
+function buildDarkPalette(hex){
+  const {h,s}=hexToHsl(hex);
+  const softSat=clamp(s*0.55,22,46);
+  const accentSat=clamp(s*0.68,28,54);
+  const chordSat=clamp(s*0.78,40,64);
+  return {
+    hdrBg:hsl(h, clamp(s*0.28, 12, 20), 13),
+    accent:hsl(h, accentSat, 76),
+    accentStrong:hsl(h, clamp(accentSat+4, 30, 58), 70),
+    accentSurface:hsla(h, softSat, 64, .16),
+    accentSurfaceStrong:hsla(h, softSat, 66, .24),
+    accentBorder:hsla(h, clamp(accentSat, 28, 56), 72, .34),
+    chord:hsl(h, chordSat, 82)
+  };
 }
 function shadeColor(hex,pct){
   let R=parseInt(hex.slice(1,3),16),G=parseInt(hex.slice(3,5),16),B=parseInt(hex.slice(5,7),16);
