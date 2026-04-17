@@ -72,17 +72,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue'
 .hdr-btn{background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;opacity:.85;}
 .hdr-btn:active{opacity:.5;}
 
-/* ── BOTTOM TAB BAR — standard iOS tab bar with proper safe area ── */
+/* ── BOTTOM TAB BAR — buttons almost flush with home indicator ── */
 .tab-bar{
   flex-shrink:0;
   background:var(--bg1);
   border-top:.5px solid var(--bdr);
   display:flex;
   z-index:20;
-  /* Standard iOS tab bar: button row + safe area clearance.
-     The visible gap above the home indicator is the iOS-native pattern
-     used by Mail, Messages, Music, Settings. Users expect it. */
-  height:calc(var(--tab-h) + var(--sab));
+  /* Minimal 2px clearance below buttons. The home indicator (5px visual line)
+     will appear to float just below/over the button labels, using the iOS
+     overlay contrast. This maximises the visible tab area on portrait iPhone. */
+  height:calc(var(--tab-h) + 2px);
   align-items:flex-start;
 }
 body.song-open .tab-bar,
