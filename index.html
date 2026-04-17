@@ -225,20 +225,20 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 .sl-scroll-host{flex:1;position:relative;overflow:hidden;min-height:0;}
 
 /* Set items drag */
-.set-item{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg1);border-bottom:.5px solid var(--bdr);cursor:pointer;-webkit-user-select:none;user-select:none;}
+.set-item{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--bg1);border-bottom:.5px solid var(--bdr);cursor:pointer;min-height:66px;-webkit-user-select:none;user-select:none;}
 .set-item:active:not(.is-dragging){background:var(--bg2);}
 .drag-ghost{position:fixed;left:12px;right:12px;background:var(--bg1);border-radius:var(--rad-lg);box-shadow:var(--shadow-lg);z-index:500;pointer-events:none;display:flex;align-items:center;gap:10px;padding:12px 16px;opacity:.97;transform:scale(1.02);}
 /* Drag handle — larger touch target, visually slim */
 .drag-handle{display:flex;flex-direction:column;gap:4px;padding:6px 10px 6px 2px;cursor:grab;flex-shrink:0;touch-action:none;}
 .drag-handle span{display:block;width:17px;height:2px;background:var(--txt3);border-radius:1px;}
 .set-info{flex:1;min-width:0;}
-.set-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.set-meta{font-size:11px;color:var(--txt2);margin-top:2px;}
-.set-meta-row{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-top:4px;}
-.set-key-btn{border:.5px solid var(--bdr2);background:var(--bg2);color:var(--tc);border-radius:999px;padding:5px 10px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.set-title{font-size:14px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
+.set-meta{font-size:11px;color:var(--txt2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.set-meta-row{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-top:4px;min-width:0;}
+.set-key-btn{border:.5px solid var(--bdr2);background:var(--bg2);color:var(--tc);border-radius:999px;padding:4px 10px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;line-height:1.2;min-height:28px;}
 .set-key-btn.override{background:var(--tc-light);border-color:var(--tc-mid);}
-.set-key-note{font-size:11px;color:var(--txt3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.set-rm{background:none;border:none;font-size:18px;color:var(--txt3);cursor:pointer;padding:4px 6px;line-height:1;}
+.set-key-note{font-size:11px;color:var(--txt3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;}
+.set-rm{background:none;border:none;font-size:18px;color:var(--txt3);cursor:pointer;padding:4px 6px;line-height:1;align-self:flex-start;margin-top:1px;}
 .lang-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:var(--rad-pill);background:var(--bg3);color:var(--txt3);}
 .sl-empty{text-align:center;padding:56px 24px;color:var(--txt3);}
 .sl-ei{font-size:36px;margin-bottom:10px;}
@@ -1888,7 +1888,7 @@ function renderSetList(){
     const override=item.setKey&&item.setKey!=='original'&&item.setKey!==s.key;
     const note=item.setKey==='default'?'Using default key from settings':(displayKey===s.key?'Original key':`Original ${s.key}`);
     const el=document.createElement('div');el.className='set-item';el.dataset.id=s.id;
-    el.innerHTML=`<div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">${s.title}</div><div class="set-meta">${s.author}&nbsp;<span class="lang-badge">${s.cat==='malayalam'?'ML':'EN'}</span></div><div class="set-meta-row"><div class="set-key-note">${note}</div><button class="set-key-btn${override?' override':''}" type="button">Key ${displayKey}</button></div></div><button class="set-rm">×</button>`;
+    el.innerHTML=`<div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">${s.title}</div><div class="set-meta-row"><div class="set-meta">${s.author}&nbsp;<span class="lang-badge">${s.cat==='malayalam'?'ML':'EN'}</span></div><button class="set-key-btn${override?' override':''}" type="button">Key ${displayKey}</button></div><div class="set-key-note">${note}</div></div><button class="set-rm">×</button>`;
     el.querySelector('.set-rm').addEventListener('click',e=>{e.stopPropagation();removeFromSet(s.id);});
     el.querySelector('.set-key-btn').addEventListener('click',e=>{e.stopPropagation();openSetKeyEditor(s.id);});
     el.addEventListener('click',e=>{if(e.target.closest('.drag-handle')||e.target.closest('.set-rm')||e.target.closest('.set-key-btn'))return;openSong(s.id,true);});
