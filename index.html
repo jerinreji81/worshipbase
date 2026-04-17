@@ -145,7 +145,7 @@ body.dark .tab-btn.active{color:#5bc8ea;}
   transition:background .12s;
 }
 body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,210,.2);}
-.back-btn:active{background:var(--tc-light);transform:scale(.92);}
+.back-btn:active{background:var(--bg3);transform:scale(.92);}
 /* Circle bubble menu button */
 .menu-btn{
   width:36px;height:36px;
@@ -189,7 +189,7 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 .song-row-reveal-r .rv-lbl,.song-row-reveal-l .rv-lbl{font-size:9px;color:rgba(255,255,255,.85);font-weight:600;letter-spacing:.02em;}
 .song-row-reveal-l{position:absolute;left:0;top:0;bottom:0;width:72px;background:#2d6a4f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;}
 .song-item{display:flex;align-items:center;gap:12px;height:var(--item-h);padding:0 16px;background:var(--bg1);border-bottom:.5px solid var(--bdr);cursor:pointer;position:relative;transform:translateX(0);will-change:transform;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;}
-.song-item:active:not(.swiped-r):not(.swiped-l){background:var(--tc-light);}
+.song-item:active:not(.swiped-r):not(.swiped-l){background:var(--bg2);}
 .song-avatar{width:36px;height:36px;min-width:36px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--txt3);}
 .song-info{flex:1;min-width:0;}
 .song-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.1px;}
@@ -223,13 +223,13 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 
 /* Set items drag */
 .set-item{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg1);border-bottom:.5px solid var(--bdr);cursor:pointer;-webkit-user-select:none;user-select:none;}
-.set-item:active:not(.is-dragging){background:var(--tc-light);}
+.set-item:active:not(.is-dragging){background:var(--bg2);}
 .drag-ghost{position:fixed;left:12px;right:12px;background:var(--bg1);border-radius:var(--rad-lg);box-shadow:var(--shadow-lg);z-index:500;pointer-events:none;display:flex;align-items:center;gap:10px;padding:12px 16px;opacity:.97;transform:scale(1.02);}
 /* Drag handle — larger touch target, visually slim */
 .drag-handle{display:flex;flex-direction:column;gap:4px;padding:6px 10px 6px 2px;cursor:grab;flex-shrink:0;touch-action:none;}
 .drag-handle span{display:block;width:17px;height:2px;background:var(--txt3);border-radius:1px;}
 .set-num{width:18px;min-width:18px;font-size:12px;font-weight:700;color:var(--txt3);text-align:center;}
-.set-av{width:34px;height:34px;min-width:34px;border-radius:8px;background:var(--tc-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--tc);}
+.set-av{width:34px;height:34px;min-width:34px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--txt2);}
 .set-info{flex:1;min-width:0;}
 .set-title{font-size:15px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .set-meta{font-size:11px;color:var(--txt2);margin-top:2px;}
@@ -351,7 +351,7 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .picker-list{max-height:290px;overflow-y:auto;border:.5px solid var(--bdr);border-radius:var(--rad);}
 .pi{display:flex;align-items:center;gap:10px;padding:10px 13px;border-bottom:.5px solid var(--bdr);cursor:pointer;}
 .pi:last-child{border-bottom:none;}
-.pi:active{background:var(--tc-light);}
+.pi:active{background:var(--bg2);}
 .pi-info{flex:1;min-width:0;}
 .pi-title{font-size:14px;font-weight:600;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pi-meta{font-size:11px;color:var(--txt2);margin-top:1px;}
@@ -398,8 +398,8 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .ss-row:active{background:var(--bg2);}
 .ss-row.no-tap{cursor:default;}
 .ss-row.no-tap:active{background:none;}
-.ss-ico{width:32px;height:32px;border-radius:8px;background:var(--tc-light);display:flex;align-items:center;justify-content:center;margin-right:13px;flex-shrink:0;}
-.ss-ico svg{color:var(--tc);}
+.ss-ico{width:32px;height:32px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;margin-right:13px;flex-shrink:0;}
+.ss-ico svg{color:var(--txt2);}
 .ss-body{flex:1;min-width:0;}
 .ss-lbl{font-size:15px;font-weight:500;color:var(--txt1);}
 .ss-sub{font-size:12px;color:var(--txt3);margin-top:2px;}
@@ -466,7 +466,7 @@ body.dark .size-pill button{color:var(--accent);}
 body.dark .size-pill button:active{background:var(--accent);color:var(--accent-fg);}
 body.dark .pill.on{background:var(--accent);color:var(--accent-fg);border-color:var(--accent);}
 body.dark .sl-export-btn{color:var(--accent);border-color:var(--accent);}
-body.dark .set-av{color:var(--accent);background:var(--accent-bg);}
+body.dark .set-av{color:var(--accent);}
 body.dark .song-avatar{color:var(--txt2);background:var(--bg2);}
 body.dark .alpha-letter:active{color:var(--accent);}
 body.dark #alpha-bubble{background:var(--accent);color:var(--accent-fg);}
@@ -477,7 +477,6 @@ body.dark .mi.on{color:var(--accent);}
 body.dark .mi.on svg,body.dark .mi.on .mi-ico{color:var(--accent);}
 body.dark .mi-check{color:var(--accent);}
 body.dark .sw.on{background:var(--accent);border-color:var(--accent);}
-body.dark .ss-ico{background:var(--accent-bg);}
 body.dark .ss-ico svg{color:var(--accent);}
 body.dark .empty-chart-btn{background:var(--accent);color:var(--accent-fg);}
 body.dark .bs-handle{background:var(--accent);}
@@ -1941,24 +1940,25 @@ function applyTheme(hex){
   const root=document.documentElement;
   root.style.setProperty('--tc',hex);
   root.style.setProperty('--hdr-bg',darkMode?shadeColor(hex,-30):hex);
-  // Light tint for theme (used in dark mode accents)
-  const lightTint=shadeColor(hex,140);
-  const {r,g,b}=hexToRgb(lightTint);
+  // --accent / --chord-color / --accent-bg are ONLY used in dark mode overrides.
+  // In light mode they fall back to default teal values in :root, so icons,
+  // avatars and tap highlights stay neutral and professional.
   if(darkMode){
+    const lightTint=shadeColor(hex,140);
+    const {r,g,b}=hexToRgb(lightTint);
     root.style.setProperty('--accent',lightTint);
     root.style.setProperty('--accent-bg',`rgba(${r},${g},${b},.18)`);
     root.style.setProperty('--chord-color',lightTint);
-    // Accent foreground: dark text on light accent background
     root.style.setProperty('--accent-fg','#0f1f28');
   } else {
-    // Light mode: accent IS the theme colour
-    root.style.setProperty('--accent',hex);
-    root.style.setProperty('--accent-bg',shadeColor(hex,200));
-    root.style.setProperty('--chord-color',hex);
-    root.style.setProperty('--accent-fg','#ffffff');
+    // Clear any dark-mode overrides so light-mode sees the ORIGINAL defaults
+    root.style.removeProperty('--accent');
+    root.style.removeProperty('--accent-bg');
+    root.style.removeProperty('--chord-color');
+    root.style.removeProperty('--accent-fg');
+    // Critical: DO NOT override --tc-light. Keeps avatars/icons neutral,
+    // tap highlight subtle regardless of theme.
   }
-  // Update tc-light for light mode too
-  root.style.setProperty('--tc-light',shadeColor(hex,200));
   renderThemeSwatches();
 }
 function hexToRgb(hex){
@@ -2116,12 +2116,22 @@ function ctxAction(action){
 function initPTR(){
   const vscroll=document.getElementById('vscroll');
   const indicator=document.getElementById('ptr-indicator');
-  let startY=0,currentY=0,pulling=false,refreshing=false;
-  const THRESHOLD=70;  // px to trigger refresh
-  const DAMPING=0.55;  // resistance feel
-  const MAX_PULL=110;
+  const songSection=document.getElementById('song-section');
+  if(!songSection)return;
 
-  function setIndicator(dragDist){
+  // State
+  let startY=0;
+  let currentY=0;
+  let active=false;       // currently in a pull gesture
+  let triggered=false;    // pull was strong enough on touchend
+  let refreshing=false;
+
+  const THRESHOLD=80;     // px of drag required to trigger refresh
+  const DAMPING=0.5;
+  const MAX_PULL=140;
+  const START_TOLERANCE=3; // ignore if initial scrollTop > this
+
+  function updateVisual(dragDist){
     const dampedDist=Math.min(dragDist*DAMPING,MAX_PULL);
     const progress=Math.min(dragDist/THRESHOLD,1);
     indicator.style.opacity=progress.toString();
@@ -2129,48 +2139,74 @@ function initPTR(){
     indicator.style.transform='translateX(-50%) scale('+(0.55+progress*0.45)+')';
     indicator.classList.toggle('ready',progress>=1);
   }
-  function resetIndicator(){
+  function reset(){
+    active=false;triggered=false;
     indicator.classList.remove('ready','show','spinning');
-    indicator.style.transition='opacity .22s,top .22s,transform .22s';
+    indicator.style.transition='opacity .25s,top .25s,transform .25s';
     indicator.style.opacity='0';
     indicator.style.top='';
     indicator.style.transform='';
-    setTimeout(()=>{indicator.style.transition='';},240);
+    setTimeout(()=>{indicator.style.transition='';},280);
   }
 
-  vscroll.addEventListener('touchstart',e=>{
+  // Use song-section (outer container) for touch events so it works
+  // whether user drags a song row OR empty area OR the alpha strip edge.
+  // vscroll.scrollTop read at touchstart only — never re-checked mid-drag.
+  songSection.addEventListener('touchstart',e=>{
     if(refreshing){startY=0;return;}
-    if(vscroll.scrollTop===0){startY=e.touches[0].clientY;currentY=startY;pulling=false;}
-    else{startY=0;}
+    // Only start if list is already at top
+    if(vscroll.scrollTop<=START_TOLERANCE){
+      startY=e.touches[0].clientY;
+      currentY=startY;
+      active=false;
+      triggered=false;
+    } else {
+      startY=0;
+    }
   },{passive:true});
 
-  vscroll.addEventListener('touchmove',e=>{
-    if(!startY||vscroll.scrollTop>0||refreshing)return;
+  songSection.addEventListener('touchmove',e=>{
+    if(!startY||refreshing)return;
     currentY=e.touches[0].clientY;
     const dy=currentY-startY;
-    if(dy>5){pulling=true;setIndicator(dy);}
+    if(dy<=0){
+      // User is dragging UP — reset, they're just scrolling normally
+      if(active){active=false;reset();}
+      return;
+    }
+    if(dy>8){
+      active=true;
+      triggered=dy>=THRESHOLD;
+      updateVisual(dy);
+    }
   },{passive:true});
 
-  vscroll.addEventListener('touchend',()=>{
-    if(!pulling){startY=0;return;}
+  songSection.addEventListener('touchend',()=>{
+    if(!active){startY=0;return;}
     const dy=currentY-startY;
-    pulling=false;startY=0;
+    startY=0;
     if(dy>=THRESHOLD){
-      refreshing=true;
+      refreshing=true;active=false;
       indicator.classList.remove('ready');
       indicator.classList.add('show','spinning');
       indicator.style.opacity='1';
-      indicator.style.top='18px';
+      indicator.style.top='20px';
       indicator.style.transform='translateX(-50%) scale(1)';
       songsRef.once('value',snap=>{
         const d=snap.val();
         if(d)songs=Object.entries(d).map(([k,v])=>normRec(k,v));
         refresh(true);
-        setTimeout(()=>{refreshing=false;resetIndicator();showToast('Refreshed');},450);
-      },()=>{refreshing=false;resetIndicator();showToast('Sync error');});
+        setTimeout(()=>{refreshing=false;reset();showToast('Refreshed');},500);
+      },()=>{refreshing=false;reset();showToast('Sync error');});
     } else {
-      resetIndicator();
+      reset();
     }
+  },{passive:true});
+
+  // Cancel if touch is cancelled (iOS edge swipe, etc.)
+  songSection.addEventListener('touchcancel',()=>{
+    if(!active)return;
+    startY=0;reset();
   },{passive:true});
 }
 
