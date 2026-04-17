@@ -18,7 +18,7 @@
   --shadow-sm:0 1px 4px rgba(16,55,74,.10);
   --shadow-md:0 4px 16px rgba(16,55,74,.13);
   --rad-pill:999px;
-  --tab-h:52px;
+  --tab-h:60px;
   --sat:0px;--sab:0px;
 }
 html,body{
@@ -83,13 +83,15 @@ body{
 }
 .metric strong{color:var(--tc);}
 .tab-bar{
+  position:relative;
   flex-shrink:0;
-  background:var(--bg1);
+  background:linear-gradient(to bottom,var(--bg1) 0,var(--bg1) calc(100% - var(--sab)), rgba(16,55,74,.04) calc(100% - var(--sab)), rgba(16,55,74,.04) 100%);
   border-top:.5px solid var(--bdr);
   display:flex;
-  align-items:flex-start;
+  align-items:stretch;
   height:calc(var(--tab-h) + var(--sab));
-  padding-bottom:var(--sab);
+  padding-bottom:0;
+  box-shadow:0 -6px 20px rgba(16,55,74,.06);
 }
 .tab-btn{
   flex:1;
@@ -97,16 +99,18 @@ body{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:3px;
-  height:var(--tab-h);
+  gap:5px;
+  height:calc(var(--tab-h) + var(--sab));
+  padding:8px 0 max(8px, var(--sab));
   border:none;
   background:none;
   color:var(--txt3);
   font-family:inherit;
 }
 .tab-btn.active{color:var(--tc);}
-.tab-lbl{font-size:10px;font-weight:600;letter-spacing:.01em;}
+.tab-lbl{font-size:11px;font-weight:700;letter-spacing:.01em;}
 .tab-ico{display:flex;align-items:center;justify-content:center;}
+.tab-ico svg{width:25px;height:25px;}
 .footer-note{
   position:fixed;
   left:12px;
@@ -127,8 +131,8 @@ body{
 
   <div class="content">
     <div class="card">
-      <h1>Bottom chin test</h1>
-      <p>This page keeps only a simple header, blank content area, and the bottom navigation bar so you can see whether the gap is caused by the core layout.</p>
+      <h1>Bottom chin test – lower bar</h1>
+      <p>This variant pushes the navigation bar lower into the bottom safe area and uses larger icons so you can compare whether the slight chin is really layout space or just visual clearance around the home indicator.</p>
       <div class="metrics">
         <div class="metric"><span>Top safe area</span><strong id="sat-readout">0px</strong></div>
         <div class="metric"><span>Bottom safe area</span><strong id="sab-readout">0px</strong></div>
