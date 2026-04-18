@@ -1,4 +1,4 @@
-<html lang="en" style="--sat: 0px; --sab: 0px; --tc: #10374A; --hdr-bg: #10374A;"><head>
+<html lang="en" style="--sat: 0px; --sab: 0px; --tc: #10374A; --hdr-bg: hsl(200, 18%, 13%); --accent: hsl(200, 44%, 76%); --accent-strong: hsl(200, 48%, 70%); --accent-surface: hsla(200, 35%, 64%, 0.16); --accent-surface-strong: hsla(200, 35%, 66%, 0.24); --accent-border: hsla(200, 44%, 72%, 0.34); --accent-bg: hsla(200, 35%, 64%, 0.16); --chord-color: hsl(200, 50%, 82%); --accent-fg: #08131a;"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
@@ -80,14 +80,14 @@ body{transition:background-color .24s ease,color .24s ease;}
 .sync-badge.error{background:#c0392b;}
 
 /* Toast notification */
-#toast{position:fixed;bottom:calc(var(--tab-h) + 22px);left:50%;transform:translateX(-50%) translateY(8px);background:rgba(16,55,74,.9);color:#fff;font-size:13px;font-weight:600;padding:8px 18px;border-radius:var(--rad-pill);z-index:400;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;white-space:nowrap;}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast{position:fixed;bottom:calc(var(--tab-h) + 22px);left:50%;transform:translate3d(-50%,8px,0);background:rgba(16,55,74,.9);color:#fff;font-size:13px;font-weight:600;padding:8px 18px;border-radius:var(--rad-pill);z-index:400;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;white-space:nowrap;will-change:transform,opacity;}
+#toast.show{opacity:1;transform:translate3d(-50%,0,0);}
 
 /* ── VIEWS ── */
 #list-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg1);overflow:hidden;}
 #list-view>*{flex-shrink:0;}
 #list-view #song-section,#list-view #setlist-section,#list-view #settings-section{flex-shrink:1;}
-#song-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg1);transform:translateX(100%);z-index:10;will-change:transform;}
+#song-view{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg1);transform:translateX(100%);z-index:10;will-change:transform;overflow:hidden;}
 #song-view.visible{transform:translateX(0);}
 
 /* ── HEADER — contains wordmark + settings icon, then tab bar below ── */
@@ -197,23 +197,45 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 .sv-author{font-size:13px;color:var(--txt2);margin-top:2px;}
 .sv-orig-key{font-size:11px;color:var(--txt3);margin-top:2px;}
 .sv-song-id{font-size:11px;color:var(--txt3);margin-top:3px;font-weight:700;}
-.seg-bar{display:flex;gap:4px;padding:4px;background:var(--bg2);border:.5px solid var(--bdr2);border-radius:999px;width:100%;}
-.seg-btn{flex:1;border:none;background:transparent;color:var(--txt2);font-size:13px;font-weight:700;padding:8px 10px;border-radius:999px;cursor:pointer;font-family:inherit;}
+.sv-pres-title{display:none;position:absolute;left:50%;transform:translateX(-50%);max-width:calc(100% - 120px);font-size:17px;font-weight:800;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;pointer-events:none;}
+.pres-exit-btn{display:none;width:auto;min-width:58px;height:36px;padding:0 12px;border-radius:999px;background:var(--bg2);border:.5px solid var(--bdr2);cursor:pointer;color:var(--txt2);align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:inherit;flex-shrink:0;}
+.pres-exit-btn:active{background:var(--bg3);transform:scale(.96);}
+.performance-mode .sv-hdr{padding:calc(var(--sat) + 8px) 12px 8px;position:sticky;top:0;z-index:3;background:color-mix(in srgb, var(--bg1) 92%, transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.performance-mode .sv-top{position:relative;align-items:center;margin-bottom:0;min-height:40px;}
+.performance-mode .sv-pres-title{display:block;}
+.performance-mode .sv-title,.performance-mode .sv-author,.performance-mode .sv-orig-key,.performance-mode .sv-song-id,.performance-mode .sv-ctrls,.performance-mode .menu-btn{display:none!important;}
+.performance-mode .pres-exit-btn{display:flex;}
+.performance-mode .sheet{padding:22px 20px 120px;}
+.performance-mode .sheet{--sheet-scale:1.08;}
+.performance-mode #sv-scroll{background:var(--bg1);}
+.seg-bar{display:inline-flex;gap:3px;padding:3px;background:var(--bg2);border:.5px solid var(--bdr2);border-radius:999px;max-width:100%;width:auto;align-self:flex-start;}
+.seg-btn{border:none;background:transparent;color:var(--txt2);font-size:12px;font-weight:700;padding:7px 11px;border-radius:999px;cursor:pointer;font-family:inherit;min-width:64px;}
 .seg-btn.active{background:var(--tc);color:#fff;box-shadow:var(--shadow-sm);}
 body.dark .seg-btn.active{background:var(--accent-surface);color:var(--accent);}
-.sv-ctrl-row.compact{justify-content:space-between;align-items:center;}
-.autoscroll-pod{display:flex;align-items:center;gap:10px;padding:14px 20px;border-top:.5px solid var(--bdr);}
-.autoscroll-btn{width:32px;height:32px;border-radius:50%;border:.5px solid var(--bdr2);background:var(--bg2);color:var(--tc);font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;}
-.autoscroll-btn:active{transform:scale(.94);}
-.autoscroll-center{flex:1;display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;text-align:center;}
-.autoscroll-main{font-size:14px;font-weight:800;color:var(--txt1);}
-.autoscroll-sub{font-size:11px;color:var(--txt3);}
+.sv-ctrl-row.compact{justify-content:flex-start;align-items:center;}
+.mi-inline{display:flex;align-items:center;gap:12px;}
+.mi-grow{flex:1;min-width:0;}
+.mi-inline-controls{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.mini-step{width:28px;height:28px;border-radius:999px;border:.5px solid var(--bdr2);background:var(--bg2);color:var(--tc);font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;}
+.mini-step:active{transform:scale(.94);}
+.mini-val{min-width:44px;text-align:center;font-size:12px;font-weight:800;color:var(--txt2);}
 .menu-slider-wrap{padding:14px 20px;border-top:.5px solid var(--bdr);}
 .menu-slider-lbl{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700;color:var(--txt1);margin-bottom:10px;}
 .menu-slider{width:100%;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:linear-gradient(to right,var(--tc) 0%,var(--tc) var(--pct,50%),var(--bdr2) var(--pct,50%));outline:none;cursor:pointer;}
 .menu-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--tc);box-shadow:var(--shadow-sm);}
 .menu-slider::-moz-range-thumb{width:22px;height:22px;border:none;border-radius:50%;background:var(--tc);box-shadow:var(--shadow-sm);}
 .song-id-badge{display:inline;font-size:11px;font-weight:600;color:var(--txt3);white-space:nowrap;letter-spacing:.01em;}
+.pres-autoscroll{position:fixed;right:16px;bottom:calc(var(--sab) + 18px);z-index:25;display:none;align-items:center;gap:8px;background:color-mix(in srgb,var(--bg1) 90%,transparent);border:1px solid var(--surface-border);box-shadow:var(--shadow-md);padding:8px 10px;border-radius:999px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.performance-mode .pres-autoscroll{display:flex;}
+.pres-auto-toggle{width:34px;height:34px;border-radius:50%;border:none;background:var(--tc);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;}
+.pres-auto-toggle:active{transform:scale(.95);}
+.pres-speed{min-width:44px;text-align:center;font-size:12px;font-weight:800;color:var(--txt2);}
+#mi-autoscroll.on .mi-grow{color:var(--tc);font-weight:700;}
+body.dark .mini-step{color:var(--accent);background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);}
+body.dark .pres-auto-toggle{background:var(--accent-strong);color:var(--accent-fg);}
+body.dark .pres-autoscroll{background:rgba(15,31,40,.88);border-color:rgba(255,255,255,.08);}
+body.dark .mini-val,body.dark .pres-speed{color:var(--txt2);}
+body.dark #mi-autoscroll.on .mi-grow{color:var(--accent);}
 /* ── SEARCH + SONG COUNT ── */
 .srch-wrap{background:var(--bg1);padding:9px 16px;flex-shrink:0;}
 .srch-row{display:flex;align-items:center;gap:10px;}
@@ -673,10 +695,10 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
 #ptr-indicator.ready .ptr-arrow{transform:rotate(180deg);}
 </style>
 </head>
-<body>
+<body class="dark">
 
 <!-- LOADING -->
-<div id="ls">
+<div id="ls" class="hidden" style="display: none;">
   <svg width="60" height="60" viewBox="0 0 60 60" fill="none" style="margin-bottom:20px">
     <rect width="60" height="60" rx="14" fill="rgba(255,255,255,0.12)"></rect>
     <path d="M9 20L17 42L25.5 28L30 36L34.5 28L43 42L51 20" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -687,7 +709,7 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
   <div class="ls-sp"></div>
 </div>
 <div class="sync-badge" id="sync-badge"></div>
-<div id="toast"></div>
+<div id="toast" class="" style="left: 50%; transform: translate3d(-50%, 8px, 0px);">Set list key updated</div>
 
 <!-- ═══ LIST VIEW ═══ -->
 <div id="list-view">
@@ -703,31 +725,29 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
       </div>
       <!-- Dark mode toggle in header -->
       <button class="hdr-btn" onclick="toggleDark()" id="hdr-dark-btn" title="Toggle dark mode">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="dark-ico-svg">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="dark-ico-svg"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="white" stroke-width="2" stroke-linecap="round"></path></svg>
       </button>
     </div>
   </div>
 
   <!-- Search + count merged into one row -->
-  <div class="srch-wrap" id="srch-wrap">
+  <div class="srch-wrap" id="srch-wrap" style="display: block;">
     <div class="srch-row">
       <div class="srch-inner">
         <span class="srch-ico"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"></circle><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
         <input class="srch-inp" id="srch-inp" type="search" placeholder="Search title, artist, or song ID…" oninput="onSearch()">
         <button class="srch-clr" id="srch-clr" onclick="clearSearch()">×</button>
       </div>
-      <span class="song-count" id="song-count"></span>
+      <span class="song-count" id="song-count">115 songs</span>
     </div>
   </div>
 
   <!-- SONG LIST -->
-  <div id="song-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
+  <div id="song-section" style="flex: 1 1 0%; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
     <div class="vs-host ptr-wrap">
-      <div id="ptr-indicator"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 2l-2 2M9 2l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 9a7 7 0 1 1-7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
-      <div id="vscroll" class="vs-wrap"><div id="vinner" class="vs-inner"></div></div>
-      <div id="alpha-strip"></div>
+      <div id="ptr-indicator" style="opacity: 0;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 2l-2 2M9 2l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 9a7 7 0 1 1-7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
+      <div id="vscroll" class="vs-wrap"><div id="vinner" class="vs-inner" style="height: 8294px;"><div class="alpha-sep v-item" style="top: 0px;">1</div><div class="song-row-wrap v-item" style="top: 32px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">10,000 Reasons</div></div><div class="song-meta">Matt Redman · G · <span class="song-id-badge">S138</span></div></div></div></div><div class="alpha-sep v-item" style="top: 98px;">A</div><div class="song-row-wrap v-item" style="top: 130px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">Alive</div></div><div class="song-meta">Hillsong Young &amp; Free · E · <span class="song-id-badge">S064</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 196px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">All Because Of Jesus</div></div><div class="song-meta">Fee · E · <span class="song-id-badge">S100</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 262px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">All Heaven Declares</div></div><div class="song-meta">Tricia Richards · D · <span class="song-id-badge">S108</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 328px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">All The Poor And Powerless</div></div><div class="song-meta">All Sons &amp; Daughters · E · <span class="song-id-badge">S060</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 394px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">All Who Are Thirsty</div></div><div class="song-meta">Brenton Brown · D · <span class="song-id-badge">S076</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 460px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">Amazing Grace (My Chains Are Gone)</div></div><div class="song-meta">Chris Tomlin · G · <span class="song-id-badge">S004</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 526px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">Amazing Grace (My Chains Are Gone)</div></div><div class="song-meta">Chris Tomlin · G · <span class="song-id-badge">S072</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 592px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">Arise My Love</div></div><div class="song-meta">Eddie Espinosa · G · <span class="song-id-badge">S103</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 658px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">At The Cross</div></div><div class="song-meta">Hillsong Worship · G · <span class="song-id-badge">S125</span></div></div></div></div><div class="alpha-sep v-item" style="top: 724px;">B</div><div class="song-row-wrap v-item" style="top: 756px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">Battle Belongs</div></div><div class="song-meta">Phil Wickham · G · <span class="song-id-badge">S051</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 822px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">Be Thou My Vision</div></div><div class="song-meta">Traditional Irish · D · <span class="song-id-badge">S110</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 888px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">Beautiful</div></div><div class="song-meta">Phil Wickham · G · <span class="song-id-badge">S104</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 954px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">Before The Throne Of God Above</div></div><div class="song-meta">Charitie Lees Smith · D · <span class="song-id-badge">S115</span></div></div></div></div><div class="song-row-wrap v-item" style="top: 1020px;"><div class="song-row-reveal-l"><svg width="18" height="18" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="white" stroke-width="1.4"></rect></svg><span class="rv-lbl">Copy</span></div><div class="song-row-reveal-r"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2.5" stroke-linecap="round"></path></svg><span class="rv-lbl">Add</span></div><div class="song-item"><div class="song-avatar" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18V6.8l9-1.8v10.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.8"></circle><circle cx="16" cy="16" r="2.4" stroke="currentColor" stroke-width="1.8"></circle></svg></div><div class="song-info"><div class="song-title-row"><div class="song-title">Blessed Be Your Name</div></div><div class="song-meta">Matt Redman · A · <span class="song-id-badge">S070</span></div></div></div></div></div></div>
+      <div id="alpha-strip"><div class="alpha-letter">1</div><div class="alpha-letter">A</div><div class="alpha-letter">B</div><div class="alpha-letter">C</div><div class="alpha-letter">D</div><div class="alpha-letter">E</div><div class="alpha-letter">F</div><div class="alpha-letter">G</div><div class="alpha-letter">H</div><div class="alpha-letter">I</div><div class="alpha-letter">J</div><div class="alpha-letter">K</div><div class="alpha-letter">L</div><div class="alpha-letter">M</div><div class="alpha-letter">N</div><div class="alpha-letter">O</div><div class="alpha-letter">P</div><div class="alpha-letter">R</div><div class="alpha-letter">S</div><div class="alpha-letter">T</div><div class="alpha-letter">W</div><div class="alpha-letter">Y</div></div>
     </div>
     <button class="scroll-top-btn" id="scroll-top-btn" onclick="scrollToTop()" aria-label="Scroll to top">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 10L8 6L12 10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -736,22 +756,22 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
   </div>
 
   <!-- SET LIST -->
-  <div id="setlist-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
+  <div id="setlist-section" style="display: none; flex: 1 1 0%; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
     <div class="sl-hdr">
-      <span class="sl-lbl" id="sl-count">0 songs</span>
+      <span class="sl-lbl" id="sl-count">4 songs</span>
       <div class="sl-btns">
         <button class="sl-export-btn" onclick="openBS('export')">Export ↓</button>
         <button class="sl-clear-btn" onclick="clearSet()">Clear</button>
       </div>
     </div>
     <div class="sl-scroll-host vs-host">
-      <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"></div></div>
+      <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"><div class="set-item" data-id="-OqXOUQlR38pxuI-7chV"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">Thuna Enikkyeshuve</div><div class="set-meta-row"><div class="set-meta">M E Cherian&nbsp;<span class="lang-badge">ML</span></div><button class="set-key-btn" type="button">Key G</button></div></div><button class="set-rm">×</button></div><div class="set-item" data-id="-OqXOpatxLYRkaO4lMwJ"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">Karthavil Ennum Ente Ashrayam</div><div class="set-meta-row"><div class="set-meta">&nbsp;<span class="lang-badge">ML</span></div><button class="set-key-btn override" type="button">Key G</button></div></div><button class="set-rm">×</button></div><div class="set-item" data-id="local26"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">Our God</div><div class="set-meta-row"><div class="set-meta">Chris Tomlin&nbsp;<span class="lang-badge">EN</span></div><button class="set-key-btn" type="button">Key G</button></div></div><button class="set-rm">×</button></div><div class="set-item" data-id="-OqXOz-ExN-JKz07d_mW"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">Manna Jaya Jaya</div><div class="set-meta-row"><div class="set-meta">&nbsp;<span class="lang-badge">ML</span></div><button class="set-key-btn override" type="button">Key G</button></div></div><button class="set-rm">×</button></div></div></div>
     </div>
     <button class="add-fab" onclick="openBS('picker')" aria-label="Add to set list"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path></svg></button>
   </div>
 
   <!-- SETTINGS -->
-  <div id="settings-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;">
+  <div id="settings-section" style="display: none; flex: 1 1 0%; flex-direction: column; overflow: hidden; min-height: 0px;">
     <div class="settings-scroll">
 
       <div class="ss-section">
@@ -760,7 +780,7 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
           <div class="ss-row" onclick="toggleDark()">
             <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><circle cx="8" cy="8" r="2.8" stroke="currentColor" stroke-width="1.5"></circle></svg></div>
             <div class="ss-body"><div class="ss-lbl">Dark mode</div></div>
-            <div class="sw" id="dark-sw" onclick="event.stopPropagation();toggleDark()"><div class="sw-thumb"></div></div>
+            <div class="sw on" id="dark-sw" onclick="event.stopPropagation();toggleDark()"><div class="sw-thumb"></div></div>
           </div>
           <div class="ss-row no-tap">
             <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 12h3.5L13 4.5 11.5 3 4 10.5V14H2v-2z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
@@ -768,7 +788,7 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
               <div class="ss-lbl">Text size</div>
               <div class="sz-wrap">
                 <span class="sz-a" style="font-size:11px">A</span>
-                <input type="range" class="sz-slider" id="text-size-slider" min="85" max="125" value="100" oninput="applyTextSize(this.value)">
+                <input type="range" class="sz-slider" id="text-size-slider" min="85" max="125" value="100" oninput="applyTextSize(this.value)" style="--pct: 37.5%;">
                 <span class="sz-a" style="font-size:17px">A</span>
               </div>
             </div>
@@ -835,7 +855,7 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
             <div style="font-size:18px;font-weight:800;color:var(--txt1);text-align:center;">WorshipBase</div>
             <div style="font-size:13px;color:var(--txt3);margin-top:4px;text-align:center;">Version 1.5.0</div>
             <div style="font-size:13px;color:var(--txt2);margin-top:10px;text-align:center;">Created by <strong>Jerin Reji</strong></div>
-            <div style="font-size:12px;color:var(--txt3);margin-top:6px;line-height:1.6;text-align:center;">A chord library for worship bands.<br>Built with love for the church.</div>
+            <div style="font-size:12px;color:var(--txt3);margin-top:6px;line-height:1.6;text-align:center;"></div>
           </div>
         </div>
       </div>
@@ -865,46 +885,54 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
 </div><!-- end list-view -->
 
 <!-- ═══ SONG VIEW ═══ -->
-<div id="song-view">
+<div id="song-view" class="" style="background: var(--bg1);">
   <div class="sv-hdr">
     <div class="sv-top">
       <!-- Circle bubble back button — no text, just chevron -->
       <button class="back-btn" onclick="showList()" id="back-btn" title="Back">
         <svg width="12" height="16" viewBox="0 0 9 14" fill="none" style="margin-right:2px;"><path d="M7.5 1L1.5 7L7.5 13" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       </button>
+      <div class="sv-pres-title" id="sv-pres-title">All Heaven Declares</div>
       <!-- Circle bubble menu button -->
       <button class="menu-btn" onclick="openBS('songmenu')">
         <svg width="18" height="4" viewBox="0 0 18 4" fill="none"><circle cx="2" cy="2" r="2" fill="currentColor"></circle><circle cx="9" cy="2" r="2" fill="currentColor"></circle><circle cx="16" cy="2" r="2" fill="currentColor"></circle></svg>
       </button>
+      <button class="pres-exit-btn" id="pres-exit-btn" onclick="setPresentationMode(false)">Done</button>
     </div>
-    <div class="sv-title" id="sv-title"></div>
-    <div class="sv-author" id="sv-author"></div>
-    <div class="sv-orig-key" id="sv-orig-key"></div>
-    <div class="sv-song-id" id="sv-song-id"></div>
+    <div class="sv-title" id="sv-title">All Heaven Declares</div>
+    <div class="sv-author" id="sv-author">Tricia Richards</div>
+    <div class="sv-orig-key" id="sv-orig-key">Originally in D</div>
+    <div class="sv-song-id" id="sv-song-id">Song ID: S108</div>
   </div>
 
   <div class="sv-scroll" id="sv-scroll">
     <div class="sv-ctrls">
       <div class="seg-bar" id="view-seg">
-        <button class="seg-btn active" id="seg-lyrics" onclick="setViewMode('lyrics')">Lyrics</button>
-        <button class="seg-btn" id="seg-chords" onclick="setViewMode('chords')">Chords</button>
+        <button class="seg-btn" id="seg-lyrics" onclick="setViewMode('lyrics')">Lyrics</button>
+        <button class="seg-btn active" id="seg-chords" onclick="setViewMode('chords')">Chords</button>
         <button class="seg-btn" id="seg-nns" onclick="setViewMode('nns')">NNS</button>
       </div>
-      <div class="sv-ctrl-row compact" id="key-controls" style="margin-top:10px;display:none;">
+      <div class="sv-ctrl-row compact" id="key-controls" style="margin-top: 10px; display: flex;">
         <div class="xp-wrap">
           <button class="xp-btn" onclick="transposeStep(-1)">−</button>
-          <select class="sv-sel" id="key-select" onchange="transposeToKey(this.value)"></select>
+          <select class="sv-sel" id="key-select" onchange="transposeToKey(this.value)"><option value="C">C</option><option value="C#">C#</option><option value="D" selected="">D</option><option value="D#">D#</option><option value="E">E</option><option value="F">F</option><option value="F#">F#</option><option value="G">G</option><option value="G#">G#</option><option value="A">A</option><option value="A#">A#</option><option value="B">B</option></select>
           <button class="xp-btn" onclick="transposeStep(1)">+</button>
         </div>
       </div>
-      <div class="chords-used" id="sv-chords"></div>
+      <div class="chords-used" id="sv-chords">Chords used: <span>D  A  Bm  G</span></div>
     </div>
     <div class="print-only" id="print-header">
       <div class="pt" id="ph-title"></div>
       <div class="pa" id="ph-author"></div>
       <div class="pk" id="ph-key"></div>
     </div>
-    <div class="sheet" id="sv-sheet"></div>
+    <div class="sheet" id="sv-sheet"><span class="sec-lbl">Verse 1</span><div class="lyric-block"><div class="chord-row">D</div><div class="lyric-row">All heaven declares</div></div><div class="lyric-block"><div class="chord-row">A</div><div class="lyric-row">The glory of the risen Lord</div></div><div class="lyric-block"><div class="chord-row">Bm</div><div class="lyric-row">Who can compare</div></div><div class="lyric-block"><div class="chord-row">G</div><div class="lyric-row">With the beauty of the Lord</div></div><span class="spacer-line"></span><span class="sec-lbl">Chorus</span><div class="lyric-block"><div class="chord-row">D</div><div class="lyric-row">Forever He will be</div></div><div class="lyric-block"><div class="chord-row">A</div><div class="lyric-row">The Lamb upon the throne</div></div><div class="lyric-block"><div class="chord-row">Bm</div><div class="lyric-row">I gladly bow the knee</div></div><div class="lyric-block"><div class="chord-row">G</div><div class="lyric-row">And worship Him alone</div></div></div>
+  </div>
+  <div class="pres-autoscroll" id="pres-autoscroll">
+    <button class="mini-step" onclick="adjustAutoScrollSpeed(-0.1)">−</button>
+    <button class="pres-auto-toggle" id="pres-auto-toggle" onclick="toggleAutoScroll()" aria-label="Start auto scroll">▶</button>
+    <span class="pres-speed" id="pres-speed-label">x1.0</span>
+    <button class="mini-step" onclick="adjustAutoScrollSpeed(0.1)">+</button>
   </div>
 </div>
 
@@ -912,25 +940,30 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
 
 <!-- SONG MENU -->
 <div class="bs-bg" id="bs-songmenu" onclick="closeBSBg(event,'songmenu')">
-  <div class="bs" id="bsp-songmenu">
+  <div class="bs" id="bsp-songmenu" data-swipe-attached="1" style="">
     <div class="bs-handle"></div>
     <div class="bs-title">Song options</div>
-    <button class="mi" id="mi-autoscroll" onclick="toggleAutoScroll()">
+    <div class="mi mi-inline" id="mi-autoscroll" onclick="toggleAutoScroll()">
       <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M8.5 2.5v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path><path d="M5.5 5.5l3-3 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path><path d="M5.5 11.5l3 3 3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
-      Auto scroll<span class="mi-check">✓</span>
-    </button>
-    <div class="autoscroll-pod">
-      <button class="autoscroll-btn" onclick="adjustAutoScrollSpeed(-5)">−</button>
-      <div class="autoscroll-center">
-        <div class="autoscroll-main" id="autoscroll-status">Auto scroll off</div>
-        <div class="autoscroll-sub" id="autoscroll-speed-label">Speed 25 px/s</div>
+      <span class="mi-grow" id="autoscroll-status">Auto scroll</span>
+      <div class="mi-inline-controls" onclick="event.stopPropagation()">
+        <button class="mini-step" onclick="event.stopPropagation();adjustAutoScrollSpeed(-0.1)">−</button>
+        <span class="mini-val" id="autoscroll-speed-label">x1.0</span>
+        <button class="mini-step" onclick="event.stopPropagation();adjustAutoScrollSpeed(0.1)">+</button>
       </div>
-      <button class="autoscroll-btn" onclick="adjustAutoScrollSpeed(5)">+</button>
     </div>
     <div class="menu-slider-wrap">
       <div class="menu-slider-lbl"><span>Display size</span><span id="text-size-menu-val">100%</span></div>
-      <input type="range" class="menu-slider" id="text-size-menu-slider" min="85" max="125" value="100" oninput="applyTextSize(this.value)">
+      <input type="range" class="menu-slider" id="text-size-menu-slider" min="85" max="125" value="100" oninput="applyTextSize(this.value)" style="--pct: 37.5%;">
     </div>
+    <button class="mi" onclick="toggleCurrentSongInSetList();closeBS('songmenu')">
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M8.5 3v11M3 8.5h11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path><rect x="2" y="2" width="13" height="13" rx="3" stroke="currentColor" stroke-width="1.4"></rect></svg></span>
+      <span id="mi-setlist-label">Add to set list</span>
+    </button>
+    <button class="mi" id="mi-presentation" onclick="togglePresentationMode();closeBS('songmenu')">
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="2" y="3" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.4"></rect><path d="M6 6.5h5M5 9h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
+      Presentation mode<span class="mi-check">✓</span>
+    </button>
     <button class="mi" id="mi-copy-lyrics" onclick="copyLyrics();closeBS('songmenu')">
       <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="6" y="1" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"></rect><rect x="1" y="4" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"></rect></svg></span>
       Copy lyrics
@@ -947,9 +980,9 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
       <span class="mi-icon-wrap"><span class="mi-ico">♭</span></span>
       Use flats<span class="mi-check">✓</span>
     </button>
-    <button class="mi" id="mi-dark" onclick="toggleDark();closeBS('songmenu')">
-      <span class="mi-icon-wrap"><span class="mi-ico" id="dark-ico">🌙</span></span>
-      <span id="dark-lbl">Dark mode</span><span class="mi-check">✓</span>
+    <button class="mi on" id="mi-dark" onclick="toggleDark();closeBS('songmenu')">
+      <span class="mi-icon-wrap"><span class="mi-ico" id="dark-ico">☀</span></span>
+      <span id="dark-lbl">Light mode</span><span class="mi-check">✓</span>
     </button>
     <button class="mi" onclick="requireAdmin(()=&gt;{closeBS('songmenu');openSongModal(currentSong);})">
       <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M12 3l2 2L5.5 13H3.5v-2L12 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg></span>
@@ -1042,18 +1075,15 @@ body.dark .mi:active{background:rgba(255,255,255,.045);}
 
 <!-- SET KEY -->
 <div class="bs-bg" id="bs-setkey" onclick="closeBSBg(event,'setkey')">
-  <div class="bs">
+  <div class="bs" data-swipe-attached="1">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Set list key</h2><button class="m-close" onclick="closeBS('setkey')">×</button></div>
     <div class="m-body">
       <p style="font-size:13px;color:var(--txt2);margin-bottom:10px;line-height:1.55;">Choose the key for this song in the set list. This won't change the song's original key.</p>
-      <div id="setkey-song" style="font-size:15px;font-weight:700;color:var(--txt1);margin-bottom:8px;"></div>
-      <div id="setkey-orig" style="font-size:12px;color:var(--txt3);margin-bottom:12px;"></div>
+      <div id="setkey-song" style="font-size:15px;font-weight:700;color:var(--txt1);margin-bottom:8px;">Manna Jaya Jaya</div>
+      <div id="setkey-orig" style="font-size:12px;color:var(--txt3);margin-bottom:12px;">Original key: A</div>
       <label style="font-size:12px;font-weight:700;color:var(--txt2);display:block;margin-bottom:6px;">Use this key in the set list:</label>
-      <select id="setkey-select" style="width:100%;padding:9px 13px;border:.5px solid var(--bdr2);border-radius:var(--rad);font-size:14px;background:var(--bg2);color:var(--txt1);margin-bottom:14px;font-family:inherit;outline:none;">
-        <option value="original">Original key</option>
-        <option value="default">Default key from settings</option>
-      </select>
+      <select id="setkey-select" style="width:100%;padding:9px 13px;border:.5px solid var(--bdr2);border-radius:var(--rad);font-size:14px;background:var(--bg2);color:var(--txt1);margin-bottom:14px;font-family:inherit;outline:none;"><option value="original">Original key (A)</option><option value="default">Default key from settings</option><option value="C">C</option><option value="C#">C#</option><option value="D">D</option><option value="D#">D#</option><option value="E">E</option><option value="F">F</option><option value="F#">F#</option><option value="G">G</option><option value="G#">G#</option><option value="A">A</option><option value="A#">A#</option><option value="B">B</option></select>
       <div class="m-acts">
         <button class="btn-s" onclick="closeBS('setkey')">Cancel</button>
         <button class="btn-p" onclick="saveSetItemKey()">Save key</button>
@@ -1215,7 +1245,13 @@ function showSync(msg,err){const b=document.getElementById('sync-badge');b.textC
 
 /* ══ TOAST ══ */
 function showToast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  const t=document.getElementById('toast');
+  t.classList.remove('show');
+  t.textContent=msg;
+  t.style.left='50%';
+  t.style.transform='translate3d(-50%,8px,0)';
+  void t.offsetWidth;
+  t.classList.add('show');
   clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800);
 }
 
@@ -1226,6 +1262,7 @@ function openBS(name){
   el.classList.add('open');
   if(name==='chords')renderChordDiagrams();
   if(name==='export')buildExport();
+  if(name==='songmenu')updateSongMenuUI();
   if(name==='picker'){document.getElementById('picker-search').value='';pickerFilter='all';document.querySelectorAll('.pf-btn').forEach((b,i)=>b.classList.toggle('active',i===0));renderPicker();}
   if(name==='pin'){
     setTimeout(()=>{
@@ -1238,24 +1275,64 @@ function openBS(name){
   const bs=el.querySelector('.bs');
   if(bs)attachSheetSwipe(bs,name);
 }
-function closeBS(name){document.getElementById('bs-'+name)?.classList.remove('open');}
-function closeAllBS(){document.querySelectorAll('.bs-bg.open').forEach(el=>el.classList.remove('open'));}
+function resetBSPanel(name){
+  const panel=document.querySelector(`#bs-${name} .bs`);
+  if(panel){panel.style.transform='';panel.style.transition='';}
+}
+function closeBS(name){
+  resetBSPanel(name);
+  document.getElementById('bs-'+name)?.classList.remove('open');
+}
+function closeAllBS(){
+  document.querySelectorAll('.bs-bg.open').forEach(el=>{
+    const name=el.id.replace('bs-','');
+    resetBSPanel(name);
+    el.classList.remove('open');
+  });
+}
 function closeBSBg(e,name){if(e.target===document.getElementById('bs-'+name))closeBS(name);}
 
 function attachSheetSwipe(panel,name){
-  let sy=0,moved=false;
-  panel.addEventListener('touchstart',e=>{sy=e.touches[0].clientY;moved=false;},{passive:true,once:true});
-  panel.addEventListener('touchmove',e=>{
-    const dy=e.touches[0].clientY-sy;
-    if(dy>0&&!moved){moved=true;}
-    if(moved&&dy>0){panel.style.transform=`translateY(${dy}px)`;panel.style.transition='none';}
-  },{passive:true,once:false});
-  panel.addEventListener('touchend',e=>{
-    const dy=e.changedTouches[0].clientY-sy;
+  if(panel.dataset.swipeAttached==='1')return;
+  panel.dataset.swipeAttached='1';
+  let sy=0,dy=0,dragging=false;
+  const snapBack=()=>{
     panel.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
-    if(dy>80){panel.style.transform='translateY(100%)';setTimeout(()=>{closeBS(name);panel.style.transform='';panel.style.transition='';},220);}
-    else{panel.style.transform='';setTimeout(()=>panel.style.transition='',220);}
-  },{passive:true,once:true});
+    panel.style.transform='translateY(0)';
+    setTimeout(()=>panel.style.transition='',220);
+  };
+  panel.addEventListener('touchstart',e=>{
+    sy=e.touches[0].clientY;
+    dy=0;
+    dragging=false;
+    panel.style.transition='';
+  },{passive:true});
+  panel.addEventListener('touchmove',e=>{
+    dy=Math.max(0,e.touches[0].clientY-sy);
+    if(dy>0){
+      dragging=true;
+      panel.style.transition='none';
+      panel.style.transform=`translateY(${dy}px)`;
+    }
+  },{passive:true});
+  const finishDrag=()=>{
+    if(!dragging)return;
+    if(dy>120){
+      panel.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
+      panel.style.transform='translateY(100%)';
+      setTimeout(()=>closeBS(name),220);
+    }else{
+      snapBack();
+    }
+    dragging=false;
+    dy=0;
+  };
+  panel.addEventListener('touchend',finishDrag,{passive:true});
+  panel.addEventListener('touchcancel',()=>{
+    if(dragging)snapBack();
+    dragging=false;
+    dy=0;
+  },{passive:true});
 }
 
 /* ══ ADMIN PIN ══ */
@@ -1391,30 +1468,78 @@ function renderChordDiagrams(){
 }
 
 /* ══ ACTIONS ══ */
-let viewMode='chords',useFlats=false,autoScrollSpeed=25,autoScrollOn=false,autoScrollTimer=null;
+let viewMode='chords',useFlats=false,autoScrollRate=1.0,autoScrollOn=false,autoScrollTimer=null,autoScrollLastTs=0,autoScrollCarry=0,presentationMode=false;
+const AUTO_SCROLL_BASE=80;
+function formatAutoScrollRate(){return 'x'+autoScrollRate.toFixed(1);}
 function setViewMode(mode){viewMode=mode;['lyrics','chords','nns'].forEach(name=>document.getElementById('seg-'+name)?.classList.toggle('active',name===mode));document.getElementById('key-controls').style.display=mode==='lyrics'?'none':'flex';updateSongView();}
 function toggleFlats(){useFlats=!useFlats;document.getElementById('mi-flats').classList.toggle('on',useFlats);updateSongView();}
+function setPresentationMode(on){
+  presentationMode=!!on;
+  document.body.classList.toggle('performance-mode',presentationMode);
+  songView.classList.toggle('performance-mode',presentationMode);
+  document.getElementById('mi-presentation')?.classList.toggle('on',presentationMode);
+  const pt=document.getElementById('sv-pres-title');
+  if(pt&&currentSong)pt.textContent=currentSong.title;
+  updateAutoScrollUI();
+}
+function togglePresentationMode(){setPresentationMode(!presentationMode);}
+function updateSongMenuUI(){
+  const btn=document.getElementById('mi-setlist-label');
+  if(btn&&currentSong){
+    const inSet=getSetList().some(x=>x.songId===currentSong.id);
+    btn.textContent=inSet?'Remove from set list':'Add to set list';
+  }
+  document.getElementById('mi-presentation')?.classList.toggle('on',presentationMode);
+}
 function updateAutoScrollUI(){
   document.getElementById('mi-autoscroll')?.classList.toggle('on',autoScrollOn);
   const status=document.getElementById('autoscroll-status');
   const speed=document.getElementById('autoscroll-speed-label');
-  if(status)status.textContent=autoScrollOn?'Auto scroll on':'Auto scroll off';
-  if(speed)speed.textContent=`Speed ${autoScrollSpeed} px/s`;
+  const presSpeed=document.getElementById('pres-speed-label');
+  const presBtn=document.getElementById('pres-auto-toggle');
+  if(status)status.textContent=autoScrollOn?'Auto scroll on':'Auto scroll';
+  if(speed)speed.textContent=formatAutoScrollRate();
+  if(presSpeed)presSpeed.textContent=formatAutoScrollRate();
+  if(presBtn){presBtn.textContent=autoScrollOn?'❚❚':'▶';presBtn.setAttribute('aria-label',autoScrollOn?'Pause auto scroll':'Start auto scroll');}
+  updateSongMenuUI();
+}
+function autoScrollFrame(ts){
+  if(!autoScrollOn)return;
+  const el=svScrollEl;
+  if(!el){stopAutoScroll();return;}
+  if(!autoScrollLastTs)autoScrollLastTs=ts;
+  const dt=Math.min(32,ts-autoScrollLastTs||16);
+  autoScrollLastTs=ts;
+  const pxPerSecond=AUTO_SCROLL_BASE*autoScrollRate;
+  const max=Math.max(0,el.scrollHeight-el.clientHeight);
+  if(el.scrollTop>=max-1){stopAutoScroll();return;}
+  autoScrollCarry += (pxPerSecond*dt/1000);
+  const step=Math.floor(autoScrollCarry);
+  if(step>0){
+    autoScrollCarry-=step;
+    el.scrollTop=Math.min(max,el.scrollTop+step);
+  }
+  autoScrollTimer=requestAnimationFrame(autoScrollFrame);
 }
 function startAutoScroll(){
   stopAutoScroll();
   autoScrollOn=true;
-  autoScrollTimer=setInterval(()=>{
-    const el=svScrollEl;if(!el)return;
-    const max=el.scrollHeight-el.clientHeight;
-    if(el.scrollTop>=max-2){stopAutoScroll();return;}
-    el.scrollTop=Math.min(max,el.scrollTop+Math.max(1,autoScrollSpeed/10));
-  },100);
+  autoScrollLastTs=0;
+  autoScrollCarry=0;
+  autoScrollTimer=requestAnimationFrame(autoScrollFrame);
   updateAutoScrollUI();
 }
-function stopAutoScroll(){if(autoScrollTimer){clearInterval(autoScrollTimer);autoScrollTimer=null;}autoScrollOn=false;updateAutoScrollUI();}
+function stopAutoScroll(){if(autoScrollTimer){cancelAnimationFrame(autoScrollTimer);autoScrollTimer=null;}autoScrollOn=false;autoScrollLastTs=0;autoScrollCarry=0;updateAutoScrollUI();}
 function toggleAutoScroll(){autoScrollOn?stopAutoScroll():startAutoScroll();}
-function adjustAutoScrollSpeed(delta){autoScrollSpeed=Math.max(5,Math.min(120,autoScrollSpeed+delta));if(autoScrollOn)startAutoScroll();else updateAutoScrollUI();showToast(`Auto scroll ${autoScrollSpeed} px/s`);}
+function adjustAutoScrollSpeed(delta){autoScrollRate=Math.max(0.5,Math.min(3.0,Math.round((autoScrollRate+delta)*10)/10));updateAutoScrollUI();showToast(`Auto scroll ${formatAutoScrollRate()}`);}
+function toggleCurrentSongInSetList(){
+  if(!currentSong)return;
+  const sl=getSetList();
+  const inSet=sl.some(x=>x.songId===currentSong.id);
+  if(inSet){modSetList(sl.filter(x=>x.songId!==currentSong.id));showToast('Removed from set list');}
+  else{modSetList([...sl,{songId:currentSong.id,setKey:'original'}]);showToast('Added to set list');}
+  renderSetList();refresh(false);updateSongMenuUI();
+}
 
 function exportPDF(){
   if(!currentSong)return;
@@ -2009,28 +2134,29 @@ function makeListNode(row){
     const wasSwiped=item.classList.contains('swiped-r')||item.classList.contains('swiped-l');
     const base=item.classList.contains('swiped-r')?72:item.classList.contains('swiped-l')?-72:0;
     const clamped=Math.max(-72,Math.min(72,base+dx));
-    item.style.transform=`translateX(${clamped}px)`;
+    item.style.transform=`translate3d(${clamped}px,0,0)`;
     item.style.transition='none';
   },{passive:true});
   item.addEventListener('touchend',e=>{
     if(!lockedH)return;
     const dx=e.changedTouches[0].clientX-sx;
-    item.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
+    item.style.transition='transform .26s cubic-bezier(.22,.61,.36,1)';
     const wasSR=item.classList.contains('swiped-r');
     const wasSL=item.classList.contains('swiped-l');
-    if(wasSR){if(dx<-20)resetSwipeItem(item);else{item.style.transform='translateX(72px)';}}
-    else if(wasSL){if(dx>20)resetSwipeItem(item);else{item.style.transform='translateX(-72px)';}}
-    else if(dx<-40){item.style.transform='translateX(-72px)';item.classList.add('swiped-l');}
-    else if(dx>40){item.style.transform='translateX(72px)';item.classList.add('swiped-r');}
+    if(wasSR){if(dx<-20)resetSwipeItem(item);else{item.style.transform='translate3d(72px,0,0)';}}
+    else if(wasSL){if(dx>20)resetSwipeItem(item);else{item.style.transform='translate3d(-72px,0,0)';}}
+    else if(dx<-40){item.style.transform='translate3d(-72px,0,0)';item.classList.add('swiped-l');}
+    else if(dx>40){item.style.transform='translate3d(72px,0,0)';item.classList.add('swiped-r');}
     else resetSwipeItem(item);
   },{passive:true});
+  item.addEventListener('touchcancel',()=>resetSwipeItem(item),{passive:true});
 
   wrap.appendChild(revealL);wrap.appendChild(revealR);wrap.appendChild(item);
   return wrap;
 }
 function resetSwipeItem(item){
-  item.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
-  item.style.transform='translateX(0)';
+  item.style.transition='transform .26s cubic-bezier(.22,.61,.36,1)';
+  item.style.transform='translate3d(0,0,0)';
   item.classList.remove('swiped-r','swiped-l','swiped');
 }
 function renderVirtual(){
@@ -2383,11 +2509,12 @@ function openBS(name){
   el.classList.add('open');
   if(name==='chords')renderChordDiagrams();
   if(name==='export')buildExport();
+  if(name==='songmenu')updateSongMenuUI();
   if(name==='picker'){document.getElementById('picker-search').value='';pickerFilter='all';document.querySelectorAll('.pf-btn').forEach((b,i)=>b.classList.toggle('active',i===0));renderPicker();}
   if(name==='pin'){setTimeout(()=>{const inp=document.getElementById('pin-input');inp.value='';document.getElementById('pin-err').style.display='none';inp.focus();},160);}
   if(name==='defaultkey')renderDefaultKeyOptions();
   if(name==='changepin'){document.getElementById('cp-current').value='';document.getElementById('cp-new').value='';document.getElementById('cp-confirm').value='';document.getElementById('cp-err').style.display='none';}
-  const bs=el.querySelector('.bs');if(bs)attachSheetSwipe(bs,name);
+  const bs=el.querySelector('.bs');if(bs){bs.style.transform='';bs.style.transition='';attachSheetSwipe(bs,name);}
 }
 
 /* ══ CHANGE PIN ══ */
@@ -2638,21 +2765,40 @@ let swipeInProgress=false;
 function swipeNav(nextSong,dir){
   if(swipeInProgress)return;swipeInProgress=true;
   const DUR=280;
-  const cover=document.createElement('div');
-  cover.style.cssText='position:fixed;inset:0;z-index:9;background:var(--bg3);pointer-events:none;';
-  document.body.appendChild(cover);
-  songView.style.transition=`transform ${DUR}ms cubic-bezier(.25,.46,.45,.94)`;
-  songView.style.transform=`translateX(${dir==='left'?'-45%':'45%'})`;
-  setTimeout(()=>{
-    songView.style.transition='none';
-    songView.style.transform=`translateX(${dir==='left'?'100%':'-100%'})`;
-    openSong(nextSong.id,fromSetList);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      songView.style.transition=`transform ${DUR}ms cubic-bezier(.25,.46,.45,.94)`;
-      songView.style.transform='translateX(0)';
-      setTimeout(()=>{cover.remove();songView.style.transition='';songView.style.transform='';swipeInProgress=false;},DUR+10);
-    }));
-  },DUR);
+  const ease='cubic-bezier(.22,.61,.36,1)';
+  const currentClone=songView.cloneNode(true);
+  currentClone.id='song-view-swipe-clone';
+  currentClone.classList.add('visible');
+  currentClone.style.position='fixed';
+  currentClone.style.inset='0';
+  currentClone.style.zIndex='12';
+  currentClone.style.pointerEvents='none';
+  currentClone.style.transform='translate3d(0,0,0)';
+  currentClone.style.transition=`transform ${DUR}ms ${ease}`;
+  currentClone.style.background='var(--bg1)';
+  document.body.appendChild(currentClone);
+
+  const startX=dir==='left'?'100%':'-100%';
+  const endX=dir==='left'?'-100%':'100%';
+
+  songView.style.transition='none';
+  songView.style.transform=`translate3d(${startX},0,0)`;
+  songView.style.background='var(--bg1)';
+  openSong(nextSong.id,fromSetList);
+
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      currentClone.style.transform=`translate3d(${endX},0,0)`;
+      songView.style.transition=`transform ${DUR}ms ${ease}`;
+      songView.style.transform='translate3d(0,0,0)';
+      setTimeout(()=>{
+        currentClone.remove();
+        songView.style.transition='';
+        songView.style.transform='';
+        swipeInProgress=false;
+      },DUR+20);
+    });
+  });
 }
 
 /* ══ SONG VIEW ══ */
@@ -2669,6 +2815,7 @@ function openSong(id,fromSet){
   }
   viewMode='chords';useFlats=false;stopAutoScroll();
   document.getElementById('sv-title').textContent=currentSong.title;
+  document.getElementById('sv-pres-title').textContent=currentSong.title;
   document.getElementById('sv-author').textContent=currentSong.author;
   document.getElementById('sv-orig-key').textContent='Originally in '+currentSong.key;
   document.getElementById('sv-song-id').textContent='Song ID: '+(currentSong.songCode||ensureSongCode(currentSong));
@@ -2676,6 +2823,7 @@ function openSong(id,fromSet){
   document.getElementById('mi-flats').classList.remove('on');
   if(darkMode)document.getElementById('mi-dark').classList.add('on');
   setViewMode('chords');
+  if(presentationMode)setPresentationMode(true);
   updateAutoScrollUI();
   // back button is icon-only now, no label to update
   svScrollEl.scrollTop=0;
@@ -2710,6 +2858,7 @@ function transposeStep(d){
   updateSongView();
 }
 function showList(){stopAutoScroll();
+  setPresentationMode(false);
   document.body.classList.remove('song-open');
   songView.style.transition='transform .26s cubic-bezier(.25,.46,.45,.94)';
   songView.classList.remove('visible');
