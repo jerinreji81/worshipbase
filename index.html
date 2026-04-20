@@ -216,6 +216,7 @@ body.dark .back-btn{background:rgba(100,180,210,.12);border-color:rgba(100,180,2
 .seg-btn{border:none;background:transparent;color:var(--txt2);font-size:12px;font-weight:700;padding:7px 11px;border-radius:999px;cursor:pointer;font-family:inherit;min-width:64px;}
 .seg-btn.active{background:var(--tc);color:#fff;box-shadow:var(--shadow-sm);}
 body.dark .seg-btn.active{background:var(--accent-surface);color:var(--accent);}
+body.dark .editor-mode-btn.active{background:var(--accent-surface);color:var(--accent);box-shadow:none;}
 .sv-ctrl-row.compact{justify-content:flex-start;align-items:center;}
 .mi-inline{display:flex;align-items:center;gap:12px;}
 .mi-grow{flex:1;min-width:0;}
@@ -491,13 +492,16 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .m-subacts{display:flex;gap:8px;flex-wrap:wrap;margin:-2px 0 12px;}
 .m-mini-btn{padding:9px 12px;border:.5px solid var(--bdr2);border-radius:var(--rad-pill);font-size:13px;font-weight:700;background:var(--bg2);color:var(--txt1);cursor:pointer;font-family:inherit;}
 .m-mini-btn:active{transform:scale(.98);}
-.preview-wrap{margin:6px 0 14px;border:.5px solid var(--bdr);border-radius:14px;background:var(--bg1);overflow:hidden;}
-.preview-wrap summary{list-style:none;cursor:pointer;padding:12px 14px;font-size:13px;font-weight:800;color:var(--txt1);display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.preview-wrap summary::-webkit-details-marker{display:none;}
-.preview-wrap summary::after{content:'▾';font-size:12px;color:var(--txt3);transition:transform .18s ease;}
-.preview-wrap[open] summary::after{transform:rotate(180deg);}
-.preview-meta{padding:0 14px 10px;font-size:11px;color:var(--txt3);}
-.preview-body{border-top:.5px solid var(--bdr);padding:14px;max-height:260px;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--bg1);}
+.editor-mode-toggle{display:inline-flex;gap:3px;padding:3px;background:var(--bg2);border:.5px solid var(--bdr2);border-radius:999px;margin:4px 0 12px;}
+.editor-mode-btn{border:none;background:transparent;color:var(--txt2);font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;cursor:pointer;font-family:inherit;min-width:88px;}
+.editor-mode-btn.active{background:var(--tc);color:#fff;box-shadow:var(--shadow-sm);}
+.editor-pane{margin-bottom:14px;}
+.editor-pane.hidden{display:none;}
+.preview-wrap{border:.5px solid var(--bdr);border-radius:14px;background:var(--bg1);overflow:hidden;}
+.preview-wrap-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:.5px solid var(--bdr);}
+.preview-wrap-title{font-size:13px;font-weight:800;color:var(--txt1);}
+.preview-meta{font-size:11px;color:var(--txt3);}
+.preview-body{padding:14px;max-height:320px;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--bg1);}
 .preview-empty{font-size:13px;color:var(--txt3);line-height:1.6;}
 .export-row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .export-row > *{flex:1;min-width:0;}
@@ -1281,17 +1285,27 @@ body.dark .bible-vnum{background:var(--accent-surface);}
       <label>Original key</label><select id="m-key"></select>
       <label>Chord chart <span style="color:var(--txt3);font-weight:400">(optional)</span></label>
       <p class="m-hint">ChordPro: [G]The splendor of a [C]King. Or chord-above-lyrics. Blank lines = verse gaps.</p>
-      <textarea id="m-chart" placeholder="[Verse 1]
+      <div class="editor-mode-toggle" role="tablist" aria-label="Song editor mode">
+        <button class="editor-mode-btn active" type="button" id="editor-mode-edit" onclick="setSongEditorMode('edit')">Edit</button>
+        <button class="editor-mode-btn" type="button" id="editor-mode-preview" onclick="setSongEditorMode('preview')">Preview</button>
+      </div>
+      <div class="editor-pane" id="editor-edit-pane">
+        <textarea id="m-chart" placeholder="[Verse 1]
 [G]The splendor of a [C]King
 [Em]Let all the earth [C]rejoice"></textarea>
-      <div class="m-subacts">
-        <button class="m-mini-btn" type="button" onclick="pasteChordsFromClipboard()">Paste chords from clipboard</button>
+        <div class="m-subacts">
+          <button class="m-mini-btn" type="button" onclick="pasteChordsFromClipboard()">Paste chords from clipboard</button>
+        </div>
       </div>
-      <details class="preview-wrap" id="m-preview-wrap" open="">
-        <summary>Live preview</summary>
-        <div class="preview-meta" id="m-preview-meta">This preview uses the same song rendering style as the song page.</div>
-        <div class="preview-body" id="m-preview-body"><div class="preview-empty">Start typing to preview the chart.</div></div>
-      </details>
+      <div class="editor-pane hidden" id="editor-preview-pane">
+        <div class="preview-wrap" id="m-preview-wrap">
+          <div class="preview-wrap-head">
+            <div class="preview-wrap-title">Live preview</div>
+            <div class="preview-meta" id="m-preview-meta">This preview uses the same song rendering style as the song page.</div>
+          </div>
+          <div class="preview-body" id="m-preview-body"><div class="preview-empty">Start typing to preview the chart.</div></div>
+        </div>
+      </div>
       <div class="m-acts">
         <button class="btn-d" id="delete-btn" onclick="deleteSong()" style="display:none">Delete</button>
         <button class="btn-s" onclick="closeBS('modal')">Cancel</button>
@@ -1353,7 +1367,8 @@ body.dark .bible-vnum{background:var(--accent-surface);}
           <label style="font-size:12px;font-weight:700;color:var(--txt2);display:block;margin-bottom:6px;">Layout:</label>
           <select id="export-layout-sel" style="width:100%;padding:9px 13px;border:.5px solid var(--bdr2);border-radius:var(--rad);font-size:14px;background:var(--bg2);color:var(--txt1);font-family:inherit;outline:none;">
             <option value="one">One song per page</option>
-            <option value="two">Two songs per page</option>
+            <option value="two">Two songs per page (stacked)</option>
+            <option value="two-col">Two songs per page (two columns)</option>
           </select>
         </div>
       </div>
@@ -1971,6 +1986,14 @@ function exportAllPDF(){
   parts.push('.two-up-page{display:flex;flex-direction:column;gap:10mm;}');
   parts.push('.two-up-page .song{padding:0 0 8mm;border-bottom:.5px solid #e5e5e5;}');
   parts.push('.two-up-page .song:last-child{border-bottom:none;padding-bottom:0;}');
+  parts.push('.two-col-page{display:grid;grid-template-columns:1fr 1fr;gap:8mm;align-items:start;}');
+  parts.push('.two-col-page .song{padding:0;border:none;min-width:0;}');
+  parts.push('.two-col-page .pt{font-size:18px;}');
+  parts.push('.two-col-page .pa{font-size:11px;}');
+  parts.push('.two-col-page .pk{font-size:10px;margin-bottom:10px;}');
+  parts.push('.two-col-page .sec-lbl{font-size:9px;margin:10px 0 4px;padding:1px 6px;}');
+  parts.push('.two-col-page .chord-row{font-size:10.5px;line-height:1.35;}');
+  parts.push('.two-col-page .lyric-row,.two-col-page .lyric-only-row{font-size:12.5px;line-height:1.38;}');
   parts.push('.pt{font-size:22px;font-weight:800;margin-bottom:3px;color:#000;}');
   parts.push('.pa{font-size:13px;color:#666;margin-bottom:2px;}');
   parts.push('.pk{font-size:11px;color:'+themeColor+';font-weight:700;margin-bottom:14px;letter-spacing:.05em;text-transform:uppercase;}');
@@ -1983,7 +2006,8 @@ function exportAllPDF(){
   parts.push('<div class="cover">');
   parts.push('<div class="cover-logo"><svg width="40" height="40" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg></div>');
   parts.push('<div class="cover-title">Worship Set List</div>');
-  parts.push('<div class="cover-sub">'+sl.length+' song'+(sl.length!==1?'s':'')+' · '+(exportLayout==='two'?'Two songs per page':'One song per page')+'</div>');
+  const exportLayoutLabel=exportLayout==='two'?'Two songs per page (stacked)':(exportLayout==='two-col'?'Two songs per page (two columns)':'One song per page');
+  parts.push('<div class="cover-sub">'+sl.length+' song'+(sl.length!==1?'s':'')+' · '+exportLayoutLabel+'</div>');
   parts.push('<ul class="cover-list">');
   sl.forEach((item,i)=>{
     const s=findSongById(item.songId);if(!s)return;
@@ -2003,7 +2027,7 @@ function exportAllPDF(){
       '</div>';
   };
 
-  if(exportLayout==='two'){
+  if(exportLayout==='two' || exportLayout==='two-col'){
     let i=0;
     while(i<sl.length){
       const first=sl[i];
@@ -2012,9 +2036,11 @@ function exportAllPDF(){
       const secondSong=second?findSongById(second.songId):null;
       const firstW=estimateSongWeight(firstSong);
       const secondW=secondSong?estimateSongWeight(secondSong):999;
-      const canPair=!!secondSong && firstW<42 && secondW<42 && (firstW+secondW)<70;
+      const canPairStacked=!!secondSong && firstW<42 && secondW<42 && (firstW+secondW)<70;
+      const canPairColumns=!!secondSong && firstW<28 && secondW<28 && Math.max(firstW,secondW)<26;
+      const canPair=exportLayout==='two-col'?canPairColumns:canPairStacked;
       if(canPair){
-        parts.push('<div class="page two-up-page">');
+        parts.push('<div class="page '+(exportLayout==='two-col'?'two-col-page':'two-up-page')+'">');
         parts.push(renderSongBlock(first,false));
         parts.push(renderSongBlock(second,false));
         parts.push('</div>');
@@ -3620,6 +3646,24 @@ async function pasteChordsFromClipboard(){
     showToast('Clipboard access denied');
   }
 }
+let songEditorMode='edit';
+function setSongEditorMode(mode){
+  songEditorMode=(mode==='preview')?'preview':'edit';
+  const editBtn=document.getElementById('editor-mode-edit');
+  const previewBtn=document.getElementById('editor-mode-preview');
+  const editPane=document.getElementById('editor-edit-pane');
+  const previewPane=document.getElementById('editor-preview-pane');
+  if(editBtn)editBtn.classList.toggle('active',songEditorMode==='edit');
+  if(previewBtn)previewBtn.classList.toggle('active',songEditorMode==='preview');
+  if(editPane)editPane.classList.toggle('hidden',songEditorMode!=='edit');
+  if(previewPane)previewPane.classList.toggle('hidden',songEditorMode!=='preview');
+  if(songEditorMode==='preview'){
+    document.getElementById('m-chart')?.blur();
+    updateSongEditorPreview();
+  }else{
+    setTimeout(()=>document.getElementById('m-chart')?.focus({preventScroll:true}),30);
+  }
+}
 function updateSongEditorPreview(){
   const body=document.getElementById('m-preview-body');
   const meta=document.getElementById('m-preview-meta');
@@ -3655,6 +3699,7 @@ function openSongModal(song){
   modalCat=song?song.cat:(activeTab==='setlist'||activeTab==='bible'||activeTab==='settings'?'english':activeTab);
   document.querySelectorAll('.cat-opt').forEach((b,i)=>b.classList.toggle('active',['english','malayalam'][i]===modalCat));
   updateSongEditorPreview();
+  setSongEditorMode('edit');
   openBS('modal');
 }
 function saveSong(){
