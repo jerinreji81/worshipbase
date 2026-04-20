@@ -1594,10 +1594,14 @@ function attachSheetSwipe(panel,name){
     if(!el || !el.closest)return false;
     return !!el.closest('.bs-handle,.m-tr');
   };
+  const ANIM_MS = (name==='biblepicker'||name==='bibleversion') ? 140 : 220;
   const snapBack=()=>{
-    panel.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
+    panel.style.transition=`transform ${ANIM_MS}ms cubic-bezier(.25,.46,.45,.94)`;
     panel.style.transform='translateY(0)';
-    setTimeout(()=>panel.style.transition='',220);
+    setTimeout(()=>{
+      panel.style.transition='';
+      panel.style.transform='';
+    },ANIM_MS);
   };
   panel.addEventListener('touchstart',e=>{
     const onHandle=isDragHandleTarget(e.target);
@@ -1623,9 +1627,14 @@ function attachSheetSwipe(panel,name){
       return;
     }
     if(dy>120){
-      panel.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
+      const bg=panel.closest('.bs-bg');
+      panel.style.transition=`transform ${ANIM_MS}ms cubic-bezier(.25,.46,.45,.94)`;
       panel.style.transform='translateY(100%)';
-      setTimeout(()=>closeBS(name),220);
+      if(bg) bg.style.pointerEvents='none';
+      setTimeout(()=>{
+        closeBS(name);
+        if(bg) bg.style.pointerEvents='';
+      },ANIM_MS);
     }else{
       snapBack();
     }
