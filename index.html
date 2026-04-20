@@ -1587,7 +1587,7 @@ function attachSheetSwipe(panel,name){
   const isInteractiveScrollTarget=el=>{
     if(!el || !el.closest)return false;
     if(el.closest('textarea,input,select,option,[contenteditable="true"]'))return true;
-    return !!el.closest('.picker-list,.exp-pre,.quick-scroll');
+    return !!el.closest('.picker-list,.exp-pre,.quick-scroll,.bible-picker-list,.version-picker-list,.bible-version-list');
   };
   const snapBack=()=>{
     panel.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
