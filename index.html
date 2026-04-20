@@ -892,6 +892,29 @@ body.dark .filter-chip.active{background:var(--accent-surface);color:var(--accen
 
 body.dark .about-version-pill{border-color:var(--accent-border);background:var(--accent-surface);}
 body.dark .bible-vnum{background:var(--accent-surface);}
+
+.sl-setbar{display:flex;align-items:center;gap:10px;padding:4px 16px 8px;flex-shrink:0;}
+.sl-setpick{flex:1;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--surface-border);background:var(--surface-tint);border-radius:16px;padding:11px 14px;cursor:pointer;font-family:inherit;text-align:left;min-width:0;}
+.sl-setpick-copy{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.sl-setpick-title{font-size:14px;font-weight:800;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sl-setpick-sub{font-size:11px;color:var(--txt3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sl-setpick-caret{flex-shrink:0;color:var(--txt3);}
+.sl-setmini-btn{border:1px solid var(--surface-border);background:var(--surface-tint);border-radius:999px;padding:9px 12px;font-size:12px;font-weight:700;color:var(--txt2);cursor:pointer;font-family:inherit;white-space:nowrap;}
+.sl-setmini-btn:active,.sl-setpick:active{transform:scale(.98);}
+.namedset-list{max-height:48vh;overflow-y:auto;border:.5px solid var(--bdr);border-radius:16px;margin:0 18px 10px;background:var(--bg1);}
+.namedset-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:.5px solid var(--bdr);}
+.namedset-item:last-child{border-bottom:none;}
+.namedset-item.active{background:var(--surface-tint);}
+.namedset-main{flex:1;min-width:0;border:none;background:none;text-align:left;cursor:pointer;font-family:inherit;color:var(--txt1);}
+.namedset-name{font-size:14px;font-weight:800;color:var(--txt1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.namedset-meta{font-size:11px;color:var(--txt3);margin-top:2px;}
+.namedset-actions{display:flex;gap:6px;flex-shrink:0;}
+.namedset-action{border:1px solid var(--bdr2);background:var(--bg2);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:700;color:var(--txt2);cursor:pointer;font-family:inherit;}
+.setmgr-actions{display:flex;gap:8px;padding:0 18px 12px;}
+.setmgr-actions .btn-s{padding:12px 14px;font-size:14px;}
+body.dark .sl-setpick,body.dark .sl-setmini-btn,.namedset-item.active{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);}
+body.dark .namedset-action{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);}
+
 </style>
 </head>
 <body>
@@ -932,7 +955,7 @@ body.dark .bible-vnum{background:var(--accent-surface);}
   </div>
 
   <!-- Search + count merged into one row -->
-  <div class="srch-wrap" id="srch-wrap">
+  <div class="srch-wrap" id="srch-wrap" style="display: none;">
     <div class="srch-row">
       <div class="srch-inner">
         <span class="srch-ico"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"></circle><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
@@ -941,7 +964,7 @@ body.dark .bible-vnum{background:var(--accent-surface);}
       </div>
       <span class="song-count" id="song-count">115 songs</span>
     </div>
-    <div class="filter-row" id="library-filter-row">
+    <div class="filter-row" id="library-filter-row" style="display: none;">
       <button class="filter-chip active" data-filter="all" onclick="setLibraryFilter('all',this)">All</button>
       <button class="filter-chip" data-filter="favorites" onclick="setLibraryFilter('favorites',this)">Favourites</button>
       <button class="filter-chip" data-filter="inset" onclick="setLibraryFilter('inset',this)">In set list</button>
@@ -949,7 +972,7 @@ body.dark .bible-vnum{background:var(--accent-surface);}
   </div>
 
   <!-- SONG LIST -->
-  <div id="song-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
+  <div id="song-section" style="flex: 1 1 0%; display: none; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
     <div class="vs-host ptr-wrap">
       <div id="ptr-indicator"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 2l-2 2M9 2l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 9a7 7 0 1 1-7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
       <div id="vscroll" class="vs-wrap"><div id="home-quick-wrap" class="home-quick-wrap" style="display: flex;">
@@ -970,16 +993,24 @@ body.dark .bible-vnum{background:var(--accent-surface);}
   </div>
 
   <!-- SET LIST -->
-  <div id="setlist-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
+  <div id="setlist-section" style="display: flex; flex: 1 1 0%; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
     <div class="sl-scope-row">
       <div class="sl-scope-pills">
         <button class="sl-scope-btn active" id="sl-scope-shared" onclick="setSetListScope('shared')">Shared</button>
         <button class="sl-scope-btn" id="sl-scope-personal" onclick="setSetListScope('personal')">Personal</button>
       </div>
     </div>
+    <div class="sl-setbar">
+      <button class="sl-setpick" type="button" onclick="openBS('sets')">
+        <span class="sl-setpick-copy"><span class="sl-setpick-title" id="sl-active-set-name">Shared Set</span><span class="sl-setpick-sub" id="sl-active-set-sub">1 set list · Shared</span></span>
+        <span class="sl-setpick-caret"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+      </button>
+      <button class="sl-setmini-btn" type="button" onclick="createNamedSet()">New</button>
+      <button class="sl-setmini-btn" type="button" onclick="copyActiveSetToOtherScope()">Copy</button>
+    </div>
     <div class="sl-hdr">
       <div class="sl-hdr-meta">
-        <span class="sl-lbl" id="sl-count">0 songs</span>
+        <span class="sl-lbl" id="sl-count">Shared Set · 0 songs</span>
         
       </div>
       <div class="sl-btns">
@@ -988,7 +1019,7 @@ body.dark .bible-vnum{background:var(--accent-surface);}
       </div>
     </div>
     <div class="sl-scroll-host vs-host">
-      <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"></div></div>
+      <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"><div class="sl-empty"><div class="sl-ei">🎵</div><div class="sl-et">No songs in Shared Set</div><div class="sl-es">Tap + to add songs</div></div></div></div>
     </div>
     <button class="add-fab" onclick="openBS('picker')" aria-label="Add to set list"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path></svg></button>
   </div>
@@ -1107,7 +1138,7 @@ body.dark .bible-vnum{background:var(--accent-surface);}
 
   <!-- BOTTOM TAB BAR — last flex child of #list-view -->
   <div class="tab-bar" id="tab-bar">
-    <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
+    <button class="tab-btn" id="tab-english" onclick="switchTab('english')">
       <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span>
       <span class="tab-lbl">English</span>
     </button>
@@ -1115,7 +1146,7 @@ body.dark .bible-vnum{background:var(--accent-surface);}
       <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 5h16M4 10h7M4 15h13M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span>
       <span class="tab-lbl">Malayalam</span>
     </button>
-    <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
+    <button class="tab-btn active" id="tab-setlist" onclick="switchTab('setlist')">
       <span class="tab-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="4" height="4" rx="1" fill="currentColor" opacity=".5"></rect><rect x="3" y="11" width="4" height="4" rx="1" fill="currentColor" opacity=".75"></rect><rect x="3" y="17" width="4" height="4" rx="1" fill="currentColor"></rect><path d="M11 7h10M11 13h8M11 19h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span>
       <span class="tab-lbl">Set List</span>
     </button>
@@ -1574,7 +1605,7 @@ body.dark .bible-vnum{background:var(--accent-surface);}
 /* ══ FIREBASE ══ */
 const firebaseConfig={apiKey:"AIzaSyAWHTEOh1lXkzq3kB24g3An6Aad54OMlN8",authDomain:"worshipbase-17d1b.firebaseapp.com",databaseURL:"https://worshipbase-17d1b-default-rtdb.europe-west1.firebasedatabase.app",projectId:"worshipbase-17d1b",storageBucket:"worshipbase-17d1b.firebasestorage.app",messagingSenderId:"137901259240",appId:"1:137901259240:web:a1b3e3eecf6d72e049cc5d"};
 firebase.initializeApp(firebaseConfig);
-const db=firebase.database(),songsRef=db.ref('songs'),setlistRef=db.ref('setlist');
+const db=firebase.database(),songsRef=db.ref('songs'),setlistRef=db.ref('setlist'),sharedSetsRef=db.ref('setlists');
 function showSync(msg,err){const b=document.getElementById('sync-badge');b.textContent=msg;b.classList.toggle('error',!!err);b.classList.add('show');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('show'),2200);}
 
 /* ══ TOAST ══ */
@@ -1597,6 +1628,7 @@ function openBS(name){
   if(name==='chords')renderChordDiagrams();
   if(name==='export')buildExport();
   if(name==='songmenu')updateSongMenuUI();
+  if(name==='sets')renderNamedSetChooserUI();
   if(name==='picker'){document.getElementById('picker-search').value='';pickerFilter='all';document.querySelectorAll('.pf-btn').forEach((b,i)=>b.classList.toggle('active',i===0));renderPicker();}
   if(name==='pin'){
     setTimeout(()=>{
@@ -2125,7 +2157,7 @@ let songs=[],currentSong=null,currentKey=null,nnsMode=false,darkMode=false;
 let editingId=null,activeTab='english',modalCat='english',pickerFilter='all',fromSetList=false;
 let vRows=[],rowCache={},debounceTimer=null,alphaMap={},libraryFilter='all';
 let ctxSong=null;
-let _setList_shared=[],_deviceSetList=[];
+let _setList_shared=[],_deviceSetList=[],_sharedSets={},_personalSets={};
 let editingSetKeySongId=null;
 const BIBLE_VERSIONS=[{id:'esv',abbr:'ESV',name:'English Standard Version',folder:'esv_chapter_package'}];
 let currentBibleVersion='esv',bibleData=null,bibleBooks=[],currentBibleBook='Genesis',currentBibleChapter=1,bibleLoading=false,bibleLoadError='',biblePickerFocus='book';
@@ -2134,6 +2166,8 @@ let bibleChapterCache=new Map();
 /* ── App settings persisted to localStorage ── */
 const PREFS_KEY='wb_prefs_v1';
 const DSL_KEY='wb_device_sl';
+const PERSONAL_SETS_KEY='wb_personal_sets_v1';
+const CACHE_NAMED_SETS_KEY='wb_cached_named_sets_v1';
 const LAST_STATE_KEY='wb_last_state_v1';
 let restoredSession=false;
 function readLastState(){try{return JSON.parse(localStorage.getItem(LAST_STATE_KEY)||'null');}catch(e){return null;}}
@@ -2192,11 +2226,97 @@ function restoreLastState(){
   }
 }
 
-let appPrefs={darkMode:false,textSize:100,theme:'#10374A',defaultKey:'original',useDeviceSetList:false,setListScope:'shared',adminPin:'',recentSearches:[],recentSongs:[],favoriteSongs:[]};
-function loadPrefs(){try{const p=JSON.parse(localStorage.getItem(PREFS_KEY)||'{}');Object.assign(appPrefs,p);if(!appPrefs.setListScope)appPrefs.setListScope=appPrefs.useDeviceSetList?'personal':'shared';appPrefs.useDeviceSetList=appPrefs.setListScope==='personal';if(!Array.isArray(appPrefs.recentSongs))appPrefs.recentSongs=[];if(!Array.isArray(appPrefs.favoriteSongs))appPrefs.favoriteSongs=[];if(!Array.isArray(appPrefs.recentSearches))appPrefs.recentSearches=[];}catch(e){appPrefs.recentSongs=[];appPrefs.favoriteSongs=[];appPrefs.recentSearches=[];}}
+let appPrefs={darkMode:false,textSize:100,theme:'#10374A',defaultKey:'original',useDeviceSetList:false,setListScope:'shared',activeSharedSetId:'default',activePersonalSetId:'default',adminPin:'',recentSearches:[],recentSongs:[],favoriteSongs:[]};
+function loadPrefs(){try{const p=JSON.parse(localStorage.getItem(PREFS_KEY)||'{}');Object.assign(appPrefs,p);if(!appPrefs.setListScope)appPrefs.setListScope=appPrefs.useDeviceSetList?'personal':'shared';appPrefs.useDeviceSetList=appPrefs.setListScope==='personal';if(!appPrefs.activeSharedSetId)appPrefs.activeSharedSetId='default';if(!appPrefs.activePersonalSetId)appPrefs.activePersonalSetId='default';if(!Array.isArray(appPrefs.recentSongs))appPrefs.recentSongs=[];if(!Array.isArray(appPrefs.favoriteSongs))appPrefs.favoriteSongs=[];if(!Array.isArray(appPrefs.recentSearches))appPrefs.recentSearches=[];}catch(e){appPrefs.activeSharedSetId='default';appPrefs.activePersonalSetId='default';appPrefs.recentSongs=[];appPrefs.favoriteSongs=[];appPrefs.recentSearches=[];}}
 function savePrefs(){try{localStorage.setItem(PREFS_KEY,JSON.stringify(appPrefs));}catch(e){}}
 function loadDeviceSetList(){try{_deviceSetList=JSON.parse(localStorage.getItem(DSL_KEY)||'[]');}catch(e){_deviceSetList=[];}}
 function saveDeviceSetList(){try{localStorage.setItem(DSL_KEY,JSON.stringify(_deviceSetList));}catch(e){}}
+function makeSetId(){return 'set_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function normalizeNamedSetMap(raw,fallbackLabel){
+  const out={};
+  if(raw&&typeof raw==='object')Object.entries(raw).forEach(([id,val],idx)=>{
+    if(!val||typeof val!=='object')return;
+    out[id]={name:String(val.name||`${fallbackLabel} ${idx+1}`),items:normalizeSetArray(val.items||val.songs||[]),updatedAt:Number(val.updatedAt||Date.now())};
+  });
+  return out;
+}
+function getScopeLabel(scope){return setScopeKey(scope)==='personal'?'Personal':'Shared';}
+function getNamedSets(scope=appPrefs.setListScope){return setScopeKey(scope)==='personal'?_personalSets:_sharedSets;}
+function activeSetPrefKey(scope){return setScopeKey(scope)==='personal'?'activePersonalSetId':'activeSharedSetId';}
+function ensureNamedSetState(scope=appPrefs.setListScope){
+  const sk=setScopeKey(scope);
+  if(!Object.keys(getNamedSets(sk)).length){
+    if(sk==='personal')_personalSets={default:{name:'My Set',items:normalizeSetArray(_deviceSetList),updatedAt:Date.now()}};
+    else _sharedSets={default:{name:'Shared Set',items:normalizeSetArray(_setList_shared),updatedAt:Date.now()}};
+  }
+  const sets=getNamedSets(sk);
+  const pref=activeSetPrefKey(sk);
+  if(!sets[appPrefs[pref]])appPrefs[pref]=Object.keys(sets)[0]||'default';
+  savePrefs();
+  return appPrefs[pref];
+}
+function getActiveSetId(scope=appPrefs.setListScope){return ensureNamedSetState(scope);}
+function getActiveSet(scope=appPrefs.setListScope){const sk=setScopeKey(scope);const id=getActiveSetId(sk);const sets=getNamedSets(sk);return {id,...sets[id]};}
+function getActiveSetName(scope=appPrefs.setListScope){return getActiveSet(scope).name||`${getScopeLabel(scope)} Set`;}
+function setActiveNamedSet(scope,id){const sk=setScopeKey(scope);const sets=getNamedSets(sk);if(!sets[id])return;appPrefs[activeSetPrefKey(sk)]=id;savePrefs();renderSetListScopeUI();renderNamedSetChooserUI();if(activeTab==='setlist')renderSetList();else refresh(false);}
+function savePersonalNamedSets(){try{localStorage.setItem(PERSONAL_SETS_KEY,JSON.stringify(_personalSets));}catch(e){}}
+function loadPersonalNamedSets(){
+  try{const raw=JSON.parse(localStorage.getItem(PERSONAL_SETS_KEY)||'null');if(raw&&typeof raw==='object')_personalSets=normalizeNamedSetMap(raw,'Set');}catch(e){_personalSets={};}
+  if(!Object.keys(_personalSets).length)_personalSets={default:{name:'My Set',items:normalizeSetArray(_deviceSetList),updatedAt:Date.now()}};
+  ensureNamedSetState('personal');
+}
+function saveNamedSetsCache(){try{localStorage.setItem(CACHE_NAMED_SETS_KEY,JSON.stringify(_sharedSets));}catch(e){}}
+function loadNamedSetsCache(){
+  try{const raw=JSON.parse(localStorage.getItem(CACHE_NAMED_SETS_KEY)||'null');if(raw&&typeof raw==='object')_sharedSets=normalizeNamedSetMap(raw,'Shared Set');}catch(e){_sharedSets={};}
+}
+function saveSharedSetsToFB(){
+  const payload={};
+  Object.entries(_sharedSets).forEach(([id,set])=>{payload[id]={name:set.name||'Shared Set',updatedAt:Date.now(),items:normalizeSetArray(set.items)}});
+  sharedSetsRef.set(payload).catch(()=>showSync('Sync failed',true));
+  const active=getActiveSet('shared');
+  const compat={}; normalizeSetArray(active.items).forEach((item,i)=>{compat[`i${i}`]={songId:item.songId,order:i,setKey:item.setKey||'original'};});
+  setlistRef.set(compat).catch(()=>{});
+  saveNamedSetsCache();
+}
+function renderNamedSetChooserUI(){
+  const title=document.getElementById('sl-active-set-name');
+  const sub=document.getElementById('sl-active-set-sub');
+  const active=getActiveSet();
+  const sets=getNamedSets();
+  if(title)title.textContent=active.name||`${getScopeLabel()} Set`;
+  if(sub)sub.textContent=`${Object.keys(sets).length} set list${Object.keys(sets).length!==1?'s':''} · ${getScopeLabel()}`;
+  const setsTitle=document.getElementById('sets-title');if(setsTitle)setsTitle.textContent=`${getScopeLabel()} set lists`;
+  const copyBtn=document.getElementById('sets-copy-btn');if(copyBtn)copyBtn.textContent=`Copy to ${getScopeLabel(appPrefs.setListScope==='shared'?'personal':'shared')}`;
+  renderNamedSetsPanel();
+}
+function renderNamedSetsPanel(){
+  const list=document.getElementById('namedset-list'); if(!list)return;
+  const activeId=getActiveSetId(); const sets=getNamedSets();
+  const rows=Object.entries(sets).map(([id,set])=>`<div class="namedset-item${id===activeId?' active':''}"><button class="namedset-main" onclick="selectNamedSet('${id}')"><div class="namedset-name">${escapeHtml(set.name||'Set')}</div><div class="namedset-meta">${normalizeSetArray(set.items).length} song${normalizeSetArray(set.items).length!==1?'s':''}${id===activeId?' · Current':''}</div></button><div class="namedset-actions"><button class="namedset-action" onclick="event.stopPropagation();renameNamedSet('${id}')">Rename</button><button class="namedset-action" onclick="event.stopPropagation();deleteNamedSet('${id}')">Delete</button></div></div>`).join('');
+  list.innerHTML=rows||`<div style="padding:18px;color:var(--txt3);text-align:center">No set lists yet</div>`;
+}
+function commitNamedSetScope(scope){
+  const sk=setScopeKey(scope);
+  if(sk==='personal')savePersonalNamedSets();
+  else saveSharedSetsToFB();
+  renderNamedSetChooserUI();
+  if(activeTab==='setlist')renderSetList(); else refresh(false);
+}
+function createNamedSet(){
+  const scope=appPrefs.setListScope; const sk=setScopeKey(scope); const sets={...getNamedSets(sk)};
+  const name=(prompt('Name this set list?','New Set')||'').trim(); if(!name)return; const id=makeSetId();
+  sets[id]={name,items:[],updatedAt:Date.now()}; if(sk==='personal')_personalSets=sets; else _sharedSets=sets;
+  appPrefs[activeSetPrefKey(sk)]=id; savePrefs(); commitNamedSetScope(sk); openBS('sets');
+}
+function selectNamedSet(id){setActiveNamedSet(appPrefs.setListScope,id); closeBS('sets');}
+function renameNamedSet(id){const scope=appPrefs.setListScope;const sk=setScopeKey(scope);const sets={...getNamedSets(sk)};if(!sets[id])return;const name=(prompt('Rename set list',sets[id].name)||'').trim();if(!name)return;sets[id]={...sets[id],name,updatedAt:Date.now()};if(sk==='personal')_personalSets=sets;else _sharedSets=sets;commitNamedSetScope(sk);openBS('sets');}
+function deleteNamedSet(id){const scope=appPrefs.setListScope;const sk=setScopeKey(scope);const sets={...getNamedSets(sk)};if(!sets[id])return;if(Object.keys(sets).length===1){if(!confirm('Delete all songs in this set list?'))return;sets[id]={...sets[id],items:[],updatedAt:Date.now()};}else{if(!confirm(`Delete ${sets[id].name}?`))return;delete sets[id];if(appPrefs[activeSetPrefKey(sk)]===id)appPrefs[activeSetPrefKey(sk)]=Object.keys(sets)[0];savePrefs();}
+  if(sk==='personal')_personalSets=sets;else _sharedSets=sets;commitNamedSetScope(sk);openBS('sets');}
+function copyActiveSetToOtherScope(){
+  const from=setScopeKey(appPrefs.setListScope); const to=from==='shared'?'personal':'shared'; const src=getActiveSet(from); const suggested=`${src.name} (${getScopeLabel(to)})`; const name=(prompt(`Copy to ${getScopeLabel(to)} as:`,suggested)||'').trim(); if(!name)return;
+  const sets={...getNamedSets(to)}; const id=makeSetId(); sets[id]={name,items:normalizeSetArray(src.items),updatedAt:Date.now()}; if(to==='personal'){_personalSets=sets;savePersonalNamedSets();}else{_sharedSets=sets;saveSharedSetsToFB();}
+  renderNamedSetChooserUI(); if(activeTab==='setlist')renderSetList(); else refresh(false); showToast(`Copied to ${getScopeLabel(to).toLowerCase()} set lists`);
+}
 
 function normId(id){return id==null?'':String(id);}
 function normalizeSongCode(v){return String(v||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'');}
@@ -2222,24 +2342,30 @@ function normSetItem(item,order=0){
   return{songId:normId(item.songId||item.id),order:item.order??order,setKey:normSetKey(item.setKey)};
 }
 function setScopeKey(scope){return scope==='personal'?'personal':'shared';}
-function getSetStore(scope=appPrefs.setListScope){return setScopeKey(scope)==='personal'?_deviceSetList:_setList_shared;}
+function getSetStore(scope=appPrefs.setListScope){return getActiveSet(scope).items||[];}
 function normalizeSetArray(arr){return (Array.isArray(arr)?arr:[]).map((item,i)=>normSetItem(item,i)).filter(x=>x.songId);}
 /* Always call getSetList() instead of using setList directly */
 function getSetList(scope=appPrefs.setListScope){return normalizeSetArray(getSetStore(scope));}
 function modSetList(newArr,scope=appPrefs.setListScope){
+  const sk=setScopeKey(scope);
   const normalized=normalizeSetArray(newArr);
-  if(setScopeKey(scope)==='personal'){_deviceSetList=normalized;saveDeviceSetList();}
-  else{_setList_shared=normalized;saveSetListToFB();}
+  const sets={...getNamedSets(sk)};
+  const id=getActiveSetId(sk);
+  sets[id]={...(sets[id]||{name:`${getScopeLabel(sk)} Set`}),items:normalized,updatedAt:Date.now()};
+  if(sk==='personal'){_personalSets=sets;savePersonalNamedSets();}
+  else{_sharedSets=sets;saveSharedSetsToFB();}
+  renderNamedSetChooserUI();
 }
 function getSetSongIds(scope=appPrefs.setListScope){return getSetList(scope).map(x=>x.songId);}
 function isSongInSet(id,scope=appPrefs.setListScope){return getSetList(scope).some(x=>x.songId===normId(id));}
 function getSetEntry(id,scope=appPrefs.setListScope){return getSetList(scope).find(x=>x.songId===normId(id))||null;}
-function getSetListLabel(scope=appPrefs.setListScope){return setScopeKey(scope)==='personal'?'Personal':'Shared';}
+function getSetListLabel(scope=appPrefs.setListScope){return getScopeLabel(scope);}
 function setSetListScope(scope){appPrefs.setListScope=setScopeKey(scope);appPrefs.useDeviceSetList=appPrefs.setListScope==='personal';savePrefs();renderSetListScopeUI();if(activeTab==='setlist')renderSetList();else refresh(false);}
 function renderSetListScopeUI(){
   document.getElementById('sl-scope-shared')?.classList.toggle('active',appPrefs.setListScope==='shared');
   document.getElementById('sl-scope-personal')?.classList.toggle('active',appPrefs.setListScope==='personal');
   const sw=document.getElementById('device-sl-sw');if(sw)sw.classList.toggle('on',appPrefs.setListScope==='personal');
+  renderNamedSetChooserUI();
 }
 function addSongToNamedSet(id,scope){const sl=getSetList(scope);if(!sl.some(x=>x.songId===normId(id))){modSetList([...sl,{songId:id,setKey:'original'}],scope);}}
 function removeSongFromNamedSet(id,scope){modSetList(getSetList(scope).filter(x=>x.songId!==normId(id)),scope);}
@@ -2258,7 +2384,7 @@ function updateSetDestUI(song){
   const s=song||pendingSetDestSong; if(!s)return;
   const name=document.getElementById('setdest-songname'); if(name)name.textContent=s.title;
   [['shared','setdest-shared-state'],['personal','setdest-personal-state']].forEach(([scope,id])=>{
-    const inSet=isSongInSet(s.id,scope); const el=document.getElementById(id); if(el)el.textContent=inSet?'Remove':'Add';
+    const inSet=isSongInSet(s.id,scope); const el=document.getElementById(id); if(el)el.textContent=(inSet?'Remove':'Add')+' · '+getActiveSetName(scope);
   });
   const menuLbl=document.getElementById('mi-setlist-label'); if(menuLbl)menuLbl.textContent='Add to set list…';
 }
@@ -2357,6 +2483,7 @@ function loadCachedData(){
 function saveCachedData(){
   try{localStorage.setItem(CACHE_SONGS_KEY,JSON.stringify(songs));}catch(e){}
   try{localStorage.setItem(CACHE_SETLIST_KEY,JSON.stringify(_setList_shared));}catch(e){}
+  saveNamedSetsCache();
 }
 function loadCachedSetList(){
   try{
@@ -2366,6 +2493,7 @@ function loadCachedSetList(){
       if(Array.isArray(parsed)){_setList_shared=normalizeSetArray(parsed);}
     }
   }catch(e){}
+  loadNamedSetsCache();
 }
 
 function initFirebase(){
@@ -2394,12 +2522,28 @@ function initFirebase(){
   setlistRef.on('value',snap=>{
     const d=snap.val();
     _setList_shared=d?Object.values(d).sort((a,b)=>a.order-b.order).map((x,i)=>normSetItem(x,i)).filter(x=>x.songId):[];
+    if(!Object.keys(_sharedSets).length){
+      _sharedSets={default:{name:'Shared Set',items:normalizeSetArray(_setList_shared),updatedAt:Date.now()}};
+      ensureNamedSetState('shared');
+      saveNamedSetsCache();
+    }
     if(activeTab==='setlist')renderSetList();
+    renderNamedSetChooserUI();
     saveCachedData();
+  });
+  sharedSetsRef.on('value',snap=>{
+    const d=snap.val();
+    if(d&&Object.keys(d).length){
+      _sharedSets=normalizeNamedSetMap(d,'Shared Set');
+      ensureNamedSetState('shared');
+      saveNamedSetsCache();
+      if(activeTab==='setlist')renderSetList();
+      renderNamedSetChooserUI();
+    }
   });
 }
 function hideLoading(){const l=document.getElementById('ls');l.classList.add('hidden');setTimeout(()=>l.style.display='none',380);}
-function saveSetListToFB(){const d={};normalizeSetArray(_setList_shared).forEach((item,i)=>{d[`i${i}`]={songId:item.songId,order:i,setKey:item.setKey||'original'};});setlistRef.set(d).catch(()=>showSync('Sync failed',true));}
+function saveSetListToFB(){saveSharedSetsToFB();}
 
 // Check for missing seed songs and write them to Firebase
 function migrateMissingSongs(existingData){
@@ -2798,8 +2942,8 @@ function jumpToAlpha(ltr){
 function renderSetList(){
   const sl=getSetList();
   const ct=document.getElementById('sl-items');
-  document.getElementById('sl-count').textContent=`${getSetListLabel()} · ${sl.length} song${sl.length!==1?'s':''}`;
-  if(!sl.length){ct.innerHTML=`<div class="sl-empty"><div class="sl-ei">🎵</div><div class="sl-et">No songs in ${getSetListLabel().toLowerCase()} set</div><div class="sl-es">Tap + to add songs</div></div>`;return;}
+  document.getElementById('sl-count').textContent=`${getActiveSetName()} · ${sl.length} song${sl.length!==1?'s':''}`;
+  if(!sl.length){ct.innerHTML=`<div class="sl-empty"><div class="sl-ei">🎵</div><div class="sl-et">No songs in ${escapeHtml(getActiveSetName())}</div><div class="sl-es">Tap + to add songs</div></div>`;return;}
   ct.innerHTML='';
   sl.forEach((item,idx)=>{
     const s=findSongById(item.songId);if(!s)return;
@@ -2865,7 +3009,6 @@ function clearSet(){
   if(!getSetList().length)return;
   if(!confirm(`Clear ${getSetListLabel().toLowerCase()} set list?`))return;
   modSetList([]);
-  if(appPrefs.setListScope==='shared')setlistRef.set(null);
   renderSetList();
 }
 function removeFromSet(id){modSetList(getSetList().filter(x=>x.songId!==normId(id)));renderSetList();}
@@ -2878,7 +3021,7 @@ function renderPicker(){
   const filt=songs.filter(s=>(pickerFilter==='all'||s.cat===pickerFilter)&&(!q||s.title.toLowerCase().includes(q)||s.author.toLowerCase().includes(q)||String(s.songCode||'').toLowerCase().includes(q))).sort((a,b)=>a.title.localeCompare(b.title));
   const list=document.getElementById('picker-list');
   if(!filt.length){list.innerHTML=`<div style="padding:22px;text-align:center;color:var(--txt3);font-size:14px">No songs found</div>`;return;}
-  list.innerHTML=filt.map(s=>{const inSet=sl.includes(s.id);return`<div class="pi" onclick="toggleSetSong('${s.id}')"><div class="pi-info"><div class="pi-title">${s.title}</div><div class="pi-meta">${s.author}&nbsp;·&nbsp;${s.cat==='malayalam'?'Malayalam':'English'}&nbsp;·&nbsp;${s.key}&nbsp;·&nbsp;${getSetListLabel()}</div></div><div class="pi-ck${inSet?' sel':''}">${inSet?'✓':''}</div></div>`;}).join('');
+  list.innerHTML=filt.map(s=>{const inSet=sl.includes(s.id);return`<div class="pi" onclick="toggleSetSong('${s.id}')"><div class="pi-info"><div class="pi-title">${s.title}</div><div class="pi-meta">${s.author}&nbsp;·&nbsp;${s.cat==='malayalam'?'Malayalam':'English'}&nbsp;·&nbsp;${s.key}&nbsp;·&nbsp;${escapeHtml(getActiveSetName())}</div></div><div class="pi-ck${inSet?' sel':''}">${inSet?'✓':''}</div></div>`;}).join('');
 }
 function toggleSetSong(id){
   const sl=getSetList();
@@ -3247,6 +3390,7 @@ function openBS(name){
   if(name==='chords')renderChordDiagrams();
   if(name==='export')buildExport();
   if(name==='songmenu')updateSongMenuUI();
+  if(name==='sets')renderNamedSetChooserUI();
   if(name==='picker'){document.getElementById('picker-search').value='';pickerFilter='all';document.querySelectorAll('.pf-btn').forEach((b,i)=>b.classList.toggle('active',i===0));renderPicker();}
   if(name==='pin'){setTimeout(()=>{const inp=document.getElementById('pin-input');inp.value='';document.getElementById('pin-err').style.display='none';inp.focus();},160);}
   if(name==='defaultkey')renderDefaultKeyOptions();
@@ -3733,7 +3877,7 @@ function deleteSong(){
 
 /* ══ INIT ══ */
 function applyStoredPrefs(){
-  loadPrefs();loadDeviceSetList();
+  loadPrefs();loadDeviceSetList();loadPersonalNamedSets();
   // Dark mode
   if(appPrefs.darkMode){
     darkMode=true;document.body.classList.add('dark');
@@ -3752,6 +3896,7 @@ function applyStoredPrefs(){
   // Always apply theme on startup so --accent is set correctly (even for default)
   applyTheme(appPrefs.theme||'#10374A');
   // Admin PIN is stored in preferences; no hardcoded default.
+  renderNamedSetChooserUI();
 }
 
 wireSongEditorPreview();
