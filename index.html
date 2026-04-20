@@ -1584,10 +1584,15 @@ function attachSheetSwipe(panel,name){
   if(panel.dataset.swipeAttached==='1')return;
   panel.dataset.swipeAttached='1';
   let sy=0,dy=0,dragging=false,ignoreDrag=false;
+  const dragRestrictedToHeader=(name==='biblepicker'||name==='bibleversion');
   const isInteractiveScrollTarget=el=>{
     if(!el || !el.closest)return false;
     if(el.closest('textarea,input,select,option,[contenteditable="true"]'))return true;
     return !!el.closest('.picker-list,.exp-pre,.quick-scroll,.bible-picker-list,.version-picker-list,.bible-version-list');
+  };
+  const isDragHandleTarget=el=>{
+    if(!el || !el.closest)return false;
+    return !!el.closest('.bs-handle,.m-tr');
   };
   const snapBack=()=>{
     panel.style.transition='transform .22s cubic-bezier(.25,.46,.45,.94)';
@@ -1595,7 +1600,8 @@ function attachSheetSwipe(panel,name){
     setTimeout(()=>panel.style.transition='',220);
   };
   panel.addEventListener('touchstart',e=>{
-    ignoreDrag=isInteractiveScrollTarget(e.target);
+    const onHandle=isDragHandleTarget(e.target);
+    ignoreDrag=isInteractiveScrollTarget(e.target) || (dragRestrictedToHeader && !onHandle);
     sy=e.touches[0].clientY;
     dy=0;
     dragging=false;
