@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v58.1</title>
+<title>WorshipBase v58.2.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -2037,7 +2037,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <svg width="32" height="32" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"></circle></svg>
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 58</div>
+            <div class="about-version-pill">Version 58.2</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -2613,7 +2613,210 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js">
+/* ── v58.1 export layout refinement ── */
+(function(){
+  const __oldBuildSongExportBlocks = buildSongExportBlocks;
+  function normalizeExportBlocks(blocks){
+    const out=[];
+    for(const block of (blocks||[])){
+      if(!block) continue;
+      if(block.type==='space'){
+        const h=Math.max(8, Math.min(18, Number(block.h)||10));
+        if(!out.length || out[out.length-1].type==='space'){
+          if(out.length) out[out.length-1].h=Math.max(out[out.length-1].h, h);
+        } else out.push({type:'space',h});
+        continue;
+      }
+      out.push(block);
+    }
+    while(out.length && out[0].type==='space') out.shift();
+    while(out.length && out[out.length-1].type==='space') out.pop();
+    return out;
+  }
+  buildSongExportBlocks = function(song,printKey,opts){
+    return normalizeExportBlocks(__oldBuildSongExportBlocks(song,printKey,opts));
+  };
+  getExportCanvasProfile = function(size){
+    if(size==='compact') return {title:34,author:16,key:14,section:13,chord:16,lyric:20,coverTitle:40,coverSub:18};
+    if(size==='large') return {title:42,author:19,key:16,section:14,chord:19,lyric:24,coverTitle:48,coverSub:20};
+    return {title:38,author:17,key:15,section:13,chord:17,lyric:22,coverTitle:44,coverSub:19};
+  };
+  buildExportCanvases = function(context,opts){
+    const pageW=1240, pageH=1754, marginX=112, marginTop=118, marginBottom=112, gutter=78;
+    const defaultCols = opts.exportLayout==='two' ? 2 : 1;
+    const theme=hexToRgb(appPrefs.theme||'#10374A');
+    const gray='#6F7881', dark='#111A22', light='#EEF2F5';
+    const prof=getExportCanvasProfile(opts.exportFont);
+    const pages=[];
+    let pageObj=null;
+    function newPage(cols=defaultCols){
+      pageObj=createCanvasPage(pageW,pageH);
+      pageObj.columns=cols;
+      pageObj.col=0;
+      pageObj.colW=cols===2?Math.floor((pageW-marginX*2-gutter)/2):(pageW-marginX*2);
+      pageObj.x=marginX;
+      pageObj.y=marginTop;
+      pages.push(pageObj);
+    }
+    function nextColumnOrPage(){
+      if(pageObj.columns===2 && pageObj.col===0){
+        pageObj.col=1;
+        pageObj.x=marginX+pageObj.colW+gutter;
+        pageObj.y=marginTop;
+      } else {
+        newPage(defaultCols);
+      }
+    }
+    function ensureSpace(heightNeeded){
+      if(!pageObj) newPage(defaultCols);
+      if(pageObj.y + heightNeeded > pageH - marginBottom) nextColumnOrPage();
+    }
+    function estimateBlockHeight(block,lineHeights,colW){
+      const tmp=document.createElement('canvas').getContext('2d');
+      if(block.type==='section') return prof.section + 22;
+      if(block.type==='chord'){
+        tmp.font=`700 ${prof.chord}px ui-monospace,SFMono-Regular,Menlo,Monaco,monospace`;
+        return Math.max(lineHeights.chord, wrapMonoCanvas(tmp, block.text, colW).length * lineHeights.chord);
+      }
+      tmp.font=`400 ${prof.lyric}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
+      return Math.max(lineHeights.lyric, wrapTextCanvas(tmp, block.text, colW).length * lineHeights.lyric);
+    }
+    function drawSong(song,printKey,opts,startNewPage){
+      if(startNewPage && pages.length>0 && pageObj && pageObj.y > marginTop+10) newPage(defaultCols);
+      if(!pageObj) newPage(defaultCols);
+      if(pageObj.y > pageH - marginBottom - 220) nextColumnOrPage();
+
+      const metaParts=[];
+      if(opts.showAuthor && song.author) metaParts.push(song.author);
+      if(opts.showKey) metaParts.push('Key of '+printKey + (song.key!==printKey ? ' · Originally '+song.key : ''));
+      if(opts.showId) metaParts.push(song.songCode||ensureSongCode(song));
+      if(opts.exportContent==='nns') metaParts.push('NNS');
+
+      const blocks=buildSongExportBlocks(song,printKey,opts);
+      const titleLineH=Math.round(prof.title*1.18);
+      const metaLineH=Math.round(prof.author*1.34);
+      const lyricLineH=Math.round(prof.lyric*1.46);
+      const chordLineH=Math.round(prof.chord*1.30);
+      const textW = pageObj.colW;
+
+      ensureSpace(titleLineH + (metaParts.length?metaLineH+8:0) + 30);
+      let ctx=pageObj.ctx;
+      ctx.fillStyle=dark;
+      ctx.font=`700 ${prof.title}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
+      pageObj.y += drawWrappedCanvasText(ctx, song.title, pageObj.x, pageObj.y, textW, titleLineH, false);
+      pageObj.y += 8;
+
+      if(metaParts.length){
+        ctx=pageObj.ctx;
+        ctx.fillStyle=gray;
+        ctx.font=`500 ${prof.author}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
+        pageObj.y += drawWrappedCanvasText(ctx, metaParts.join(' · '), pageObj.x, pageObj.y, textW, metaLineH, false);
+        pageObj.y += 14;
+      }
+
+      for(let i=0;i<blocks.length;i++){
+        const block=blocks[i];
+        if(block.type==='space'){
+          pageObj.y += block.h;
+          continue;
+        }
+        const next=blocks[i+1];
+        const reserve = estimateBlockHeight(block,{lyric:lyricLineH,chord:chordLineH},textW) + ((next&&next.type!=='space')? Math.min(estimateBlockHeight(next,{lyric:lyricLineH,chord:chordLineH},textW), 80):0);
+        ensureSpace(reserve + 8);
+
+        if(block.type==='section'){
+          const label=String(block.text||'').toUpperCase();
+          ctx=pageObj.ctx;
+          ctx.font=`800 ${prof.section}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
+          const w=Math.min(textW, ctx.measureText(label).width + 24);
+          const h=prof.section + 10;
+          ctx.fillStyle=light;
+          roundRectPath(ctx,pageObj.x,pageObj.y- prof.section + 1, w, h, 8);
+          ctx.fill();
+          ctx.fillStyle=gray;
+          ctx.fillText(label,pageObj.x+12,pageObj.y+1);
+          pageObj.y += h + 10;
+          continue;
+        }
+        if(block.type==='chord'){
+          ctx=pageObj.ctx;
+          ctx.fillStyle=rgbCss(theme);
+          ctx.font=`700 ${prof.chord}px ui-monospace,SFMono-Regular,Menlo,Monaco,monospace`;
+          const lines=wrapMonoCanvas(ctx, block.text, textW);
+          for(const line of lines){
+            ensureSpace(chordLineH+2);
+            ctx=pageObj.ctx;
+            ctx.fillStyle=rgbCss(theme);
+            ctx.font=`700 ${prof.chord}px ui-monospace,SFMono-Regular,Menlo,Monaco,monospace`;
+            ctx.fillText(line,pageObj.x,pageObj.y);
+            pageObj.y += chordLineH;
+          }
+          continue;
+        }
+        ctx=pageObj.ctx;
+        ctx.fillStyle=dark;
+        ctx.font=`400 ${prof.lyric}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
+        const lines=wrapTextCanvas(ctx, block.text, textW);
+        for(const line of lines){
+          ensureSpace(lyricLineH+2);
+          ctx=pageObj.ctx;
+          ctx.fillStyle=dark;
+          ctx.font=`400 ${prof.lyric}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
+          ctx.fillText(line,pageObj.x,pageObj.y);
+          pageObj.y += lyricLineH;
+        }
+      }
+      pageObj.y += (opts.exportLayout==='two' ? 34 : 40);
+    }
+
+    if(context==='setlist'){
+      newPage(1);
+      const ctx=pageObj.ctx;
+      const setName=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List');
+      ctx.fillStyle=rgbCss(theme);
+      ctx.font=`800 ${prof.coverTitle}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
+      ctx.fillText(setName, marginX, 148);
+      ctx.fillStyle=gray;
+      ctx.font=`700 ${prof.coverSub}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
+      const sl=getSetList();
+      const layoutLabel = opts.exportLayout==='two' ? 'Two-column' : (opts.exportLayout==='page' ? 'One song / page' : 'Single column');
+      const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
+      ctx.fillText(`${sl.length} songs · ${layoutLabel} · ${contentLabel}`, marginX, 186);
+      ctx.strokeStyle='rgba(16,55,74,.10)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(marginX,214); ctx.lineTo(pageW-marginX,214); ctx.stroke();
+      let y=258;
+      sl.slice(0,18).forEach((item,idx)=>{
+        const song=findSongById(item.songId); if(!song) return;
+        const pk=resolveSongKey(song,item);
+        ctx.fillStyle='#87919A'; ctx.font='700 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+        ctx.fillText(String(idx+1).padStart(2,'0'), marginX, y);
+        ctx.fillStyle=dark; ctx.font='700 24px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+        const title = song.title.length>56 ? song.title.slice(0,54)+'…' : song.title;
+        ctx.fillText(title, marginX+48, y);
+        ctx.fillStyle=rgbCss(theme); ctx.font='800 16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+        const keyW=ctx.measureText(pk).width; roundRectPath(ctx, pageW-marginX-keyW-18, y-18, keyW+14, 24, 12); ctx.strokeStyle=rgbCss(theme,0.35); ctx.stroke(); ctx.fillText(pk, pageW-marginX-keyW-11, y-2);
+        y += 42;
+      });
+      newPage(defaultCols);
+    } else {
+      newPage(defaultCols);
+    }
+
+    if(context==='song' && currentSong) {
+      drawSong(currentSong, currentKey||currentSong.key, opts, false);
+    } else {
+      const sl=getSetList();
+      sl.forEach((item, idx)=>{
+        const song=findSongById(item.songId); if(!song) return;
+        const pk=resolveSongKey(song,item);
+        drawSong(song, pk, opts, opts.exportLayout==='page' && idx>0);
+      });
+    }
+    return pages.map(p=>p.canvas);
+  };
+})();
+
+</script>
 <script>
 function resetTransientUIOnResume(){
   try{
