@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v58.3.1</title>
+<title>WorshipBase v58.4.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -2037,7 +2037,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <svg width="32" height="32" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"></circle></svg>
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 58.3</div>
+            <div class="about-version-pill">Version 58.4</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -2705,7 +2705,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
       ctx.fillStyle=dark;
       ctx.font=`700 ${prof.title}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
       pageObj.y += drawWrappedCanvasText(ctx, song.title, pageObj.x, pageObj.y, textW, titleLineH, false);
-      pageObj.y += 12;
+      pageObj.y += 18;
 
       if(metaParts.length){
         ctx=pageObj.ctx;
@@ -5879,7 +5879,7 @@ function createCanvasPage(width,height){
   return {canvas,ctx};
 }
 function buildExportCanvases(context,opts){
-  const pageW=1240, pageH=1754, marginX=86, marginTop=92, marginBottom=88, gutter=48;
+  const pageW=1240, pageH=1754, marginX=188, marginTop=182, marginBottom=176, gutter=108;
   const defaultCols = opts.exportLayout==='two' ? 2 : 1;
   const theme=hexToRgb(appPrefs.theme||'#10374A');
   const gray='#6C7680', dark='#131D24', light='#EFF3F5';
@@ -5916,14 +5916,14 @@ function buildExportCanvases(context,opts){
     ctx.fillStyle=dark;
     ctx.font=`700 ${prof.title}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
     pageObj.y += drawWrappedCanvasText(ctx, song.title, pageObj.x, pageObj.y, pageObj.colW, titleLineH, false);
-    pageObj.y += 6;
+    pageObj.y += 10;
 
     if(metaParts.length){
       ctx=getCtx();
       ctx.fillStyle=gray;
       ctx.font=`500 ${prof.author}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
       pageObj.y += drawWrappedCanvasText(ctx, metaParts.join(' · '), pageObj.x, pageObj.y, pageObj.colW, metaLineH, false);
-      pageObj.y += 12;
+      pageObj.y += 18;
     }
 
     blocks.forEach(block=>{
@@ -5944,7 +5944,7 @@ function buildExportCanvases(context,opts){
         ctx.fill();
         ctx.fillStyle=gray;
         ctx.fillText(label,pageObj.x+11,pageObj.y+1);
-        pageObj.y += h + 9;
+        pageObj.y += h + 13;
         return;
       }
       if(block.type==='chord'){
@@ -5976,18 +5976,18 @@ function buildExportCanvases(context,opts){
       });
     });
 
-    pageObj.y += (opts.exportLayout==='two' ? 26 : 30);
+    pageObj.y += (opts.exportLayout==='two' ? 38 : 64);
   }
   if(context==='setlist'){
     newPage(1);
     const ctx=pageObj.ctx; const setName=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List');
-    ctx.fillStyle=rgbCss(theme); ctx.font=`800 ${prof.coverTitle}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`; ctx.fillText(setName, marginX, 170);
+    ctx.fillStyle=rgbCss(theme); ctx.font=`800 ${prof.coverTitle}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`; ctx.fillText(setName, marginX, 220);
     ctx.fillStyle=gray; ctx.font=`700 ${prof.coverSub}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
     const sl=getSetList(); const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
-    ctx.fillText(`${sl.length} songs · ${contentLabel}`, marginX, 214);
-    ctx.strokeStyle='rgba(16,55,74,.10)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(marginX,242); ctx.lineTo(pageW-marginX,242); ctx.stroke();
-    let y=292; ctx.font=`600 28px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`; ctx.fillStyle=dark;
-    sl.slice(0,22).forEach((item,idx)=>{ const song=findSongById(item.songId); if(!song) return; const pk=resolveSongKey(song,item); ctx.fillStyle='#8A959D'; ctx.font='700 22px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'; ctx.fillText(String(idx+1).padStart(2,'0'), marginX, y); ctx.fillStyle=dark; ctx.font='600 28px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'; ctx.fillText(song.title, marginX+54, y); ctx.fillStyle=rgbCss(theme); ctx.font='800 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'; const keyW=ctx.measureText(pk).width; roundRectPath(ctx, pageW-marginX-keyW-22, y-22, keyW+16, 28, 14); ctx.strokeStyle=rgbCss(theme,0.35); ctx.stroke(); ctx.fillText(pk, pageW-marginX-keyW-14, y-3); y += 52; });
+    ctx.fillText(`${sl.length} songs · ${contentLabel}`, marginX, 266);
+    ctx.strokeStyle='rgba(16,55,74,.10)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(marginX,294); ctx.lineTo(pageW-marginX,294); ctx.stroke();
+    let y=354; ctx.font=`600 28px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`; ctx.fillStyle=dark;
+    sl.slice(0,22).forEach((item,idx)=>{ const song=findSongById(item.songId); if(!song) return; const pk=resolveSongKey(song,item); ctx.fillStyle='#8A959D'; ctx.font='700 22px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'; ctx.fillText(String(idx+1).padStart(2,'0'), marginX, y); ctx.fillStyle=dark; ctx.font='600 28px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'; ctx.fillText(song.title, marginX+54, y); ctx.fillStyle=rgbCss(theme); ctx.font='800 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'; const keyW=ctx.measureText(pk).width; roundRectPath(ctx, pageW-marginX-keyW-22, y-22, keyW+16, 28, 14); ctx.strokeStyle=rgbCss(theme,0.35); ctx.stroke(); ctx.fillText(pk, pageW-marginX-keyW-14, y-3); y += 56; });
     newPage(defaultCols);
   } else {
     newPage(defaultCols);
