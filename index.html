@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v58.2.1</title>
+<title>WorshipBase v58.3.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -2037,7 +2037,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <svg width="32" height="32" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"></circle></svg>
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 58.2</div>
+            <div class="about-version-pill">Version 58.3</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -2643,7 +2643,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
     return {title:38,author:17,key:15,section:13,chord:17,lyric:22,coverTitle:44,coverSub:19};
   };
   buildExportCanvases = function(context,opts){
-    const pageW=1240, pageH=1754, marginX=112, marginTop=118, marginBottom=112, gutter=78;
+    const pageW=1240, pageH=1754, marginX=156, marginTop=156, marginBottom=150, gutter=92;
     const defaultCols = opts.exportLayout==='two' ? 2 : 1;
     const theme=hexToRgb(appPrefs.theme||'#10374A');
     const gray='#6F7881', dark='#111A22', light='#EEF2F5';
@@ -2705,14 +2705,14 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
       ctx.fillStyle=dark;
       ctx.font=`700 ${prof.title}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
       pageObj.y += drawWrappedCanvasText(ctx, song.title, pageObj.x, pageObj.y, textW, titleLineH, false);
-      pageObj.y += 8;
+      pageObj.y += 12;
 
       if(metaParts.length){
         ctx=pageObj.ctx;
         ctx.fillStyle=gray;
         ctx.font=`500 ${prof.author}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
         pageObj.y += drawWrappedCanvasText(ctx, metaParts.join(' · '), pageObj.x, pageObj.y, textW, metaLineH, false);
-        pageObj.y += 14;
+        pageObj.y += 18;
       }
 
       for(let i=0;i<blocks.length;i++){
@@ -2767,7 +2767,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
           pageObj.y += lyricLineH;
         }
       }
-      pageObj.y += (opts.exportLayout==='two' ? 34 : 40);
+      pageObj.y += (opts.exportLayout==='two' ? 42 : 68);
     }
 
     if(context==='setlist'){
@@ -2776,15 +2776,15 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
       const setName=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List');
       ctx.fillStyle=rgbCss(theme);
       ctx.font=`800 ${prof.coverTitle}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
-      ctx.fillText(setName, marginX, 148);
+      ctx.fillText(setName, marginX, 188);
       ctx.fillStyle=gray;
       ctx.font=`700 ${prof.coverSub}px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif`;
       const sl=getSetList();
       const layoutLabel = opts.exportLayout==='two' ? 'Two-column' : (opts.exportLayout==='page' ? 'One song / page' : 'Single column');
       const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
-      ctx.fillText(`${sl.length} songs · ${layoutLabel} · ${contentLabel}`, marginX, 186);
-      ctx.strokeStyle='rgba(16,55,74,.10)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(marginX,214); ctx.lineTo(pageW-marginX,214); ctx.stroke();
-      let y=258;
+      ctx.fillText(`${sl.length} songs · ${layoutLabel} · ${contentLabel}`, marginX, 228);
+      ctx.strokeStyle='rgba(16,55,74,.10)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(marginX,256); ctx.lineTo(pageW-marginX,256); ctx.stroke();
+      let y=304;
       sl.slice(0,18).forEach((item,idx)=>{
         const song=findSongById(item.songId); if(!song) return;
         const pk=resolveSongKey(song,item);
@@ -3003,14 +3003,14 @@ function buildCommonExportStyles(themeColor, profile, opts){
   const twoColLyric=Math.max(profile.lyric-1,13);
   return [
     'body{font-family:-apple-system,BlinkMacSystemFont,Helvetica,sans-serif;margin:0;padding:0;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact;}',
-    '@page{size:A4;margin:26mm 22mm;}',
+    '@page{size:A4;margin:32mm 28mm;}',
     '.page{page-break-after:always;break-after:page;}',
     '.page:last-child{page-break-after:auto;break-after:auto;}',
     '.flow-page{display:flex;flex-direction:column;gap:12mm;}',
     '.single-page{display:flex;flex-direction:column;gap:12mm;}',
-    '.song{padding:0;margin:0;page-break-inside:avoid;break-inside:avoid-page;}',
+    '.song{padding:0;margin:0 0 7mm 0;page-break-inside:avoid;break-inside:avoid-page;}',
     '.song.one-up{page-break-after:auto;}',
-    '.song-header{margin-bottom:3.5mm;}',
+    '.song-header{margin-bottom:5.5mm;}',
     '.two-col-page{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:14mm;align-items:start;}',
     '.two-col-page .song{min-width:0;}',
     '.two-col-page .song-header{margin-bottom:2.8mm;}',
@@ -3621,7 +3621,7 @@ function exportPDF(){
   const displayKey=currentKey||currentSong.key;
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escapeHtml(currentSong.title)}<\/title><style>
   body{font-family:-apple-system,BlinkMacSystemFont,Helvetica,sans-serif;margin:0;padding:0;color:#000;}
-  @page{margin:24mm 20mm;}
+  @page{margin:32mm 28mm;}
   .song{padding:10px 0 0;}
   .pt{font-size:22px;font-weight:800;margin-bottom:3px;color:#000;}
   .pa{font-size:13px;color:#666;margin-bottom:2px;}
@@ -3717,7 +3717,7 @@ function exportAllPDF(){
 
   let parts=['<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Worship Set List</title><style>'];
   parts.push('body{font-family:-apple-system,BlinkMacSystemFont,Helvetica,sans-serif;margin:0;padding:0;color:#000;}');
-  parts.push('@page{margin:24mm 20mm;}');
+  parts.push('@page{margin:32mm 28mm;}');
   parts.push('.cover{page-break-after:always;padding:10px 0 0;text-align:left;}');
   parts.push('.cover-logo{width:58px;height:58px;border-radius:14px;background:'+themeColor+';display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;}');
   parts.push('.cover-title{font-size:28px;font-weight:900;color:#000;letter-spacing:-.4px;margin-bottom:8px;text-align:left;}');
