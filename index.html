@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v55.2.1</title>
+<title>WorshipBase v55.3.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -1819,7 +1819,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
 
 </style>
 </head>
-<body class="editor-open">
+<body>
 
 <!-- LOADING -->
 <div id="ls" class="hidden" style="display: none;">
@@ -1847,7 +1847,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
         </svg>
         <div><div class="wm-name">WorshipBase</div><div class="wm-sub">Chord Library</div></div>
       </div>
-      <button class="hdr-btn" onclick="requireAdmin(()=&gt;openSongModal(null))" id="hdr-add-btn" title="Add song" aria-label="Add song" style="display: none;">
+      <button class="hdr-btn" onclick="requireAdmin(()=&gt;openSongModal(null))" id="hdr-add-btn" title="Add song" aria-label="Add song">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 5v14M5 12h14"></path>
         </svg>
@@ -1856,7 +1856,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
   </div>
 
   <!-- Search + count merged into one row -->
-  <div class="srch-wrap" id="srch-wrap" style="display: none;">
+  <div class="srch-wrap" id="srch-wrap">
     <div class="srch-row">
       <div class="srch-inner">
         <span class="srch-ico"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"></circle><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
@@ -1865,7 +1865,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
       </div>
       <span class="song-count" id="song-count">115 songs</span>
     </div>
-    <div class="filter-row" id="library-filter-row" style="display: none;">
+    <div class="filter-row" id="library-filter-row">
       <button class="filter-chip active" data-filter="all" onclick="setLibraryFilter('all',this)">All</button>
       <button class="filter-chip" data-filter="favorites" onclick="setLibraryFilter('favorites',this)">Favourites</button>
       <button class="filter-chip" data-filter="inset" onclick="setLibraryFilter('inset',this)">In set list</button>
@@ -1873,7 +1873,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
   </div>
 
   <!-- SONG LIST -->
-  <div id="song-section" style="flex: 1 1 0%; display: none; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
+  <div id="song-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
     <div class="vs-host ptr-wrap">
       <div id="ptr-indicator"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 2l-2 2M9 2l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 9a7 7 0 1 1-7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
       <div id="vscroll" class="vs-wrap"><div id="home-quick-wrap" class="home-quick-wrap" style="display: flex;">
@@ -1894,7 +1894,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
   </div>
 
   <!-- SET LIST -->
-  <div id="setlist-section" style="display: flex; flex: 1 1 0%; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
+  <div id="setlist-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
     <div class="sl-scope-row">
       <div class="sl-scope-pills">
         <button class="sl-scope-btn active" id="sl-scope-shared" onclick="setSetListScope('shared')">Shared</button>
@@ -1909,7 +1909,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
     </div>
     <div class="sl-hdr">
       <div class="sl-hdr-meta">
-        <span class="sl-lbl" id="sl-count">Shared Set · 4 songs</span>
+        <span class="sl-lbl" id="sl-count">0 songs</span>
         
       </div>
       <div class="sl-btns">
@@ -1918,7 +1918,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
       </div>
     </div>
     <div class="sl-scroll-host vs-host">
-      <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"><div class="set-item" data-id="local22"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">Alive</div><div class="set-meta">Hillsong Young &amp; Free · <span class="song-id-badge">S064</span>&nbsp;<span class="lang-badge">EN</span></div></div><div class="set-actions"><button class="set-key-btn override" type="button">Key G</button><button class="set-rm">×</button></div></div><div class="set-item" data-id="local58"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">Arise My Love</div><div class="set-meta">Eddie Espinosa · <span class="song-id-badge">S103</span>&nbsp;<span class="lang-badge">EN</span></div></div><div class="set-actions"><button class="set-key-btn" type="button">Key G</button><button class="set-rm">×</button></div></div><div class="set-item" data-id="-OqGqI9LVfDOQpt1W0r6"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">Amazing Grace (My Chains Are Gone)</div><div class="set-meta">Chris Tomlin · <span class="song-id-badge">S004</span>&nbsp;<span class="lang-badge">EN</span></div></div><div class="set-actions"><button class="set-key-btn" type="button">Key G</button><button class="set-rm">×</button></div></div><div class="set-item" data-id="local62"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">All Heaven Declares</div><div class="set-meta">Tricia Richards · <span class="song-id-badge">S108</span>&nbsp;<span class="lang-badge">EN</span></div></div><div class="set-actions"><button class="set-key-btn" type="button">Key D</button><button class="set-rm">×</button></div></div></div></div>
+      <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"></div></div>
     </div>
     <button class="add-fab" onclick="openBS('picker')" aria-label="Add to set list"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path></svg></button>
   </div>
@@ -2021,7 +2021,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
               <svg width="32" height="32" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"></circle></svg>
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 55.2.1</div>
+            <div class="about-version-pill">Version 55.3.1</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -2034,7 +2034,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
   <div class="tab-bar" id="tab-bar">
 
     <!-- English tab -->
-    <button class="tab-btn" id="tab-english" onclick="switchTab('english')">
+    <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
       <span class="tab-ico">
         <!-- outline: clean lines -->
         <svg class="ico-outline" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
@@ -2054,7 +2054,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
     </button>
 
     <!-- Set List tab -->
-    <button class="tab-btn active" id="tab-setlist" onclick="switchTab('setlist')">
+    <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
       <span class="tab-ico">
         <!-- outline: squares with no fill opacity -->
         <svg class="ico-outline" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.8"></rect><rect x="3" y="11" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.8"></rect><rect x="3" y="17" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.8"></rect><path d="M11 7h10M11 13h8M11 19h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
@@ -2091,7 +2091,7 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
 
 
 <!-- ═══ EXPORT VIEW ═══ -->
-<div id="export-view" class="visible">
+<div id="export-view">
   <div class="ev-hdr">
     <div class="ev-top">
       <button class="ev-nav-btn" type="button" onclick="closeExportView()">Back</button>
@@ -2127,21 +2127,12 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
       <div class="export-hero-preview">
         <div class="export-hero-head">
           <div class="export-hero-title">Page preview</div>
-          <div class="export-hero-meta" id="export-page-meta">One song / page • Large</div>
+          <div class="export-hero-meta" id="export-page-meta">Single column • Standard</div>
         </div>
         <div class="export-page-canvas">
           <div class="export-mini-page" id="export-mini-page">
             <div class="export-mini-set" id="export-mini-set">Set preview</div>
-            <div id="export-mini-content"><div class=""><div class="export-mini-song">
-      <div class="export-mini-title">Alive</div>
-      <div class="export-mini-meta">Hillsong Young &amp; Free • Key G</div>
-      <div class="export-mini-lines">
-        <div class="export-mini-line long"></div>
-        <div class="export-mini-line short"></div>
-        <div class="export-mini-line med"></div>
-        <div class="export-mini-line long"></div>
-      </div>
-    </div></div></div>
+            <div id="export-mini-content"></div>
           </div>
         </div>
       </div>
@@ -2160,9 +2151,9 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
       <div class="ev-group">
         <div class="ev-group-title">Layout</div>
         <div class="ev-chip-row">
-          <button class="ev-chip" type="button" data-layout="single" onclick="setExportLayout('single', this)">Single column</button>
+          <button class="ev-chip active" type="button" data-layout="single" onclick="setExportLayout('single', this)">Single column</button>
           <button class="ev-chip" type="button" data-layout="two" onclick="setExportLayout('two', this)">Two-column</button>
-          <button class="ev-chip active" type="button" data-layout="page" onclick="setExportLayout('page', this)">One song / page</button>
+          <button class="ev-chip" type="button" data-layout="page" onclick="setExportLayout('page', this)">One song / page</button>
         </div>
       </div>
 
@@ -2170,8 +2161,8 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
         <div class="ev-group-title">Text size</div>
         <div class="ev-chip-row">
           <button class="ev-chip" type="button" data-size="compact" onclick="setExportSize('compact', this)">Compact</button>
-          <button class="ev-chip" type="button" data-size="standard" onclick="setExportSize('standard', this)">Standard</button>
-          <button class="ev-chip active" type="button" data-size="large" onclick="setExportSize('large', this)">Large</button>
+          <button class="ev-chip active" type="button" data-size="standard" onclick="setExportSize('standard', this)">Standard</button>
+          <button class="ev-chip" type="button" data-size="large" onclick="setExportSize('large', this)">Large</button>
         </div>
       </div>
 
@@ -2611,7 +2602,28 @@ body.dark .ev-primary{background:var(--accent-strong);color:var(--accent-fg);}
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js">
+function resetTransientUIOnResume(){
+  try{
+    document.body.classList.remove('editor-open','song-open');
+    document.getElementById('export-view')?.classList.remove('visible');
+
+    // Close any bottom sheets / overlays
+    document.querySelectorAll('.bs-bg.open').forEach(el=>el.classList.remove('open'));
+    document.querySelectorAll('.ctx-bg.open').forEach(el=>el.classList.remove('open'));
+    document.querySelectorAll('.recent-searches.show').forEach(el=>el.classList.remove('show'));
+
+    // Ensure the main list view is the visible surface
+    document.getElementById('song-view')?.classList.remove('visible');
+
+    // Reset to home/library tab
+    if(typeof switchTab === 'function'){
+      switchTab('songs');
+    }
+  }catch(e){}
+}
+
+</script>
 <script>
 /* ── v55.2 export page helpers ── */
 let exportPageState={
