@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="420" viewBox="0 0 1800 420" fill="none">
+  <rect width="1800" height="420" fill="none"/>
+  <g transform="translate(40,18) scale(0.33)">
+    <rect x="206" y="238" width="140" height="620" rx="70" transform="rotate(-20 206 238)" fill="#FFFFFF"/>
+    <rect x="679" y="190" width="140" height="620" rx="70" transform="rotate(20 679 190)" fill="#FFFFFF"/>
+    <path d="M404 720 C 452 612, 482 520, 512 448 C 542 520, 572 612, 620 720" stroke="#FFFFFF" stroke-width="138" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M438 724 C 476 622, 492 540, 512 486 C 532 540, 548 622, 586 724" stroke="rgba(255,255,255,.28)" stroke-width="52" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+  </g>
+  <text x="370" y="250" font-family="Inter, SF Pro Display, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" font-size="150" font-weight="700" fill="#FFFFFF" letter-spacing="-4">WorshipBase</text>
+</svg>
