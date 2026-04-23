@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v60.4</title>
+<title>WorshipBase v60.5</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -1869,7 +1869,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
       <div class="wm">
         <div><div class="wm-name">WorshipBase</div><div class="wm-sub">Chord Library</div></div>
       </div>
-      <button class="hdr-btn" onclick="requireAdmin(()=&gt;openSongModal(null))" id="hdr-add-btn" title="Add song" aria-label="Add song">
+      <button class="hdr-btn" onclick="requireAdmin(()=&gt;openSongModal(null))" id="hdr-add-btn" title="Add song" aria-label="Add song" style="display: flex;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 5v14M5 12h14"></path>
         </svg>
@@ -1878,7 +1878,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
   </div>
 
   <!-- Search + count merged into one row -->
-  <div class="srch-wrap" id="srch-wrap">
+  <div class="srch-wrap" id="srch-wrap" style="display: block;">
     <div class="srch-row">
       <div class="srch-inner">
         <span class="srch-ico"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"></circle><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
@@ -1887,7 +1887,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
       </div>
       <span class="song-count" id="song-count">118 songs</span>
     </div>
-    <div class="filter-row" id="library-filter-row">
+    <div class="filter-row" id="library-filter-row" style="display: flex;">
       <button class="filter-chip active" data-filter="all" onclick="setLibraryFilter('all',this)">All</button>
       <button class="filter-chip" data-filter="favorites" onclick="setLibraryFilter('favorites',this)">Favourites</button>
       <button class="filter-chip" data-filter="inset" onclick="setLibraryFilter('inset',this)">In set list</button>
@@ -1895,7 +1895,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
   </div>
 
   <!-- SONG LIST -->
-  <div id="song-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
+  <div id="song-section" style="flex: 1 1 0%; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
     <div class="vs-host ptr-wrap">
       <div id="ptr-indicator"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 2l-2 2M9 2l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 9a7 7 0 1 1-7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
       <div id="vscroll" class="vs-wrap"><div id="home-quick-wrap" class="home-quick-wrap" style="display: flex;">
@@ -2096,7 +2096,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 60.4</div>
+            <div class="about-version-pill">Version 60.5</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -4077,41 +4077,16 @@ function restoreLastState(){
   if(restoredSession)return;
   const state=readLastState();
   restoredSession=true;
-  if(!state)return;
-  if(state.setListScope==='shared'||state.setListScope==='personal'){
+  if(state&&state.setListScope==='shared'||state&&state.setListScope==='personal'){
     appPrefs.setListScope=state.setListScope;
     appPrefs.useDeviceSetList=state.setListScope==='personal';
   }
   if(!Array.isArray(appPrefs.favoriteSongs))appPrefs.favoriteSongs=[];
-  if(typeof state.bibleBook==='string'&&state.bibleBook)currentBibleBook=state.bibleBook;
-  if(Number.isFinite(parseInt(state.bibleChapter,10)))currentBibleChapter=Math.max(1,parseInt(state.bibleChapter,10));
-  if(typeof state.bibleVersion==='string'&&BIBLE_VERSIONS.some(v=>v.id===state.bibleVersion))currentBibleVersion=state.bibleVersion;
+  if(state&&typeof state.bibleBook==='string'&&state.bibleBook)currentBibleBook=state.bibleBook;
+  if(state&&Number.isFinite(parseInt(state.bibleChapter,10)))currentBibleChapter=Math.max(1,parseInt(state.bibleChapter,10));
+  if(state&&typeof state.bibleVersion==='string'&&BIBLE_VERSIONS.some(v=>v.id===state.bibleVersion))currentBibleVersion=state.bibleVersion;
 
-  // On relaunch, restore the broader app area, but do not reopen the last song page.
-  if(state.tab==='bible'){
-    switchTab('bible');
-    return;
-  }
-  if(state.songOpen&&state.songId){
-    let tries=0;
-    const tryResolve=()=>{
-      const song=findSongById(state.songId);
-      if(song){
-        const targetTab=state.fromSetList ? 'setlist' : (song.cat||'english');
-        switchTab(targetTab);
-      }else if(tries<25){
-        tries++; setTimeout(tryResolve,160);
-      }else{
-        switchTab('english');
-      }
-    };
-    tryResolve();
-    return;
-  }
-  if(state.tab==='setlist'||state.tab==='settings'||state.tab==='english'||state.tab==='malayalam'){
-    switchTab(state.tab);
-    return;
-  }
+  // Always reopen to the Home/English tab on fresh launch.
   switchTab('english');
 }
 
