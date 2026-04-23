@@ -7,14 +7,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="WorshipBase"/>
-<link rel="icon" type="image/png" sizes="32x32" href="branding/favicon-32x32.png"/>
-<link rel="icon" type="image/png" sizes="16x16" href="branding/favicon-16x16.png"/>
-<link rel="apple-touch-icon" sizes="180x180" href="branding/apple-touch-icon.png"/>
 <link rel="manifest" href="branding/site.webmanifest"/>
-<meta name="theme-color" content="#0E5568"/>
-<link rel="manifest" href="manifest.webmanifest"/>
-<link rel="apple-touch-icon" sizes="180x180" href="wb-icon-180.png"/>
-<link rel="icon" type="image/png" sizes="192x192" href="wb-icon-192.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="branding/apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="branding/android-chrome-192x192.png"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 
 <title>WorshipBase v58.7.1</title>
@@ -115,16 +110,6 @@ body{transition:background-color .24s ease,color .24s ease;}
 .wm-sub{font-size:9px;color:rgba(255,255,255,.42);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;}
 .hdr-btn{background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;opacity:.85;}
 .hdr-btn:active{opacity:.5;}
-
-.wm-logo-img{height:24px;width:auto;display:block;}
-.wm-sub{display:none;}
-#ls .ls-logo-icon{width:82px;height:82px;display:block;margin:0 auto 16px;object-fit:contain;border-radius:20px;}
-#ls .ls-logo-word{width:min(300px,76vw);height:auto;display:block;margin:0 auto;}
-.about-badge{width:76px;height:76px;border-radius:22px;background:none;display:flex;align-items:center;justify-content:center;margin-bottom:14px;box-shadow:none;overflow:hidden;}
-.about-badge img{width:100%;height:100%;display:block;object-fit:contain;border-radius:22px;}
-.about-name{display:flex;justify-content:center;align-items:center;margin-top:2px;}
-.about-name img{height:34px;width:auto;max-width:min(78vw,300px);display:block;}
-
 
 /* ── BOTTOM TAB BAR — buttons almost flush with home indicator ── */
 .tab-bar{
@@ -1856,8 +1841,12 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
 
 <!-- LOADING -->
 <div id="ls">
-  <img class="ls-logo-icon" src="branding/app-icon-256.png" alt="WorshipBase app icon"/>
-  <img class="ls-logo-word" src="branding/logo-horizontal-light.svg" alt="WorshipBase logo"/>
+  <svg width="60" height="60" viewBox="0 0 60 60" fill="none" style="margin-bottom:20px">
+    <rect width="60" height="60" rx="14" fill="rgba(255,255,255,0.12)"/>
+    <path d="M9 20L17 42L25.5 28L30 36L34.5 28L43 42L51 20" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="30" cy="51" r="2.5" fill="white" opacity=".5"/>
+  </svg>
+  <div style="color:rgba(255,255,255,.9);font-size:17px;font-weight:800;">WorshipBase</div>
   <div style="color:rgba(255,255,255,.42);font-size:13px;margin-top:5px;">Loading your library…</div>
   <div class="ls-sp"></div>
 </div>
@@ -1869,8 +1858,12 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
   <div class="hdr">
     <div class="hdr-row">
       <div class="wm">
-        <img class="wm-logo-img" src="branding/logo-horizontal-light.svg" alt="WorshipBase logo"/>
-        <div><div class="wm-sub">Chord Library</div></div>
+        <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+          <rect width="30" height="30" rx="7" fill="rgba(255,255,255,0.12)"/>
+          <path d="M3.5 9L8 20L12 13.5L15 17.5L18 13.5L22 20L26.5 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="15" cy="24" r="1.4" fill="white" opacity=".5"/>
+        </svg>
+        <div><div class="wm-name">WorshipBase</div><div class="wm-sub">Chord Library</div></div>
       </div>
       <button class="hdr-btn" onclick="requireAdmin(()=>openSongModal(null))" id="hdr-add-btn" title="Add song" aria-label="Add song">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -2096,9 +2089,9 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
         <div class="ss-card">
           <div class="about-panel">
             <div class="about-badge">
-              <img src="branding/app-icon-256.png" alt="WorshipBase app icon"/>
+              <svg width="32" height="32" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg>
             </div>
-            <div class="about-name"><img src="branding/logo-horizontal.svg" alt="WorshipBase logo"/></div>
+            <div class="about-name">WorshipBase</div>
             <div class="about-version-pill">Version 58.7</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
@@ -4387,15 +4380,7 @@ function initFirebase(){
     }
   });
 }
-const __wbLoadStarted=Date.now();
-function hideLoading(){
-  const l=document.getElementById('ls');
-  const wait=Math.max(0,700-(Date.now()-__wbLoadStarted));
-  setTimeout(()=>{
-    l.classList.add('hidden');
-    setTimeout(()=>l.style.display='none',380);
-  },wait);
-}
+function hideLoading(){const l=document.getElementById('ls');l.classList.add('hidden');setTimeout(()=>l.style.display='none',380);}
 function saveSetListToFB(){saveSharedSetsToFB();}
 
 // Check for missing seed songs and write them to Firebase
