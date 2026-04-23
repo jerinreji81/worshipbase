@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v64.0</title>
+<title>WorshipBase v64.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -1948,7 +1948,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
   </div>
 
   <!-- Search + count merged into one row -->
-  <div class="srch-wrap" id="srch-wrap" style="display: block;">
+  <div class="srch-wrap" id="srch-wrap" style="display: none;">
     <div class="srch-row">
       <div class="srch-inner">
         <span class="srch-ico"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"></circle><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
@@ -1957,7 +1957,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
       </div>
       <span class="song-count" id="song-count">118 songs</span>
     </div>
-    <div class="filter-row" id="library-filter-row" style="display: flex;">
+    <div class="filter-row" id="library-filter-row" style="display: none;">
       <button class="filter-chip active" data-filter="all" onclick="setLibraryFilter('all',this)">All</button>
       <button class="filter-chip" data-filter="favorites" onclick="setLibraryFilter('favorites',this)">Favourites</button>
       <button class="filter-chip" data-filter="inset" onclick="setLibraryFilter('inset',this)">In set list</button>
@@ -1974,7 +1974,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
   </div>
 
   <!-- SONG LIST -->
-  <div id="song-section" style="flex: 1 1 0%; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
+  <div id="song-section" style="flex: 1 1 0%; display: none; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
     <div class="vs-host ptr-wrap">
       <div id="ptr-indicator"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 2l-2 2M9 2l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 9a7 7 0 1 1-7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
       <div id="vscroll" class="vs-wrap"><div id="home-quick-wrap" class="home-quick-wrap" style="display: flex;">
@@ -1995,7 +1995,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
   </div>
 
   <!-- SET LIST -->
-  <div id="setlist-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
+  <div id="setlist-section" style="display: flex; flex: 1 1 0%; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
     <div class="sl-scope-row">
       <div class="sl-scope-pills">
         <button class="sl-scope-btn active" id="sl-scope-shared" onclick="setSetListScope('shared')">Shared</button>
@@ -2010,7 +2010,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
     </div>
     <div class="sl-hdr">
       <div class="sl-hdr-meta">
-        <span class="sl-lbl" id="sl-count">0 songs</span>
+        <span class="sl-lbl" id="sl-count">Shared Set · 4 songs</span>
         
       </div>
       <div class="sl-btns">
@@ -2019,7 +2019,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
       </div>
     </div>
     <div class="sl-scroll-host vs-host">
-      <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"></div></div>
+      <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;"><div id="sl-items" class="sl-items"><div class="set-item" data-id="-OqGqI9LVfDOQpt1W0r6"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">Amazing Grace (My Chains Are Gone)</div><div class="set-meta">Chris Tomlin · <span class="song-id-badge">S004</span>&nbsp;<span class="lang-badge">EN</span></div></div><div class="set-actions"><button class="set-key-btn" type="button">Key G</button><button class="set-rm">×</button></div></div><div class="set-item" data-id="local22"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">Alive</div><div class="set-meta">Hillsong Young &amp; Free · <span class="song-id-badge">S064</span>&nbsp;<span class="lang-badge">EN</span></div></div><div class="set-actions"><button class="set-key-btn override" type="button">Key G</button><button class="set-rm">×</button></div></div><div class="set-item" data-id="local62"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">All Heaven Declares</div><div class="set-meta">Tricia Richards · <span class="song-id-badge">S108</span>&nbsp;<span class="lang-badge">EN</span></div></div><div class="set-actions"><button class="set-key-btn" type="button">Key D</button><button class="set-rm">×</button></div></div><div class="set-item" data-id="local58"><div class="drag-handle"><span></span><span></span><span></span></div><div class="set-info"><div class="set-title">Arise My Love</div><div class="set-meta">Eddie Espinosa · <span class="song-id-badge">S103</span>&nbsp;<span class="lang-badge">EN</span></div></div><div class="set-actions"><button class="set-key-btn" type="button">Key G</button><button class="set-rm">×</button></div></div></div></div>
     </div>
     <button class="add-fab" onclick="openBS('picker')" aria-label="Add to set list"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path></svg></button>
   </div>
@@ -2175,7 +2175,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 64.0</div>
+            <div class="about-version-pill">Version 64.1</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -2188,7 +2188,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
   <div class="tab-bar" id="tab-bar">
 
     <!-- English tab -->
-    <button class="tab-btn active" id="tab-english" onclick="switchTab('english')">
+    <button class="tab-btn" id="tab-english" onclick="switchTab('english')">
       <span class="tab-ico">
         <!-- outline: clean lines -->
         <svg class="ico-outline" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
@@ -2208,7 +2208,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
     </button>
 
     <!-- Set List tab -->
-    <button class="tab-btn" id="tab-setlist" onclick="switchTab('setlist')">
+    <button class="tab-btn active" id="tab-setlist" onclick="switchTab('setlist')">
       <span class="tab-ico">
         <!-- outline: squares with no fill opacity -->
         <svg class="ico-outline" width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.8"></rect><rect x="3" y="11" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.8"></rect><rect x="3" y="17" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.8"></rect><path d="M11 7h10M11 13h8M11 19h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
@@ -7644,6 +7644,154 @@ attachDrag = function(ct){
 })();
 
 </script>
+
+<script>
+/* ── v64.1 reliable text/vector PDF path ──
+   The previous raw-PDF generator could silently fall back or render poorly on
+   some mobile viewers, especially with system/non-Latin fonts. This path uses
+   the browser print engine from real HTML text, so the resulting saved PDF is
+   crisp/selectable/searchable and respects system font fallback. */
+(function(){
+  function wb64SafeFileName(name, fallback){
+    const base=String(name||fallback||'WorshipBase').trim().replace(/[^a-z0-9\-_ ]+/gi,' ').replace(/\s+/g,'-').replace(/^-+|-+$/g,'');
+    return (base||fallback||'WorshipBase');
+  }
+  function wb64GetOpts(){
+    try{ if(typeof getExportPageOptions==='function' && typeof exportPageState==='object' && exportPageState) return getExportPageOptions(); }catch(e){}
+    try{ if(typeof getExportOptions==='function') return getExportOptions(); }catch(e){}
+    return {exportKey:'set',exportLayout:'single',exportFont:'standard',exportContent:'chords',showAuthor:true,showKey:true,showId:false};
+  }
+  function wb64PrintKey(song,item,opts){
+    if(!song)return 'G';
+    if(opts && opts.exportKey && opts.exportKey!=='set') return opts.exportKey==='original' ? (song.key||'G') : opts.exportKey;
+    if(item && typeof resolveSongKey==='function') return resolveSongKey(song,item);
+    return currentKey || song.key || 'G';
+  }
+  function wb64TextExportChrome(title){
+    const safeTitle=String(title||'WorshipBase PDF').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return '<style>'+ 
+      '@media screen{body{padding-top:58px}.wb-print-toolbar{position:fixed;left:0;right:0;top:0;z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#10374A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,Helvetica,sans-serif;box-shadow:0 3px 18px rgba(0,0,0,.18)}.wb-print-title{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wb-print-sub{font-size:11px;opacity:.75;margin-top:1px}.wb-print-toolbar button{border:0;border-radius:999px;background:#fff;color:#10374A;font-weight:800;padding:9px 13px;font-size:13px;font-family:inherit;white-space:nowrap}}'+
+      '@media print{.wb-print-toolbar{display:none!important}body{padding-top:0!important}}'+
+      '</style><div class="wb-print-toolbar"><div style="min-width:0"><div class="wb-print-title">'+safeTitle+'</div><div class="wb-print-sub">Text PDF path — choose Save as PDF / Print</div></div><button onclick="window.print()">Save PDF</button></div>'+ 
+      '<script>window.addEventListener("load",function(){setTimeout(function(){try{window.print()}catch(e){}},650)});<\\/script>';
+  }
+  function wb64OpenPrintHtml(html,title,fileBase){
+    const chrome=wb64TextExportChrome(title);
+    const finalHtml=html.replace(/<body>/i,'<body>'+chrome);
+    const win=window.open('','_blank');
+    if(win){
+      try{
+        win.document.open();
+        win.document.write(finalHtml);
+        win.document.close();
+        if(typeof showToast==='function') showToast('Text PDF print view opened');
+        return true;
+      }catch(e){
+        try{win.close();}catch(_e){}
+      }
+    }
+    const blob=new Blob([finalHtml],{type:'text/html'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=wb64SafeFileName(fileBase||title,'WorshipBase')+'-text-pdf.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+    if(typeof showToast==='function') showToast('Text PDF HTML downloaded — open and Save as PDF');
+    return false;
+  }
+  function wb64BuildSongHtml(opts){
+    if(!currentSong)return '';
+    opts=opts||wb64GetOpts();
+    const themeColor=(typeof appPrefs==='object'&&appPrefs.theme)||'#10374A';
+    const profile=typeof getExportFontProfile==='function'?getExportFontProfile(opts.exportFont):{title:22,author:13,key:11,section:10,chord:13,lyric:16,fitBonus:1};
+    const displayKey=wb64PrintKey(currentSong,null,opts);
+    const css=typeof buildCommonExportStyles==='function'?buildCommonExportStyles(themeColor,profile,opts):'';
+    const body=typeof renderExportSongBlock==='function'?renderExportSongBlock(currentSong,displayKey,opts,false):('<pre>'+String(currentSong.chart||'')+'</pre>');
+    return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHtml(currentSong.title||'Song')+'</title><style>'+css+'</style></head><body><div class="page flow-page single-page">'+body+'</div></body></html>';
+  }
+  function wb64BuildSetHtml(opts){
+    opts=opts||wb64GetOpts();
+    const sl=typeof getSetList==='function'?getSetList():[];
+    const themeColor=(typeof appPrefs==='object'&&appPrefs.theme)||'#10374A';
+    const profile=typeof getExportFontProfile==='function'?getExportFontProfile(opts.exportFont):{title:22,author:13,key:11,section:10,chord:13,lyric:16,fitBonus:1};
+    const css=typeof buildCommonExportStyles==='function'?buildCommonExportStyles(themeColor,profile,opts):'';
+    const setName=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List')||'Worship Set List';
+    const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
+    const layoutLabel=opts.exportLayout==='two'?'Two-column':(opts.exportLayout==='page'?'One song per page':'Single column');
+    const printKey=(item)=>{const s=findSongById(item.songId);return wb64PrintKey(s,item,opts);};
+    let parts=['<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHtml(setName)+'</title><style>'+css+'</style></head><body>'];
+    parts.push('<div class="cover">');
+    parts.push('<div class="cover-logo"><svg width="40" height="40" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg></div>');
+    parts.push('<div class="cover-title">'+escapeHtml(setName)+'</div>');
+    parts.push('<div class="cover-sub">'+sl.length+' song'+(sl.length!==1?'s':'')+' · '+layoutLabel+' · '+contentLabel+'</div>');
+    parts.push('<ul class="cover-list">');
+    sl.forEach((item,i)=>{const s=findSongById(item.songId);if(!s)return;parts.push('<li class="cover-item"><span class="cover-num">'+(i+1)+'</span><span class="cover-title-l">'+escapeHtml(s.title||'Untitled song')+'</span><span class="cover-key">'+escapeHtml(printKey(item))+'</span></li>');});
+    parts.push('</ul></div>');
+    if(opts.exportLayout==='two'){
+      let i=0;
+      while(i<sl.length){
+        const first=sl[i], second=sl[i+1], firstSong=first?findSongById(first.songId):null, secondSong=second?findSongById(second.songId):null;
+        if(!firstSong){i++;continue;}
+        const firstW=typeof estimateExportSongWeight==='function'?estimateExportSongWeight(firstSong,opts):20;
+        const secondW=secondSong&&typeof estimateExportSongWeight==='function'?estimateExportSongWeight(secondSong,opts):999;
+        const canPair=!!secondSong && firstW<26 && secondW<26 && Math.max(firstW,secondW)<24;
+        if(canPair){
+          parts.push('<div class="page two-col-page">');
+          parts.push(renderExportSongBlock(firstSong,printKey(first),opts,false));
+          parts.push(renderExportSongBlock(secondSong,printKey(second),opts,false));
+          parts.push('</div>');
+          i+=2;
+        }else{
+          parts.push('<div class="page flow-page single-page">'+renderExportSongBlock(firstSong,printKey(first),opts,false)+'</div>');
+          i+=1;
+        }
+      }
+    }else if(opts.exportLayout==='page'){
+      sl.forEach(item=>{const s=findSongById(item.songId); if(s)parts.push('<div class="page flow-page single-page">'+renderExportSongBlock(s,printKey(item),opts,false)+'</div>');});
+    }else{
+      const pages=typeof paginateSingleColumnSongs==='function'?paginateSingleColumnSongs(sl,opts,printKey):[sl.map(item=>({song:findSongById(item.songId),item})).filter(x=>x.song)];
+      pages.forEach(pageItems=>{
+        parts.push('<div class="page flow-page single-page">');
+        pageItems.forEach(({song,item})=>{if(song)parts.push(renderExportSongBlock(song,printKey(item),opts,false));});
+        parts.push('</div>');
+      });
+    }
+    parts.push('</body></html>');
+    return parts.join('\n');
+  }
+  window.exportSongFromOptions=function(opts){
+    if(!currentSong)return;
+    opts=opts||wb64GetOpts();
+    const html=wb64BuildSongHtml(opts);
+    wb64OpenPrintHtml(html,'Text PDF export · '+(currentSong.title||'Song'),currentSong.title||'Song');
+  };
+  window.exportSetListFromOptions=function(opts){
+    const sl=typeof getSetList==='function'?getSetList():[];
+    if(!sl.length){alert('No songs in set list.');return;}
+    opts=opts||wb64GetOpts();
+    const name=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List')||'Worship Set List';
+    const html=wb64BuildSetHtml(opts);
+    wb64OpenPrintHtml(html,'Text PDF export · '+name,name);
+  };
+  window.exportPDF=function(){
+    if(!currentSong)return;
+    window.exportSongFromOptions(wb64GetOpts());
+  };
+  window.exportAllPDF=function(){
+    try{ if(typeof closeBS==='function') closeBS('export'); }catch(e){}
+    window.exportSetListFromOptions(wb64GetOpts());
+  };
+  window.runExportFromPage=function(){
+    const opts=typeof getExportPageOptions==='function'?getExportPageOptions():wb64GetOpts();
+    try{ if(typeof closeExportView==='function') closeExportView(); }catch(e){}
+    if(typeof exportPageContext!=='undefined' && exportPageContext==='song') window.exportSongFromOptions(opts);
+    else window.exportSetListFromOptions(opts);
+  };
+  window.__wb64TextPdfMode='browser-print-vector-v64.1';
+})();
+</script>
+
 
 
 </body><div style="position: fixed; top: 0px; left: 0px; width: 1px; height: env(safe-area-inset-top,0px); pointer-events: none; opacity: 0; z-index: -1;"></div><div style="position: fixed; bottom: 0px; left: 0px; width: 1px; height: env(safe-area-inset-bottom,0px); pointer-events: none; opacity: 0; z-index: -1;"></div></html>
