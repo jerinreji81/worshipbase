@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="WorshipBase"/>
-<link rel="manifest" href="assets/manifest.webmanifest?v=2"/>
-<link rel="apple-touch-icon" sizes="180x180" href="assets/wb-icon-180.png?v=2"/>
-<link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png?v=2"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="apple-touch-icon" sizes="180x180" href="assets/wb-icon-180.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 
 <title>WorshipBase v58.7.1</title>
@@ -1842,7 +1842,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
 
 <!-- LOADING -->
 <div id="ls">
-  <img src="assets/wb-icon-192.png?v=2" alt="WorshipBase logo" style="width:60px;height:60px;border-radius:14px;display:block;object-fit:cover;margin-bottom:20px;"/>
+  <img src="assets/wb-icon-192.png" alt="WorshipBase logo" style="width:60px;height:60px;border-radius:14px;display:block;object-fit:cover;margin-bottom:20px;"/>
   <div style="color:rgba(255,255,255,.9);font-size:17px;font-weight:800;">WorshipBase</div>
   <div style="color:rgba(255,255,255,.42);font-size:13px;margin-top:5px;">Loading your library…</div>
   <div class="ls-sp"></div>
@@ -2081,7 +2081,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
         <div class="ss-card">
           <div class="about-panel">
             <div class="about-badge">
-              <img src="assets/wb-icon-192.png?v=2" alt="WorshipBase logo"/>
+              <img src="assets/wb-icon-192.png" alt="WorshipBase logo"/>
             </div>
             <div class="about-name">WorshipBase</div>
             <div class="about-version-pill">Version 58.7</div>
@@ -3106,7 +3106,7 @@ function buildCommonExportStyles(themeColor, profile, opts){
     '.two-col-page .lyric-row,.two-col-page .lyric-only-row{font-size:'+twoColLyric+'px;line-height:1.44;margin:0 0 .65mm;}',
     '.two-col-page .lyric-block{margin:0 0 1.8mm;}',
     '.cover{page-break-after:always;padding:0;text-align:left;}',
-    '.cover-logo{width:58px;height:58px;display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;overflow:hidden;}',
+    '.cover-logo{width:58px;height:58px;border-radius:14px;background:'+themeColor+';display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;}',
     '.cover-title{font-size:28px;font-weight:900;color:#000;letter-spacing:-.4px;margin-bottom:8px;text-align:left;}',
     '.cover-sub{font-size:12px;color:#777;letter-spacing:.12em;text-transform:uppercase;margin-bottom:22px;text-align:left;}',
     '.cover-list{list-style:none;padding:0;margin:0;max-width:none;text-align:left;}',
@@ -3183,7 +3183,7 @@ function exportSetListFromOptions(opts){
   const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
   const layoutLabel=opts.exportLayout==='two'?'Two-column':(opts.exportLayout==='single'?'Single column':'One song per page');
   parts.push('<div class="cover">');
-  parts.push('<div class="cover-logo"><img src="assets/wb-icon-192.png?v=2" alt="WorshipBase logo" style="width:58px;height:58px;display:block;object-fit:cover;"/></div>');
+  parts.push('<div class="cover-logo"><svg width="40" height="40" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg></div>');
   parts.push('<div class="cover-title">Worship Set List</div>');
   parts.push('<div class="cover-sub">'+sl.length+' song'+(sl.length!==1?'s':'')+' · '+layoutLabel+' · '+contentLabel+'</div>');
   parts.push('<ul class="cover-list">');
@@ -3795,7 +3795,7 @@ function exportAllPDF(){
   parts.push('body{font-family:-apple-system,BlinkMacSystemFont,Helvetica,sans-serif;margin:0;padding:0;color:#000;}');
   parts.push('@page{margin:32mm 28mm;}');
   parts.push('.cover{page-break-after:always;padding:10px 0 0;text-align:left;}');
-  parts.push('.cover-logo{width:58px;height:58px;display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;overflow:hidden;}');
+  parts.push('.cover-logo{width:58px;height:58px;border-radius:14px;background:'+themeColor+';display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;}');
   parts.push('.cover-title{font-size:28px;font-weight:900;color:#000;letter-spacing:-.4px;margin-bottom:8px;text-align:left;}');
   parts.push('.cover-sub{font-size:12px;color:#777;letter-spacing:.12em;text-transform:uppercase;margin-bottom:22px;text-align:left;}');
   parts.push('.cover-list{list-style:none;padding:0;margin:0;max-width:none;text-align:left;}');
@@ -3829,7 +3829,7 @@ function exportAllPDF(){
   parts.push('</style></head><body>');
 
   parts.push('<div class="cover">');
-  parts.push('<div class="cover-logo"><img src="assets/wb-icon-192.png?v=2" alt="WorshipBase logo" style="width:58px;height:58px;display:block;object-fit:cover;"/></div>');
+  parts.push('<div class="cover-logo"><svg width="40" height="40" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg></div>');
   parts.push('<div class="cover-title">Worship Set List</div>');
   const exportLayoutLabel=opts.exportLayout==='two'?'Two songs per page (stacked)':(opts.exportLayout==='two-col'?'Two songs per page (two columns)':'One song per page');
   const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
