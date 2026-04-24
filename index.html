@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v64.13</title>
+<title>WorshipBase v64.14</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -2183,7 +2183,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 64.13</div>
+            <div class="about-version-pill">Version 64.14</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -7907,7 +7907,7 @@ attachDrag = function(ct){
 
 
 <script>
-(function(){ window.__wbPdfEngine='paged-preview-v64.13'; })();
+(function(){ window.__wbPdfEngine='paged-preview-v64.14'; })();
 </script>
 
 
@@ -7938,19 +7938,19 @@ window.exportPDF=()=>window.exportSongFromOptions(typeof getExportPageOptions===
 window.exportAllPDF=()=>window.exportSetListFromOptions(typeof getExportPageOptions==='function'?getExportPageOptions():{});
 window.runExportFromPage=()=>{let o=typeof getExportPageOptions==='function'?getExportPageOptions():{};if(typeof closeExportView==='function')closeExportView();if(exportPageContext==='song')window.exportSongFromOptions(o);else window.exportSetListFromOptions(o)};
 try{exportSongFromOptions=window.exportSongFromOptions;exportSetListFromOptions=window.exportSetListFromOptions;exportPDF=window.exportPDF;exportAllPDF=window.exportAllPDF;runExportFromPage=window.runExportFromPage}catch(e){}
-window.__wbPdfEngine='paged-preview-v64.13-deterministic';
+window.__wbPdfEngine='paged-preview-v64.14-deterministic';
 })();
 </script>
 
 
 
 <script>
-/* ── v64.13 robust distributable PDF export rewrite ──────────────────────
+/* ── v64.14 robust distributable PDF export rewrite ──────────────────────
    Single active export path: configure → preview → Download PDF.
    The preview is paginated from the same line model used by the PDF writer.
    No browser print, no URL/date stamps, no extra text/html file export. */
 (function(){
-  const PDF_VER='v64.13';
+  const PDF_VER='v64.14';
   const PAGE={w:595.28,h:841.89}; // A4 pt
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clean=s=>String(s??'')
@@ -8156,8 +8156,180 @@ window.__wbPdfEngine='paged-preview-v64.13-deterministic';
   window.exportAllPDF=function(){ window.exportSetListFromOptions(typeof getExportPageOptions==='function'?getExportPageOptions():{}); };
   window.runExportFromPage=function(){ const opts=typeof getExportPageOptions==='function'?getExportPageOptions():{}; if(typeof closeExportView==='function')closeExportView(); if(window.exportPageContext==='song'||(typeof exportPageContext!=='undefined'&&exportPageContext==='song'))window.exportSongFromOptions(opts); else window.exportSetListFromOptions(opts); };
   try{exportSongFromOptions=window.exportSongFromOptions; exportSetListFromOptions=window.exportSetListFromOptions; exportPDF=window.exportPDF; exportAllPDF=window.exportAllPDF; runExportFromPage=window.runExportFromPage;}catch(e){}
-  window.__wbPdfEngine='v64.13-monospaced-paged-preview-direct-pdf';
+  window.__wbPdfEngine='v64.14-monospaced-paged-preview-direct-pdf';
 })();
+
+
+/* ── v64.14 PDF export engine reset ────────────────────────────────────────
+   Direct vector PDF opens as the preview. No browser print page, no HTML preview,
+   no URL/date stamps, no extra text file. Chord+lyric pairs paginate together. */
+(function(){
+  const PDF_VER='v64.14';
+  const PAGE={w:595.28,h:841.89}; // A4 portrait in PDF points
+  const escPdfText=s=>String(s??'')
+    .replace(/\u00a0/g,' ')
+    .replace(/[‘’‚‛]/g,"'")
+    .replace(/[“”„‟]/g,'"')
+    .replace(/[–—−‐‑‒]/g,'-')
+    .replace(/…/g,'...')
+    .replace(/·/g,' - ')
+    .replace(/[ \t]+$/gm,'');
+  const pdfText=s=>escPdfText(s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x09\x0A\x0D\x20-\x7E]/g,'');
+  const pstr=s=>'('+pdfText(s).replace(/[\r\n]+/g,' ').replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)')+')';
+  const num=v=>(Math.round((+v||0)*100)/100).toFixed(2).replace(/\.00$/,'');
+  const safeName=s=>String(s||'WorshipBase').replace(/[\\/:*?"<>|]+/g,' ').replace(/\s+/g,' ').trim().slice(0,80)||'WorshipBase';
+  const rgb=hex=>{const raw=String(hex||'#10374A').replace('#',''); const h=raw.length===3?raw.split('').map(c=>c+c).join(''):raw.slice(0,6); const n=parseInt(h,16); if(!Number.isFinite(n))return '0.0627 0.2157 0.2902'; return `${(((n>>16)&255)/255).toFixed(4)} ${(((n>>8)&255)/255).toFixed(4)} ${((n&255)/255).toFixed(4)}`;};
+  const themeRgb=()=>rgb((window.appPrefs&&appPrefs.theme)||'#10374A');
+
+  function exportProfile(opts,cols){
+    const size=opts.exportFont||'standard';
+    let p;
+    if(cols===2){
+      if(size==='large') p={margin:36,gap:24,title:15.5,titleLH:19,meta:8.4,metaLH:13,chart:8.2,chord:8.2,lineLH:9.9,section:7.2,sectionLH:13.2,sp:4.5,gapAfterSong:9};
+      else if(size==='compact') p={margin:31,gap:22,title:13.2,titleLH:16.5,meta:7.4,metaLH:11.2,chart:7.35,chord:7.35,lineLH:9.05,section:6.7,sectionLH:12.2,sp:3.6,gapAfterSong:7.5};
+      else p={margin:34,gap:23,title:14.2,titleLH:17.7,meta:7.9,metaLH:12,chart:7.75,chord:7.75,lineLH:9.55,section:7.0,sectionLH:12.8,sp:4,gapAfterSong:8.5};
+    }else{
+      if(size==='large') p={margin:46,gap:0,title:21,titleLH:25.5,meta:10.5,metaLH:16,chart:11.0,chord:11.0,lineLH:13.2,section:9.4,sectionLH:17,sp:7,gapAfterSong:18};
+      else if(size==='compact') p={margin:39,gap:0,title:16.2,titleLH:20,meta:8.5,metaLH:13.5,chart:9.2,chord:9.2,lineLH:11.15,section:8.0,sectionLH:14.7,sp:5,gapAfterSong:12};
+      else p={margin:42,gap:0,title:18,titleLH:22,meta:9.3,metaLH:14.7,chart:10.0,chord:10.0,lineLH:12.1,section:8.5,sectionLH:15.6,sp:5.8,gapAfterSong:15};
+    }
+    p.cols=cols; p.colW=cols===2?(PAGE.w-p.margin*2-p.gap)/2:PAGE.w-p.margin*2; p.usableH=PAGE.h-p.margin*2;
+    // Courier average width is about 0.60em. Keep a safety margin to avoid visual clipping.
+    p.maxChars=Math.max(cols===2?24:45, Math.floor(p.colW/(p.chart*0.61))-1);
+    return p;
+  }
+  function lineH(line,p){
+    if(line.type==='songTitle')return p.titleLH;
+    if(line.type==='meta')return p.metaLH;
+    if(line.type==='section')return p.sectionLH;
+    if(line.type==='spacer')return line.h||p.sp;
+    if(line.type==='songGap')return p.gapAfterSong;
+    return p.lineLH;
+  }
+  function blockH(block,p){return (block.lines||[]).reduce((a,l)=>a+lineH(l,p),0);}
+  function cleanLine(s){return escPdfText(s).replace(/[ \t]+$/,'');}
+  function placeChord(arr,pos,ch){ch=String(ch||'').trim(); if(!ch)return; pos=Math.max(0,pos|0); for(let i=0;i<ch.length;i++){const idx=pos+i; arr[idx]=arr[idx]&&arr[idx]!==' '?arr[idx]:ch[i];}}
+  function transposeLine(line,songKey,printKey,opts){
+    try{ const st=(typeof getST==='function')?getST(songKey,printKey):0; return procLine(line,st,printKey,opts.exportContent==='nns',!!window.useFlats); }
+    catch(e){return line;}
+  }
+  function inlinePair(line,songKey,printKey,opts){
+    const raw=transposeLine(String(line||''),songKey,printKey,opts); let lyric='', chord=[]; let last=0; const re=/\[([^\]]+)\]/g; let m;
+    while((m=re.exec(raw))){const before=raw.slice(last,m.index); lyric+=before; placeChord(chord,lyric.length,m[1]); last=re.lastIndex;}
+    lyric+=raw.slice(last); return {ch:cleanLine(chord.join('').replace(/\s+$/,'')), ly:cleanLine(lyric)};
+  }
+  function chordLyricPair(chordLine,lyricLine,songKey,printKey,opts){return {ch:cleanLine(transposeLine(String(chordLine||''),songKey,printKey,opts)),ly:cleanLine(lyricLine||'')};}
+  function wrapText(s,max){
+    s=cleanLine(s); if(!s)return ['']; const out=[]; let t=s;
+    while(t.length>max){let cut=t.lastIndexOf(' ',max); if(cut<Math.floor(max*.55))cut=max; out.push(t.slice(0,cut).replace(/\s+$/,'')); t=t.slice(cut).replace(/^\s+/,'');}
+    if(t.length||!out.length)out.push(t); return out;
+  }
+  function wrapPair(pair,max){
+    let ch=cleanLine(pair.ch||''), ly=cleanLine(pair.ly||''); const len=Math.max(ch.length,ly.length); ch=ch.padEnd(len,' '); ly=ly.padEnd(len,' ');
+    const out=[]; let a=ch,b=ly;
+    while(Math.max(a.length,b.length)>max){
+      let cut=b.lastIndexOf(' ',max); if(cut<Math.floor(max*.50)){cut=a.lastIndexOf(' ',max); if(cut<Math.floor(max*.50))cut=max;}
+      out.push({ch:a.slice(0,cut).replace(/\s+$/,''),ly:b.slice(0,cut).replace(/\s+$/,'')});
+      a=a.slice(cut); b=b.slice(cut); const lead=(b.match(/^\s+/)||[''])[0].length; if(lead){a=a.slice(lead); b=b.slice(lead);} }
+    if(a.trim()||b.trim())out.push({ch:a.replace(/\s+$/,''),ly:b.replace(/\s+$/,'')}); return out;
+  }
+  function addPairBlocks(blocks,pair,p){
+    wrapPair(pair,p.maxChars).forEach(seg=>{
+      const lines=[]; if(seg.ch.trim())lines.push({type:'chord',text:seg.ch}); if(seg.ly.trim())lines.push({type:'lyric',text:seg.ly}); if(lines.length)blocks.push({kind:'pair',lines});
+    });
+  }
+  function songBlocks(song,printKey,opts,p){
+    song=song||{}; const key=song.key||printKey||'C'; const blocks=[];
+    blocks.push({kind:'songTitle',lines:[{type:'songTitle',text:song.title||'Untitled song'}]});
+    const meta=[]; if(opts.showAuthor&&song.author)meta.push(song.author); if(opts.showKey)meta.push('Key of '+printKey+(song.key&&song.key!==printKey?' - Originally '+song.key:''));
+    const ts=song.timeSig||song.timeSignature||''; if(ts)meta.push('Time: '+ts); if(song.bpm)meta.push(song.bpm+' BPM');
+    if(opts.showId){let id=song.songCode||''; try{if(!id&&typeof ensureSongCode==='function')id=ensureSongCode(song)}catch(e){} if(id)meta.push(id);}
+    if(opts.exportContent==='nns')meta.push('NNS'); if(meta.length)blocks.push({kind:'meta',lines:[{type:'meta',text:meta.join(' - ')}]});
+    const chart=String(song.chart||''); if(!chart.trim()){blocks.push({kind:'plain',lines:[{type:'lyric',text:opts.exportContent==='lyrics'?'No lyrics yet.':'No chord chart yet.'}]}); return blocks;}
+    const lines=chart.split('\n');
+    for(let i=0;i<lines.length;i++){
+      const raw=lines[i]||'', trimmed=raw.trim();
+      if(!trimmed){blocks.push({kind:'spacer',lines:[{type:'spacer',h:p.sp}]}); continue;}
+      if(typeof isSectionLabel==='function'&&isSectionLabel(raw)){
+        let label=trimmed.replace(/^\[/,'').replace(/\]$/,''); try{if(typeof getSectionText==='function')label=getSectionText(raw);}catch(e){}
+        blocks.push({kind:'section',lines:[{type:'section',text:String(label).toUpperCase()}]}); continue;
+      }
+      if(opts.exportContent==='lyrics'){
+        if(typeof isCP==='function'&&isCP(raw)){wrapText(inlinePair(raw,key,printKey,opts).ly,p.maxChars).forEach(t=>blocks.push({kind:'plain',lines:[{type:'lyric',text:t}]})); continue;}
+        if(typeof isCL==='function'&&isCL(raw)){const nx=lines[i+1]||''; const hasLy=nx.trim()&&!(typeof isCL==='function'&&isCL(nx))&&!(typeof isSectionLabel==='function'&&isSectionLabel(nx)); if(hasLy){wrapText(nx,p.maxChars).forEach(t=>blocks.push({kind:'plain',lines:[{type:'lyric',text:t}]})); i++;} continue;}
+        wrapText(raw,p.maxChars).forEach(t=>blocks.push({kind:'plain',lines:[{type:'lyric',text:t}]})); continue;
+      }
+      if(typeof isCP==='function'&&isCP(raw)){addPairBlocks(blocks,inlinePair(raw,key,printKey,opts),p); continue;}
+      if(typeof isCL==='function'&&isCL(raw)){
+        const nx=lines[i+1]||''; const hasLy=nx.trim()&&!(typeof isCL==='function'&&isCL(nx))&&!(typeof isCP==='function'&&isCP(nx))&&!(typeof isSectionLabel==='function'&&isSectionLabel(nx));
+        if(hasLy){addPairBlocks(blocks,chordLyricPair(raw,nx,key,printKey,opts),p); i++;}
+        else wrapText(transposeLine(raw,key,printKey,opts),p.maxChars).forEach(t=>blocks.push({kind:'chordOnly',lines:[{type:'chord',text:t}]}));
+        continue;
+      }
+      wrapText(raw,p.maxChars).forEach(t=>blocks.push({kind:'plain',lines:[{type:'lyric',text:t}]}));
+    }
+    return blocks;
+  }
+  function getPdfItems(context,opts){
+    if(context==='song')return window.currentSong?[{song:currentSong,item:null,key:window.currentKey||currentSong.key||'C'}]:[];
+    const sl=(typeof getSetList==='function')?getSetList():[];
+    return sl.map(item=>{const song=(typeof findSongById==='function')?findSongById(item.songId):null; if(!song)return null; let key=song.key||'C'; try{if(typeof resolveSongKey==='function')key=resolveSongKey(song,item);}catch(e){} return {song,item,key};}).filter(Boolean);
+  }
+  function buildPlan(context,opts){
+    opts=Object.assign({exportFlow:'continuous',exportColumns:'single',exportFont:'standard',exportContent:'chords',showAuthor:true,showKey:true,showId:false},opts||{});
+    const cols=opts.exportColumns==='two'?2:1, p=exportProfile(opts,cols), items=getPdfItems(context,opts), title=context==='song'?(items[0]?.song?.title||'Song'):((typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List')||'Worship Set List');
+    const plan={title,context,opts,cols,profile:p,pages:[]}; if(context!=='song')plan.pages.push({type:'cover',title,items:items.map((it,i)=>({n:i+1,title:it.song.title||'Untitled song',key:it.key}))});
+    let page=null,col=0,used=0;
+    function newPage(){page={type:'content',cols:Array.from({length:cols},()=>[])}; plan.pages.push(page); col=0; used=0;}
+    function nextCol(){if(!page)newPage(); if(col<cols-1){col++; used=0;} else newPage();}
+    function addBlock(block){if(!page)newPage(); const h=blockH(block,p); if(used>0 && used+h>p.usableH)nextCol(); (block.lines||[]).forEach(l=>page.cols[col].push(l)); used+=h;}
+    items.forEach((it,idx)=>{ if(opts.exportFlow==='page' && page && page.cols.some(c=>c.length)){newPage();} songBlocks(it.song,it.key,opts,p).forEach(addBlock); addBlock({kind:'songGap',lines:[{type:'songGap'}]}); });
+    if(!items.length){newPage(); addBlock({kind:'plain',lines:[{type:'songTitle',text:'No songs to export'}]});}
+    // Drop any accidental completely empty trailing content page.
+    plan.pages=plan.pages.filter((pg,i)=>pg.type==='cover'||pg.cols.some(c=>c.length)); return plan;
+  }
+  function makePdf(cmdPages){
+    const enc=new TextEncoder(), objs=[], kids=[]; objs[1]='1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n';
+    objs[3]='3 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>\nendobj\n';
+    objs[4]='4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>\nendobj\n';
+    objs[5]='5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Courier-Bold /Encoding /WinAnsiEncoding >>\nendobj\n';
+    objs[6]='6 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>\nendobj\n';
+    cmdPages.forEach((cmds,i)=>{const cont=7+i*2, pg=8+i*2, stream=cmds.join(''), len=enc.encode(stream).length; objs[cont]=`${cont} 0 obj\n<< /Length ${len} >>\nstream\n${stream}endstream\nendobj\n`; objs[pg]=`${pg} 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE.w} ${PAGE.h}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents ${cont} 0 R >>\nendobj\n`; kids.push(`${pg} 0 R`);});
+    objs[2]=`2 0 obj\n<< /Type /Pages /Count ${cmdPages.length} /Kids [${kids.join(' ')}] >>\nendobj\n`; const max=6+cmdPages.length*2, chunks=[], off=new Array(max+1).fill(0); let head=enc.encode('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n'); chunks.push(head); let pos=head.length;
+    for(let i=1;i<=max;i++){const b=enc.encode(objs[i]||`${i} 0 obj\n<<>>\nendobj\n`); off[i]=pos; chunks.push(b); pos+=b.length;} const xrefAt=pos; let xref=`xref\n0 ${max+1}\n0000000000 65535 f \n`; for(let i=1;i<=max;i++)xref+=String(off[i]).padStart(10,'0')+' 00000 n \n'; chunks.push(enc.encode(xref+`trailer\n<< /Size ${max+1} /Root 1 0 R >>\nstartxref\n${xrefAt}\n%%EOF`)); return new Blob(chunks,{type:'application/pdf'});
+  }
+  function drawPlan(plan){
+    const p=plan.profile, dark='0.055 0.075 0.095', gray='0.39 0.46 0.50', pale='0.925 0.945 0.960', accent=themeRgb(); const pages=[];
+    const cmd0=()=>[`1 1 1 rg 0 0 ${num(PAGE.w)} ${num(PAGE.h)} re f\n`];
+    const txt=(cmd,s,x,baseline,size,font='F1',color=dark)=>{if(!String(s??'').length)return; cmd.push(`${color} rg BT /${font} ${num(size)} Tf ${num(x)} ${num(PAGE.h-baseline)} Td ${pstr(s)} Tj ET\n`);};
+    const rect=(cmd,x,top,w,h,color)=>cmd.push(`${color} rg ${num(x)} ${num(PAGE.h-top-h)} ${num(w)} ${num(h)} re f\n`);
+    function drawLine(cmd,line,x,yTop){
+      const h=lineH(line,p); const base=yTop + Math.min(h-2, (line.type==='section'?p.section:p.chart)+1.7);
+      if(line.type==='songTitle')txt(cmd,line.text,x,base,p.title,'F2',dark);
+      else if(line.type==='meta')txt(cmd,line.text,x,base,p.meta,'F1',gray);
+      else if(line.type==='section'){const w=Math.min(p.colW,Math.max(32,String(line.text).length*p.section*.66+14)); rect(cmd,x,yTop+1,w,Math.max(8,p.section+5.5),pale); txt(cmd,line.text,x+7,base,p.section,'F2',gray);}
+      else if(line.type==='chord')txt(cmd,line.text,x,base,p.chord,'F3',accent);
+      else if(line.type==='lyric')txt(cmd,line.text,x,base,p.chart,'F4',dark);
+    }
+    function cover(pg){const cmd=cmd0(), m=42; txt(cmd,pg.title||'Worship Set List',m,86,28,'F2',accent); const sub=`${pg.items.length} song${pg.items.length!==1?'s':''} - ${(plan.opts.exportFlow==='page'?'One song / page':'Continuous')} - ${(plan.cols===2?'Two-column':'Single column')} - ${(plan.opts.exportContent==='lyrics'?'Lyrics only':plan.opts.exportContent==='nns'?'NNS':'Lyrics + chords')}`; txt(cmd,sub,m,118,11,'F2',gray); cmd.push(`0.86 0.88 0.90 RG 0.75 w ${m} ${num(PAGE.h-140)} m ${num(PAGE.w-m)} ${num(PAGE.h-140)} l S\n`); let y=174; (pg.items||[]).slice(0,34).forEach(it=>{txt(cmd,String(it.n).padStart(2,'0'),m,y,11,'F2','0.58 0.61 0.64'); txt(cmd,it.title,m+34,y,13,'F1',dark); txt(cmd,it.key,PAGE.w-m-28,y,11,'F2',accent); y+=23;}); pages.push(cmd);}
+    function content(pg){const cmd=cmd0(); for(let c=0;c<plan.cols;c++){const x=p.margin+c*(p.colW+p.gap); let y=p.margin; (pg.cols[c]||[]).forEach(line=>{drawLine(cmd,line,x,y); y+=lineH(line,p);});} pages.push(cmd);}
+    (plan.pages||[]).forEach(pg=>pg.type==='cover'?cover(pg):content(pg)); return makePdf(pages);
+  }
+  function openPdf(context,opts){
+    const plan=buildPlan(context,opts||{}); const blob=drawPlan(plan); const filename=safeName(plan.title||'WorshipBase')+'.pdf'; const url=URL.createObjectURL(blob);
+    const win=window.open(url,'_blank');
+    if(!win){const a=document.createElement('a'); a.href=url; a.download=filename; a.target='_blank'; document.body.appendChild(a); a.click(); a.remove();}
+    setTimeout(()=>URL.revokeObjectURL(url),10*60*1000); if(typeof showToast==='function')showToast('PDF opened');
+  }
+  window.exportSongFromOptions=function(opts){if(!window.currentSong){if(typeof showToast==='function')showToast('No song open');return;} openPdf('song',opts||((typeof getExportPageOptions==='function')?getExportPageOptions():{}));};
+  window.exportSetListFromOptions=function(opts){const sl=(typeof getSetList==='function')?getSetList():[]; if(!sl.length){alert('No songs in set list.');return;} openPdf('setlist',opts||((typeof getExportPageOptions==='function')?getExportPageOptions():{}));};
+  window.exportPDF=function(){window.exportSongFromOptions((typeof getExportPageOptions==='function')?getExportPageOptions():{});};
+  window.exportAllPDF=function(){window.exportSetListFromOptions((typeof getExportPageOptions==='function')?getExportPageOptions():{});};
+  window.runExportFromPage=function(){const opts=(typeof getExportPageOptions==='function')?getExportPageOptions():{}; if(typeof closeExportView==='function')closeExportView(); if(window.exportPageContext==='song'||(typeof exportPageContext!=='undefined'&&exportPageContext==='song'))window.exportSongFromOptions(opts); else window.exportSetListFromOptions(opts);};
+  try{exportSongFromOptions=window.exportSongFromOptions; exportSetListFromOptions=window.exportSetListFromOptions; exportPDF=window.exportPDF; exportAllPDF=window.exportAllPDF; runExportFromPage=window.runExportFromPage;}catch(e){}
+  window.__wbPdfEngine='v64.14-direct-vector-paired-blocks';
+})();
+
 </script>
 
 
