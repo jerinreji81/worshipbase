@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v64.12</title>
+<title>WorshipBase v64.13</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -2183,7 +2183,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 64.12</div>
+            <div class="about-version-pill">Version 64.13</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -7907,7 +7907,7 @@ attachDrag = function(ct){
 
 
 <script>
-(function(){ window.__wbPdfEngine='paged-preview-v64.12'; })();
+(function(){ window.__wbPdfEngine='paged-preview-v64.13'; })();
 </script>
 
 
@@ -7938,7 +7938,225 @@ window.exportPDF=()=>window.exportSongFromOptions(typeof getExportPageOptions===
 window.exportAllPDF=()=>window.exportSetListFromOptions(typeof getExportPageOptions==='function'?getExportPageOptions():{});
 window.runExportFromPage=()=>{let o=typeof getExportPageOptions==='function'?getExportPageOptions():{};if(typeof closeExportView==='function')closeExportView();if(exportPageContext==='song')window.exportSongFromOptions(o);else window.exportSetListFromOptions(o)};
 try{exportSongFromOptions=window.exportSongFromOptions;exportSetListFromOptions=window.exportSetListFromOptions;exportPDF=window.exportPDF;exportAllPDF=window.exportAllPDF;runExportFromPage=window.runExportFromPage}catch(e){}
-window.__wbPdfEngine='paged-preview-v64.12-deterministic';
+window.__wbPdfEngine='paged-preview-v64.13-deterministic';
+})();
+</script>
+
+
+
+<script>
+/* ── v64.13 robust distributable PDF export rewrite ──────────────────────
+   Single active export path: configure → preview → Download PDF.
+   The preview is paginated from the same line model used by the PDF writer.
+   No browser print, no URL/date stamps, no extra text/html file export. */
+(function(){
+  const PDF_VER='v64.13';
+  const PAGE={w:595.28,h:841.89}; // A4 pt
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const clean=s=>String(s??'')
+    .replace(/\u00a0/g,' ')
+    .replace(/[‘’‚‛]/g,"'")
+    .replace(/[“”„‟]/g,'"')
+    .replace(/[–—−‐‑‒]/g,'-')
+    .replace(/…/g,'...')
+    .replace(/·/g,' - ')
+    .replace(/[ \t]+$/gm,'');
+  const pdfClean=s=>clean(s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x09\x0A\x0D\x20-\x7E]/g,'');
+  const pstr=s=>'('+pdfClean(s).replace(/[\r\n]+/g,' ').replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)')+')';
+  const num=v=>(Math.round((+v||0)*100)/100).toFixed(2).replace(/\.00$/,'');
+  const rgb=hex=>{const raw=String(hex||'#10374A').replace('#',''); const h=raw.length===3?raw.split('').map(c=>c+c).join(''):raw.slice(0,6); const n=parseInt(h,16); if(!Number.isFinite(n))return '0.0627 0.2157 0.2902'; return `${(((n>>16)&255)/255).toFixed(4)} ${(((n>>8)&255)/255).toFixed(4)} ${((n&255)/255).toFixed(4)}`;};
+  const theme=()=>rgb((window.appPrefs&&appPrefs.theme)||'#10374A');
+  const safeFilename=s=>String(s||'WorshipBase').replace(/[\\/:*?"<>|]+/g,' ').replace(/\s+/g,' ').trim().slice(0,80)||'WorshipBase';
+
+  function profile(opts, cols){
+    const size=opts.exportFont||'standard';
+    const compact=size==='compact', large=size==='large';
+    let p=compact?
+      {margin:36,gap:24,title:15,meta:8.2,chart:8.35,chord:8.35,section:7.6,line:9.25,secLine:12.2,sp:4.2,gapAfterSong:10}:
+      large?
+      {margin:42,gap:28,title:20,meta:10.5,chart:11.2,chord:11.2,section:9.2,line:13.0,secLine:16.0,sp:6.0,gapAfterSong:18}:
+      {margin:40,gap:26,title:17.5,meta:9.5,chart:9.8,chord:9.8,section:8.4,line:11.2,secLine:14.2,sp:5.2,gapAfterSong:14};
+    if(cols===2){
+      if(compact) p={margin:30,gap:22,title:12.6,meta:7.1,chart:7.05,chord:7.05,section:6.45,line:7.75,secLine:10.1,sp:3.0,gapAfterSong:7};
+      else if(large) p={margin:34,gap:24,title:15.2,meta:8.2,chart:8.45,chord:8.45,section:7.35,line:9.45,secLine:12.0,sp:3.8,gapAfterSong:9};
+      else p={margin:32,gap:23,title:13.8,meta:7.6,chart:7.65,chord:7.65,section:6.9,line:8.45,secLine:10.9,sp:3.5,gapAfterSong:8};
+    }
+    p.cols=cols; p.colW=cols===2?(PAGE.w-p.margin*2-p.gap)/2:PAGE.w-p.margin*2; p.usableH=PAGE.h-p.margin*2;
+    p.maxChars=Math.max(28, Math.floor(p.colW/(p.chart*0.60)));
+    return p;
+  }
+  function lineHeight(line,p){
+    if(line.type==='songTitle')return Math.ceil(p.title*1.15)+2;
+    if(line.type==='meta')return Math.ceil(p.meta*1.35)+4;
+    if(line.type==='section')return p.secLine;
+    if(line.type==='spacer')return line.h||p.sp;
+    if(line.type==='songGap')return p.gapAfterSong;
+    return p.line;
+  }
+  function wrapTextToChars(text,max){
+    text=clean(text); if(!text)return [''];
+    const out=[]; let s=text;
+    while(s.length>max){
+      let cut=s.lastIndexOf(' ',max);
+      if(cut<Math.floor(max*0.55)) cut=max;
+      out.push(s.slice(0,cut).replace(/\s+$/,''));
+      s=s.slice(cut).replace(/^\s+/,'');
+    }
+    if(s.length||!out.length)out.push(s);
+    return out;
+  }
+  function placeChord(arr,pos,ch){
+    ch=String(ch||'').trim(); if(!ch)return;
+    pos=Math.max(0,pos|0); for(let i=0;i<ch.length;i++){ const idx=pos+i; arr[idx]=arr[idx]&&arr[idx]!==' '?arr[idx]:ch[i]; }
+  }
+  function inlineChordPair(line, songKey, printKey, opts){
+    let st=0; try{st=getST(songKey,printKey)}catch(e){}
+    let raw=String(line||'');
+    try{ raw=procLine(raw,st,printKey,opts.exportContent==='nns',!!window.useFlats); }catch(e){}
+    let lyric='', chord=[]; let last=0; const re=/\[([^\]]+)\]/g; let m;
+    while((m=re.exec(raw))){
+      const before=raw.slice(last,m.index); lyric+=before; placeChord(chord, lyric.length, m[1]); last=re.lastIndex;
+    }
+    lyric+=raw.slice(last);
+    return {ch:chord.join('').replace(/\s+$/,''), ly:clean(lyric)};
+  }
+  function chordLinePair(chordLine, lyricLine, songKey, printKey, opts){
+    let st=0; try{st=getST(songKey,printKey)}catch(e){}
+    let ch=String(chordLine||'');
+    try{ch=procLine(ch,st,printKey,opts.exportContent==='nns',!!window.useFlats)}catch(e){}
+    return {ch:clean(ch),ly:clean(lyricLine||'')};
+  }
+  function wrapPair(ch,ly,max){
+    ch=clean(ch); ly=clean(ly); const len=Math.max(ch.length,ly.length); ch=ch.padEnd(len,' '); ly=ly.padEnd(len,' ');
+    const out=[]; let a=ch,b=ly;
+    while(Math.max(a.length,b.length)>max){
+      let cut=b.lastIndexOf(' ',max); if(cut<Math.floor(max*0.50))cut=max;
+      out.push({ch:a.slice(0,cut).replace(/\s+$/,''), ly:b.slice(0,cut).replace(/\s+$/,'')});
+      a=a.slice(cut); b=b.slice(cut);
+      const lead=(b.match(/^\s+/)||[''])[0].length; if(lead){a=a.slice(lead);b=b.slice(lead);}
+    }
+    if(a.trim()||b.trim())out.push({ch:a.replace(/\s+$/,''), ly:b.replace(/\s+$/,'')});
+    return out;
+  }
+  function addWrappedPair(lines,pair,p){
+    wrapPair(pair.ch,pair.ly,p.maxChars).forEach(seg=>{
+      if(seg.ch.trim()) lines.push({type:'chord',text:seg.ch});
+      if(seg.ly.trim()) lines.push({type:'lyric',text:seg.ly});
+    });
+  }
+  function exportSongLines(song, printKey, opts, p){
+    const lines=[]; song=song||{};
+    lines.push({type:'songTitle',text:song.title||'Untitled song'});
+    const meta=[];
+    if(opts.showAuthor&&song.author)meta.push(song.author);
+    if(opts.showKey)meta.push('Key of '+printKey+(song.key&&song.key!==printKey?' - Originally '+song.key:''));
+    const ts=song.timeSig||song.timeSignature||''; if(ts)meta.push('Time: '+ts);
+    if(song.bpm)meta.push(song.bpm+' BPM');
+    if(opts.showId){let id=song.songCode||''; try{if(!id)id=ensureSongCode(song)}catch(e){} if(id)meta.push(id);}
+    if(opts.exportContent==='nns')meta.push('NNS');
+    if(meta.length) lines.push({type:'meta',text:meta.join(' - ')});
+    const chart=String(song.chart||'');
+    if(!chart.trim()){lines.push({type:'lyric',text:opts.exportContent==='lyrics'?'No lyrics yet.':'No chord chart yet.'}); return lines;}
+    const ls=chart.split('\n');
+    for(let i=0;i<ls.length;i++){
+      const raw=ls[i]||''; const trimmed=raw.trim();
+      if(!trimmed){lines.push({type:'spacer',h:p.sp}); continue;}
+      if(typeof isSectionLabel==='function'&&isSectionLabel(raw)){
+        let label=trimmed.replace(/^\[/,'').replace(/\]$/,''); try{label=getSectionText(raw)}catch(e){}
+        lines.push({type:'section',text:String(label).toUpperCase()}); continue;
+      }
+      if(opts.exportContent==='lyrics'){
+        if(typeof isCP==='function'&&isCP(raw)){lines.push(...wrapTextToChars(inlineChordPair(raw,song.key||printKey,printKey,opts).ly,p.maxChars).map(t=>({type:'lyric',text:t}))); continue;}
+        if(typeof isCL==='function'&&isCL(raw)){const nx=ls[i+1]||''; if(nx.trim()&&!(typeof isCL==='function'&&isCL(nx))&&!(typeof isSectionLabel==='function'&&isSectionLabel(nx))){lines.push(...wrapTextToChars(nx,p.maxChars).map(t=>({type:'lyric',text:t}))); i++;} continue;}
+        lines.push(...wrapTextToChars(raw,p.maxChars).map(t=>({type:'lyric',text:t}))); continue;
+      }
+      if(typeof isCP==='function'&&isCP(raw)){ addWrappedPair(lines, inlineChordPair(raw,song.key||printKey,printKey,opts), p); continue; }
+      if(typeof isCL==='function'&&isCL(raw)){
+        const nx=ls[i+1]||'';
+        const hasLy=nx.trim()&&!(typeof isCL==='function'&&isCL(nx))&&!(typeof isCP==='function'&&isCP(nx))&&!(typeof isSectionLabel==='function'&&isSectionLabel(nx));
+        if(hasLy){ addWrappedPair(lines, chordLinePair(raw,nx,song.key||printKey,printKey,opts), p); i++; }
+        else { let ch=raw; try{ch=procLine(raw,getST(song.key||printKey,printKey),printKey,opts.exportContent==='nns',!!window.useFlats)}catch(e){} wrapTextToChars(ch,p.maxChars).forEach(t=>lines.push({type:'chord',text:t})); }
+        continue;
+      }
+      wrapTextToChars(raw,p.maxChars).forEach(t=>lines.push({type:'lyric',text:t}));
+    }
+    return lines;
+  }
+  function getItems(context,opts){
+    if(context==='song') return currentSong?[{song:currentSong,item:null,key:currentKey||currentSong.key||'C'}]:[];
+    const sl=typeof getSetList==='function'?getSetList():[];
+    return sl.map(item=>{const song=typeof findSongById==='function'?findSongById(item.songId):null; if(!song)return null; let key=song.key||'C'; try{key=resolveSongKey(song,item)}catch(e){} return {song,item,key};}).filter(Boolean);
+  }
+  function buildPlan(context,opts){
+    opts=Object.assign({exportFlow:'continuous',exportColumns:'single',exportFont:'standard',exportContent:'chords',showAuthor:true,showKey:true,showId:false},opts||{});
+    const cols=opts.exportColumns==='two'?2:1; const p=profile(opts,cols); const items=getItems(context,opts); const setTitle=context==='song'?(items[0]?.song?.title||'Song'):(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List');
+    const plan={version:PDF_VER,context,title:setTitle,opts,profile:p,cols,pages:[]};
+    if(context!=='song') plan.pages.push({type:'cover',title:setTitle,items:items.map((it,i)=>({n:i+1,title:it.song.title||'Untitled song',key:it.key}))});
+    let page=null,col=0,used=0;
+    function newPage(){ page={type:'content',cols:Array.from({length:cols},()=>[])}; plan.pages.push(page); col=0; used=0; }
+    function nextCol(){ if(!page)newPage(); if(col<cols-1){col++; used=0;} else newPage(); }
+    function addLine(line){ if(!page)newPage(); const h=lineHeight(line,p); if(used>0 && used+h>p.usableH) nextCol(); page.cols[col].push(line); used+=h; }
+    items.forEach((it,idx)=>{
+      if(opts.exportFlow==='page' && (page&&page.cols.some(c=>c.length))) newPage();
+      const lines=exportSongLines(it.song,it.key,opts,p);
+      lines.forEach(addLine); addLine({type:'songGap'});
+    });
+    if(!items.length)newPage(),addLine({type:'songTitle',text:'No songs to export'});
+    return plan;
+  }
+
+  function makePdf(pages){
+    const enc=new TextEncoder(), objs=[], kids=[];
+    objs[1]='1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n';
+    objs[3]='3 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>\nendobj\n';
+    objs[4]='4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>\nendobj\n';
+    objs[5]='5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Courier-Bold /Encoding /WinAnsiEncoding >>\nendobj\n';
+    objs[6]='6 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>\nendobj\n';
+    pages.forEach((cmds,i)=>{ const cont=7+i*2, pg=8+i*2, stream=cmds.join(''), len=enc.encode(stream).length; objs[cont]=`${cont} 0 obj\n<< /Length ${len} >>\nstream\n${stream}endstream\nendobj\n`; objs[pg]=`${pg} 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE.w} ${PAGE.h}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R /F4 6 0 R >> >> /Contents ${cont} 0 R >>\nendobj\n`; kids.push(`${pg} 0 R`); });
+    objs[2]=`2 0 obj\n<< /Type /Pages /Count ${pages.length} /Kids [${kids.join(' ')}] >>\nendobj\n`;
+    const max=6+pages.length*2, chunks=[], off=new Array(max+1).fill(0); let head=enc.encode('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n'); chunks.push(head); let pos=head.length;
+    for(let i=1;i<=max;i++){const b=enc.encode(objs[i]||`${i} 0 obj\n<<>>\nendobj\n`); off[i]=pos; chunks.push(b); pos+=b.length;}
+    const xrefAt=pos; let xref=`xref\n0 ${max+1}\n0000000000 65535 f \n`; for(let i=1;i<=max;i++)xref+=String(off[i]).padStart(10,'0')+' 00000 n \n';
+    chunks.push(enc.encode(xref+`trailer\n<< /Size ${max+1} /Root 1 0 R >>\nstartxref\n${xrefAt}\n%%EOF`)); return new Blob(chunks,{type:'application/pdf'});
+  }
+  function planToPdf(plan){
+    const p=plan.profile, th=theme(), dark='0.055 0.075 0.095', gray='0.40 0.45 0.49', pale='0.925 0.945 0.960'; const pdfPages=[];
+    function newCmd(){return [`1 1 1 rg 0 0 ${num(PAGE.w)} ${num(PAGE.h)} re f\n`];}
+    function txt(cmd,s,x,y,size,font='F1',color=dark){if(!String(s??'').length)return; cmd.push(`${color} rg BT /${font} ${num(size)} Tf ${num(x)} ${num(PAGE.h-y)} Td ${pstr(s)} Tj ET\n`);}
+    function rect(cmd,x,top,w,h,color){cmd.push(`${color} rg ${num(x)} ${num(PAGE.h-top-h)} ${num(w)} ${num(h)} re f\n`);}
+    function drawLine(cmd,line,x,y){
+      if(line.type==='songTitle')txt(cmd,line.text,x,y,p.title,'F2',dark);
+      else if(line.type==='meta')txt(cmd,line.text,x,y,p.meta,'F1',gray);
+      else if(line.type==='section'){const w=Math.min(p.colW,Math.max(34,String(line.text).length*p.section*.65+14)); rect(cmd,x,y-p.section-3,w,p.section+7,pale); txt(cmd,line.text,x+7,y,p.section,'F2',gray);}
+      else if(line.type==='chord')txt(cmd,line.text,x,y,p.chord,'F3',th);
+      else if(line.type==='lyric')txt(cmd,line.text,x,y,p.chart,'F4',dark);
+    }
+    function drawCover(pg){const cmd=newCmd(); const m=42; txt(cmd,pg.title||'Worship Set List',m,92,28,'F2',th); const subtitle=`${pg.items.length} song${pg.items.length!==1?'s':''} - ${(plan.opts.exportFlow==='page'?'One song / page':'Continuous')} - ${(plan.cols===2?'Two-column':'Single column')} - ${(plan.opts.exportContent==='lyrics'?'Lyrics only':plan.opts.exportContent==='nns'?'NNS':'Lyrics + chords')}`; txt(cmd,subtitle,m,124,11,'F2',gray); cmd.push(`0.86 0.88 0.90 RG 0.7 w ${m} ${num(PAGE.h-146)} m ${num(PAGE.w-m)} ${num(PAGE.h-146)} l S\n`); let y=182; (pg.items||[]).slice(0,34).forEach(it=>{txt(cmd,String(it.n).padStart(2,'0'),m,y,11,'F2','0.58 0.61 0.64'); txt(cmd,it.title,m+34,y,13,'F1',dark); txt(cmd,it.key,PAGE.w-m-28,y,11,'F2',th); y+=23;}); pdfPages.push(cmd);}
+    function drawContent(pg){const cmd=newCmd(); for(let c=0;c<plan.cols;c++){const x=p.margin+c*(p.colW+p.gap); let y=p.margin; (pg.cols[c]||[]).forEach(line=>{y+=lineHeight(line,p); drawLine(cmd,line,x,y);});} pdfPages.push(cmd);}
+    (plan.pages||[]).forEach(pg=>pg.type==='cover'?drawCover(pg):drawContent(pg)); return makePdf(pdfPages);
+  }
+  function previewHtml(plan,planId){
+    const p=plan.profile, accent=((window.appPrefs&&appPrefs.theme)||'#10374A');
+    const css=`html,body{margin:0;padding:0;background:#f3f6f8;color:#101820;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Arial,sans-serif;overflow-x:hidden}.bar{position:sticky;top:0;z-index:10;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;background:rgba(255,255,255,.96);border-bottom:1px solid #dfe6ea;backdrop-filter:blur(12px)}.bar .info{flex:1;min-width:0}.bar strong{display:block;font-size:16px}.bar span{font-size:12px;color:#64727a;line-height:1.35}.bar button{border:0;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:800}.back{background:#eef3f6;color:#385362}.save{background:${accent};color:#fff}.pages{display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px 10px 28px}.page{width:min(100%,760px);aspect-ratio:210/297;background:#fff;box-shadow:0 10px 32px rgba(16,55,74,.15);box-sizing:border-box;padding:${p.margin/595.28*100}%;overflow:hidden}.content{display:grid;grid-template-columns:${plan.cols===2?'1fr 1fr':'1fr'};gap:${plan.cols===2?'4%':'0'};height:100%}.line{white-space:pre;overflow:hidden;text-overflow:clip}.songTitle{font-size:${p.title*1.28}px;line-height:1.1;font-weight:850;letter-spacing:-.02em}.meta{font-size:${p.meta*1.28}px;color:#64727a}.section span{display:inline-block;background:#eef2f4;border-radius:5px;padding:2px 7px;font-size:${p.section*1.22}px;color:#66727a;font-weight:850;letter-spacing:.1em}.chord{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850;color:${accent};font-size:${p.chord*1.24}px}.lyric{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:${p.chart*1.24}px}.cover h1{font-size:30px;margin:0 0 8px;color:${accent}}.cover p{font-size:11px;text-transform:uppercase;letter-spacing:.11em;color:#6b7780;font-weight:750}.cover ol{list-style:none;padding:0;margin:20px 0}.cover li{display:flex;gap:10px;border-bottom:1px solid #e6ecef;padding:8px 0}.cover b{flex:1}.cover em{font-style:normal;font-weight:850;color:${accent}}`;
+    function renderLine(line){const h=lineHeight(line,p); if(line.type==='spacer'||line.type==='songGap')return `<div style="height:${h*1.28}px"></div>`; if(line.type==='section')return `<div class="line section" style="height:${h*1.28}px"><span>${esc(line.text)}</span></div>`; return `<div class="line ${line.type}" style="height:${h*1.28}px">${esc(line.text)}</div>`;}
+    const pages=plan.pages.map(pg=>{ if(pg.type==='cover'){return `<section class="page cover"><h1>${esc(pg.title)}</h1><p>${pg.items.length} songs · ${(plan.opts.exportFlow==='page'?'One song / page':'Continuous')} · ${(plan.cols===2?'Two-column':'Single column')}</p><ol>${pg.items.map(it=>`<li><span>${String(it.n).padStart(2,'0')}</span><b>${esc(it.title)}</b><em>${esc(it.key)}</em></li>`).join('')}</ol></section>`} return `<section class="page"><div class="content">${pg.cols.map(col=>`<div>${col.map(renderLine).join('')}</div>`).join('')}</div></section>`;}).join('');
+    return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WorshipBase PDF preview</title><style>${css}</style></head><body><div class="bar"><button class="back" onclick="window.close();try{history.back()}catch(e){}">Back</button><div class="info"><strong>PDF preview</strong><span>${esc(plan.opts.exportFlow==='page'?'One song / page':'Continuous')} · ${plan.cols===2?'Two-column':'Single column'} · ${esc(plan.opts.exportFont||'standard')}<br>Download uses WorshipBase PDF engine - no browser URL/date stamps.</span></div><button class="save" onclick="try{window.opener.__wbSavePdfPlan('${planId}')}catch(e){alert('Return to the app and export again.')} ">Download PDF</button></div><main class="pages">${pages}</main></body></html>`;
+  }
+  window.__wbPdfPlans=window.__wbPdfPlans||{};
+  window.__wbSavePdfPlan=function(id){
+    const plan=window.__wbPdfPlans&&window.__wbPdfPlans[id]; if(!plan){alert('PDF preview expired. Export again.');return;}
+    const blob=planToPdf(plan); const name=safeFilename(plan.title||'WorshipBase')+'.pdf'; const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),30000); if(typeof showToast==='function')showToast('PDF downloaded');
+  };
+  function openPreview(context,opts){
+    const plan=buildPlan(context,opts||{}); const id='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); window.__wbPdfPlans[id]=plan; const html=previewHtml(plan,id); const blob=new Blob([html],{type:'text/html'}); const url=URL.createObjectURL(blob); const win=window.open(url,'_blank'); setTimeout(()=>URL.revokeObjectURL(url),45000); setTimeout(()=>{delete window.__wbPdfPlans[id]},20*60*1000); if(!win){window.__wbSavePdfPlan(id); return;} if(typeof showToast==='function')showToast('PDF preview opened');
+  }
+  window.exportSongFromOptions=function(opts){ if(!currentSong){if(typeof showToast==='function')showToast('No song open');return;} openPreview('song',opts||getExportPageOptions()); };
+  window.exportSetListFromOptions=function(opts){ const sl=typeof getSetList==='function'?getSetList():[]; if(!sl.length){alert('No songs in set list.');return;} openPreview('setlist',opts||getExportPageOptions()); };
+  window.exportPDF=function(){ window.exportSongFromOptions(typeof getExportPageOptions==='function'?getExportPageOptions():{}); };
+  window.exportAllPDF=function(){ window.exportSetListFromOptions(typeof getExportPageOptions==='function'?getExportPageOptions():{}); };
+  window.runExportFromPage=function(){ const opts=typeof getExportPageOptions==='function'?getExportPageOptions():{}; if(typeof closeExportView==='function')closeExportView(); if(window.exportPageContext==='song'||(typeof exportPageContext!=='undefined'&&exportPageContext==='song'))window.exportSongFromOptions(opts); else window.exportSetListFromOptions(opts); };
+  try{exportSongFromOptions=window.exportSongFromOptions; exportSetListFromOptions=window.exportSetListFromOptions; exportPDF=window.exportPDF; exportAllPDF=window.exportAllPDF; runExportFromPage=window.runExportFromPage;}catch(e){}
+  window.__wbPdfEngine='v64.13-monospaced-paged-preview-direct-pdf';
 })();
 </script>
 
