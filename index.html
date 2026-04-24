@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v64.5</title>
+<title>WorshipBase v64.6</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -1968,7 +1968,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
         <button class="manage-chip" type="button" onclick="openDuplicateReview()">Duplicates</button>
         <button class="manage-chip danger" type="button" onclick="bulkDeleteSelected()">Delete</button>
       </div>
-      <span class="manage-count" id="manage-count">0 selected</span>
+      <span class="manage-count" id="manage-count" style="visibility: hidden;"></span>
       <button class="manage-chip primary manage-done" id="manage-done-btn" type="button" onclick="toggleManageMode(false)">Done</button>
     </div>
   </div>
@@ -2164,6 +2164,11 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
             <div class="ss-body"><div class="ss-lbl">Change PIN</div><div class="ss-sub">Requires current PIN</div></div>
             <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
           </div>
+          <div class="ss-row manage-only-tool" style="display:none" onclick="lockAdmin()">
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect><path d="M5 7V5a3 3 0 1 1 6 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path><path d="M6.3 10.4h3.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></div>
+            <div class="ss-body"><div class="ss-lbl">Lock tools</div><div class="ss-sub">Turn off Manage songs and require PIN again</div></div>
+            <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+          </div>
         </div>
       </div>
 
@@ -2175,7 +2180,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 64.5</div>
+            <div class="about-version-pill">Version 64.6</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -2647,60 +2652,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
     <button class="bs-cancel" onclick="closeBS('sets')">Done</button>
   </div>
 </div>
-<div class="bs-bg" id="bs-export" onclick="closeBSBg(event,'export')">
-  <div class="bs">
-    <div class="bs-handle"></div>
-    <div class="m-tr"><h2 class="m-h2">Export</h2><button class="m-close" onclick="closeBS('export')">×</button></div>
-    <div class="m-body">
-      <p style="font-size:13px;color:var(--txt2);margin-bottom:10px;">Preview and tailor your set list PDF before exporting.</p>
-      <div class="export-grid">
-        <div>
-          <label style="font-size:12px;font-weight:700;color:var(--txt2);display:block;margin-bottom:6px;">Export songs in key:</label>
-          <select id="export-key-sel" onchange="buildExport()" style="width:100%;padding:9px 13px;border:.5px solid var(--bdr2);border-radius:var(--rad);font-size:14px;background:var(--bg2);color:var(--txt1);font-family:inherit;outline:none;">
-            <option value="original">Each song's original key</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:700;color:var(--txt2);display:block;margin-bottom:6px;">Layout:</label>
-          <select id="export-layout-sel" onchange="buildExport()" style="width:100%;padding:9px 13px;border:.5px solid var(--bdr2);border-radius:var(--rad);font-size:14px;background:var(--bg2);color:var(--txt1);font-family:inherit;outline:none;">
-            <option value="one">One song per page</option>
-            <option value="two">Two songs per page (stacked)</option>
-            <option value="two-col">Two songs per page (two columns)</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:700;color:var(--txt2);display:block;margin-bottom:6px;">Font size:</label>
-          <select id="export-font-sel" onchange="buildExport()" style="width:100%;padding:9px 13px;border:.5px solid var(--bdr2);border-radius:var(--rad);font-size:14px;background:var(--bg2);color:var(--txt1);font-family:inherit;outline:none;">
-            <option value="standard">Standard</option>
-            <option value="compact">Compact</option>
-            <option value="large">Large</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:700;color:var(--txt2);display:block;margin-bottom:6px;">Content:</label>
-          <select id="export-content-sel" onchange="buildExport()" style="width:100%;padding:9px 13px;border:.5px solid var(--bdr2);border-radius:var(--rad);font-size:14px;background:var(--bg2);color:var(--txt1);font-family:inherit;outline:none;">
-            <option value="chords">Lyrics + chords</option>
-            <option value="lyrics">Lyrics only</option>
-            <option value="nns">NNS</option>
-          </select>
-        </div>
-      </div>
-      <div class="export-checks">
-        <label class="export-check"><input type="checkbox" id="export-show-author" checked="" onchange="buildExport()"><span class="export-check-label">Author</span></label>
-        <label class="export-check"><input type="checkbox" id="export-show-key" checked="" onchange="buildExport()"><span class="export-check-label">Key</span></label>
-        <label class="export-check"><input type="checkbox" id="export-show-id" onchange="buildExport()"><span class="export-check-label">Song ID</span></label>
-      </div>
-      <div class="export-preview-summary" id="export-preview-summary"></div>
-      <div class="export-preview-pages" id="export-page-preview"></div>
-      <div class="export-summary-box" id="export-preview"></div>
-      <div class="m-acts">
-        <button class="btn-s" onclick="closeBS('export')">Close</button>
-        <button class="btn-p" style="background:var(--tc2)" onclick="exportAllPDF()">Export Set List</button>
-        <button class="btn-p" onclick="copyExport()">Copy list</button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Legacy export bottom sheet removed in v64.6; all exports use the unified text PDF export page. -->
 
 
 <!-- SET KEY -->
@@ -2849,9 +2801,9 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
 <div class="bs-bg" id="bs-changepin" onclick="closeBSBg(event,'changepin')">
   <div class="bs">
     <div class="bs-handle"></div>
-    <div class="m-tr"><h2 class="m-h2">Change admin PIN</h2><button class="m-close" onclick="closeBS('changepin')">×</button></div>
+    <div class="m-tr"><h2 class="m-h2" id="cp-title">Change PIN</h2><button class="m-close" onclick="closeBS('changepin')">×</button></div>
     <div class="m-body">
-      <label>Current PIN</label>
+      <label id="cp-current-label">Current PIN</label>
       <input type="password" id="cp-current" placeholder="Enter current PIN" inputmode="numeric" autocomplete="off" maxlength="10">
       <label>New PIN</label>
       <input type="password" id="cp-new" placeholder="Enter new PIN (4–8 digits)" inputmode="numeric" autocomplete="off" maxlength="10">
@@ -3340,7 +3292,7 @@ function exportSetListFromOptions(opts){
   const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
   const layoutLabel=opts.exportLayout==='two'?'Two-column':(opts.exportLayout==='single'?'Single column':'One song per page');
   parts.push('<div class="cover">');
-  parts.push('<div class="cover-logo"><svg width="40" height="40" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg></div>');
+  parts.push('<div class="cover-logo"><img src="assets/wb-icon-192.png" alt="WorshipBase logo" style="width:58px;height:58px;border-radius:14px;object-fit:cover;display:block"/></div>');
   parts.push('<div class="cover-title">Worship Set List</div>');
   parts.push('<div class="cover-sub">'+sl.length+' song'+(sl.length!==1?'s':'')+' · '+layoutLabel+' · '+contentLabel+'</div>');
   parts.push('<ul class="cover-list">');
@@ -3637,7 +3589,7 @@ let adminUnlocked=false,pendingAdminAction=null;
 function requireAdmin(action){
   if(adminUnlocked){action();return;}
   if(!appPrefs.adminPin){
-    const pin=window.prompt('Create an admin PIN (minimum 4 digits)');
+    const pin=null; // v64.6: first-time PIN setup uses the Change PIN bottom sheet
     if(pin===null)return;
     const clean=String(pin).trim();
     if(clean.length<4){showToast('PIN must be at least 4 digits');return;}
@@ -4089,7 +4041,7 @@ function exportAllPDF(){
   parts.push('</style></head><body>');
 
   parts.push('<div class="cover">');
-  parts.push('<div class="cover-logo"><svg width="40" height="40" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg></div>');
+  parts.push('<div class="cover-logo"><img src="assets/wb-icon-192.png" alt="WorshipBase logo" style="width:58px;height:58px;border-radius:14px;object-fit:cover;display:block"/></div>');
   parts.push('<div class="cover-title">Worship Set List</div>');
   const exportLayoutLabel=opts.exportLayout==='two'?'Two songs per page (stacked)':(opts.exportLayout==='two-col'?'Two songs per page (two columns)':'One song per page');
   const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
@@ -7645,372 +7597,17 @@ attachDrag = function(ct){
 
 </script>
 
+
+<!-- Legacy PDF override block removed in v64.6. -->
+
+<!-- Legacy PDF override block removed in v64.6. -->
 <script>
-/* ── v64.1 reliable text/vector PDF path ──
-   The previous raw-PDF generator could silently fall back or render poorly on
-   some mobile viewers, especially with system/non-Latin fonts. This path uses
-   the browser print engine from real HTML text, so the resulting saved PDF is
-   crisp/selectable/searchable and respects system font fallback. */
-(function(){
-  function wb64SafeFileName(name, fallback){
-    const base=String(name||fallback||'WorshipBase').trim().replace(/[^a-z0-9\-_ ]+/gi,' ').replace(/\s+/g,'-').replace(/^-+|-+$/g,'');
-    return (base||fallback||'WorshipBase');
-  }
-  function wb64GetOpts(){
-    try{ if(typeof getExportPageOptions==='function' && typeof exportPageState==='object' && exportPageState) return getExportPageOptions(); }catch(e){}
-    try{ if(typeof getExportOptions==='function') return getExportOptions(); }catch(e){}
-    return {exportKey:'set',exportLayout:'single',exportFont:'standard',exportContent:'chords',showAuthor:true,showKey:true,showId:false};
-  }
-  function wb64PrintKey(song,item,opts){
-    if(!song)return 'G';
-    if(opts && opts.exportKey && opts.exportKey!=='set') return opts.exportKey==='original' ? (song.key||'G') : opts.exportKey;
-    if(item && typeof resolveSongKey==='function') return resolveSongKey(song,item);
-    return currentKey || song.key || 'G';
-  }
-  function wb64TextExportChrome(title){
-    const safeTitle=String(title||'WorshipBase PDF').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    return '<style>'+ 
-      '@media screen{body{padding-top:58px}.wb-print-toolbar{position:fixed;left:0;right:0;top:0;z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#10374A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,Helvetica,sans-serif;box-shadow:0 3px 18px rgba(0,0,0,.18)}.wb-print-title{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wb-print-sub{font-size:11px;opacity:.75;margin-top:1px}.wb-print-toolbar button{border:0;border-radius:999px;background:#fff;color:#10374A;font-weight:800;padding:9px 13px;font-size:13px;font-family:inherit;white-space:nowrap}}'+
-      '@media print{.wb-print-toolbar{display:none!important}body{padding-top:0!important}}'+
-      '</style><div class="wb-print-toolbar"><div style="min-width:0"><div class="wb-print-title">'+safeTitle+'</div><div class="wb-print-sub">Text PDF path — choose Save as PDF / Print</div></div><button onclick="window.print()">Save PDF</button></div>'+ 
-      '<script>window.addEventListener("load",function(){setTimeout(function(){try{window.print()}catch(e){}},650)});<\\/script>';
-  }
-  function wb64OpenPrintHtml(html,title,fileBase){
-    const chrome=wb64TextExportChrome(title);
-    const finalHtml=html.replace(/<body>/i,'<body>'+chrome);
-    const win=window.open('','_blank');
-    if(win){
-      try{
-        win.document.open();
-        win.document.write(finalHtml);
-        win.document.close();
-        if(typeof showToast==='function') showToast('Text PDF print view opened');
-        return true;
-      }catch(e){
-        try{win.close();}catch(_e){}
-      }
-    }
-    const blob=new Blob([finalHtml],{type:'text/html'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;
-    a.download=wb64SafeFileName(fileBase||title,'WorshipBase')+'-text-pdf.html';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),30000);
-    if(typeof showToast==='function') showToast('Text PDF HTML downloaded — open and Save as PDF');
-    return false;
-  }
-  function wb64BuildSongHtml(opts){
-    if(!currentSong)return '';
-    opts=opts||wb64GetOpts();
-    const themeColor=(typeof appPrefs==='object'&&appPrefs.theme)||'#10374A';
-    const profile=typeof getExportFontProfile==='function'?getExportFontProfile(opts.exportFont):{title:22,author:13,key:11,section:10,chord:13,lyric:16,fitBonus:1};
-    const displayKey=wb64PrintKey(currentSong,null,opts);
-    const css=typeof buildCommonExportStyles==='function'?buildCommonExportStyles(themeColor,profile,opts):'';
-    const body=typeof renderExportSongBlock==='function'?renderExportSongBlock(currentSong,displayKey,opts,false):('<pre>'+String(currentSong.chart||'')+'</pre>');
-    return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHtml(currentSong.title||'Song')+'</title><style>'+css+'</style></head><body><div class="page flow-page single-page">'+body+'</div></body></html>';
-  }
-  function wb64BuildSetHtml(opts){
-    opts=opts||wb64GetOpts();
-    const sl=typeof getSetList==='function'?getSetList():[];
-    const themeColor=(typeof appPrefs==='object'&&appPrefs.theme)||'#10374A';
-    const profile=typeof getExportFontProfile==='function'?getExportFontProfile(opts.exportFont):{title:22,author:13,key:11,section:10,chord:13,lyric:16,fitBonus:1};
-    const css=typeof buildCommonExportStyles==='function'?buildCommonExportStyles(themeColor,profile,opts):'';
-    const setName=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List')||'Worship Set List';
-    const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
-    const layoutLabel=opts.exportLayout==='two'?'Two-column':(opts.exportLayout==='page'?'One song per page':'Single column');
-    const printKey=(item)=>{const s=findSongById(item.songId);return wb64PrintKey(s,item,opts);};
-    let parts=['<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHtml(setName)+'</title><style>'+css+'</style></head><body>'];
-    parts.push('<div class="cover">');
-    parts.push('<div class="cover-logo"><svg width="40" height="40" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg></div>');
-    parts.push('<div class="cover-title">'+escapeHtml(setName)+'</div>');
-    parts.push('<div class="cover-sub">'+sl.length+' song'+(sl.length!==1?'s':'')+' · '+layoutLabel+' · '+contentLabel+'</div>');
-    parts.push('<ul class="cover-list">');
-    sl.forEach((item,i)=>{const s=findSongById(item.songId);if(!s)return;parts.push('<li class="cover-item"><span class="cover-num">'+(i+1)+'</span><span class="cover-title-l">'+escapeHtml(s.title||'Untitled song')+'</span><span class="cover-key">'+escapeHtml(printKey(item))+'</span></li>');});
-    parts.push('</ul></div>');
-    if(opts.exportLayout==='two'){
-      let i=0;
-      while(i<sl.length){
-        const first=sl[i], second=sl[i+1], firstSong=first?findSongById(first.songId):null, secondSong=second?findSongById(second.songId):null;
-        if(!firstSong){i++;continue;}
-        const firstW=typeof estimateExportSongWeight==='function'?estimateExportSongWeight(firstSong,opts):20;
-        const secondW=secondSong&&typeof estimateExportSongWeight==='function'?estimateExportSongWeight(secondSong,opts):999;
-        const canPair=!!secondSong && firstW<26 && secondW<26 && Math.max(firstW,secondW)<24;
-        if(canPair){
-          parts.push('<div class="page two-col-page">');
-          parts.push(renderExportSongBlock(firstSong,printKey(first),opts,false));
-          parts.push(renderExportSongBlock(secondSong,printKey(second),opts,false));
-          parts.push('</div>');
-          i+=2;
-        }else{
-          parts.push('<div class="page flow-page single-page">'+renderExportSongBlock(firstSong,printKey(first),opts,false)+'</div>');
-          i+=1;
-        }
-      }
-    }else if(opts.exportLayout==='page'){
-      sl.forEach(item=>{const s=findSongById(item.songId); if(s)parts.push('<div class="page flow-page single-page">'+renderExportSongBlock(s,printKey(item),opts,false)+'</div>');});
-    }else{
-      const pages=typeof paginateSingleColumnSongs==='function'?paginateSingleColumnSongs(sl,opts,printKey):[sl.map(item=>({song:findSongById(item.songId),item})).filter(x=>x.song)];
-      pages.forEach(pageItems=>{
-        parts.push('<div class="page flow-page single-page">');
-        pageItems.forEach(({song,item})=>{if(song)parts.push(renderExportSongBlock(song,printKey(item),opts,false));});
-        parts.push('</div>');
-      });
-    }
-    parts.push('</body></html>');
-    return parts.join('\n');
-  }
-  window.exportSongFromOptions=function(opts){
-    if(!currentSong)return;
-    opts=opts||wb64GetOpts();
-    const html=wb64BuildSongHtml(opts);
-    wb64OpenPrintHtml(html,'Text PDF export · '+(currentSong.title||'Song'),currentSong.title||'Song');
-  };
-  window.exportSetListFromOptions=function(opts){
-    const sl=typeof getSetList==='function'?getSetList():[];
-    if(!sl.length){alert('No songs in set list.');return;}
-    opts=opts||wb64GetOpts();
-    const name=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List')||'Worship Set List';
-    const html=wb64BuildSetHtml(opts);
-    wb64OpenPrintHtml(html,'Text PDF export · '+name,name);
-  };
-  window.exportPDF=function(){
-    if(!currentSong)return;
-    window.exportSongFromOptions(wb64GetOpts());
-  };
-  window.exportAllPDF=function(){
-    try{ if(typeof closeBS==='function') closeBS('export'); }catch(e){}
-    window.exportSetListFromOptions(wb64GetOpts());
-  };
-  window.runExportFromPage=function(){
-    const opts=typeof getExportPageOptions==='function'?getExportPageOptions():wb64GetOpts();
-    try{ if(typeof closeExportView==='function') closeExportView(); }catch(e){}
-    if(typeof exportPageContext!=='undefined' && exportPageContext==='song') window.exportSongFromOptions(opts);
-    else window.exportSetListFromOptions(opts);
-  };
-  window.__wb64TextPdfMode='browser-print-vector-v64.1';
-})();
-</script>
-
-
-<script>
-/* ── v64.3 PDF print exit/two-column fix ──
-   Hard-disables the old raw-PDF stream path for user exports and uses only
-   browser-native print from real HTML text. This avoids FEFF/þÿ artifacts,
-   WinAnsi font issues, and the spacing damage caused by raw PDF text drawing. */
-(function(){
-  const WB64_2_MODE='browser-print-html-vector-v64.3';
-  function fileNameSafe(name,fallback){
-    const s=String(name||fallback||'WorshipBase').trim().replace(/[^a-z0-9\-_ ]+/gi,' ').replace(/\s+/g,'-').replace(/^-+|-+$/g,'');
-    return s||fallback||'WorshipBase';
-  }
-  function esc(s){
-    if(typeof escapeHtml==='function') return escapeHtml(String(s??''));
-    return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-  }
-  function escSpaces(s){ return esc(String(s??'')).replace(/ /g,'&nbsp;'); }
-  function normalizeLayout(v){
-    v=String(v||'page');
-    if(v==='one') return 'page';
-    if(v==='two-col') return 'two';
-    if(v==='two') return 'two';
-    if(v==='single') return 'single';
-    if(v==='page') return 'page';
-    return 'page';
-  }
-  function getOpts(){
-    let o=null;
-    try{ if(typeof getExportPageOptions==='function' && typeof exportPageState==='object' && exportPageState) o=getExportPageOptions(); }catch(e){}
-    if(!o){ try{ if(typeof getExportOptions==='function') o=getExportOptions(); }catch(e){} }
-    o=o||{exportKey:'set',exportLayout:'page',exportFont:'standard',exportContent:'chords',showAuthor:true,showKey:true,showId:false};
-    return Object.assign({},o,{exportLayout:normalizeLayout(o.exportLayout)});
-  }
-  function printKey(song,item,opts){
-    if(!song)return 'G';
-    if(opts && opts.exportKey && opts.exportKey!=='set') return opts.exportKey==='original' ? (song.key||'G') : opts.exportKey;
-    if(item && typeof resolveSongKey==='function') return resolveSongKey(song,item);
-    return (typeof currentKey!=='undefined'&&currentKey) || song.key || 'G';
-  }
-  function profile(size,layout){
-    const two=layout==='two';
-    if(size==='compact') return {title:two?17:20, author:two?10.5:12, key:two?9.5:10.5, section:two?8.5:9.5, chord:two?10.8:12.2, lyric:two?12.6:14.2};
-    if(size==='large') return {title:two?20:24, author:two?12:14, key:two?10.2:12, section:two?9.2:10.2, chord:two?12.1:14, lyric:two?14.2:17};
-    return {title:two?18.5:22, author:two?11:13, key:two?10:11.2, section:two?8.8:10, chord:two?11.3:13.1, lyric:two?13.2:16};
-  }
-  function renderChordTokens(text){
-    return String(text||'').replace(/\S+/g,m=>'<span class="pdf-chord-token">'+esc(m)+'</span>');
-  }
-  function renderPairSegments(segments){
-    const items=[];
-    (segments||[]).forEach(seg=>{
-      const chord=String(seg?.chord||'');
-      const lyric=String(seg?.lyric??'');
-      const parts=(lyric.match(/\S+\s*|\s+/g) || [' ']);
-      parts.forEach((part,idx)=>{
-        const onlySpace=/^\s+$/.test(part);
-        const chordText=idx===0?chord:'';
-        items.push('<span class="pdf-seg'+(onlySpace?' spacer':'')+'"><span class="pdf-chord">'+(chordText?renderChordTokens(chordText):'&nbsp;')+'</span><span class="pdf-lyric">'+escSpaces(part||' ')+'</span></span>');
-      });
-    });
-    if(!items.length) items.push('<span class="pdf-seg"><span class="pdf-chord">&nbsp;</span><span class="pdf-lyric">&nbsp;</span></span>');
-    return '<div class="pdf-pair">'+items.join('')+'</div>';
-  }
-  function renderBlocks(song,key,opts){
-    const blocks=(typeof buildSongExportBlocks==='function') ? buildSongExportBlocks(song,key,opts) : [{type:'lyric',text:song?.chart||''}];
-    return (blocks||[]).map(b=>{
-      if(!b) return '';
-      if(b.type==='space') return '<div class="pdf-space"></div>';
-      if(b.type==='section') return '<div class="pdf-section"><span>'+esc(String(b.text||'').toUpperCase())+'</span></div>';
-      if(b.type==='chord') return '<div class="pdf-chord-only">'+renderChordTokens(b.text||'')+'</div>';
-      if(b.type==='lyric') return '<div class="pdf-lyric-only">'+esc(b.text||'')+'</div>';
-      if(b.type==='pair-cp') return renderPairSegments(b.segments||[]);
-      if(b.type==='pair-cl'){
-        let segs=[];
-        try{ if(typeof buildCLSegments==='function') segs=buildCLSegments(b.chordText||'',b.lyricText||''); }catch(e){}
-        if(!segs.length) segs=[{chord:b.chordText||'',lyric:b.lyricText||''}];
-        return renderPairSegments(segs);
-      }
-      return '';
-    }).join('\n');
-  }
-  function renderMeta(song,key,opts){
-    const bits=[];
-    if(opts.showAuthor && song.author) bits.push(esc(song.author));
-    if(opts.showKey) bits.push('Key of '+esc(key)+(song.key!==key?' · Originally '+esc(song.key):''));
-    if(opts.showId) bits.push(esc(song.songCode || (typeof ensureSongCode==='function'?ensureSongCode(song):'')));
-    if(opts.exportContent==='nns') bits.push('NNS');
-    return bits.length?'<div class="pdf-meta">'+bits.join(' · ')+'</div>':'';
-  }
-  function renderSong(song,key,opts,extraClass=''){
-    if(!song) return '';
-    return '<article class="pdf-song '+extraClass+'"><header class="pdf-song-header"><h1>'+esc(song.title||'Untitled song')+'</h1>'+renderMeta(song,key,opts)+'</header><section class="pdf-chart">'+renderBlocks(song,key,opts)+'</section></article>';
-  }
-  function css(themeColor,opts){
-    const p=profile(opts.exportFont,opts.exportLayout);
-    const theme=String(themeColor||'#10374A');
-    const pageMargin=opts.exportLayout==='two'?'16mm 12mm':'20mm 18mm';
-    return `
-      :root{--theme:${theme};--title:${p.title}px;--author:${p.author}px;--key:${p.key}px;--section:${p.section}px;--chord:${p.chord}px;--lyric:${p.lyric}px;}
-      *{box-sizing:border-box;}
-      html,body{margin:0;padding:0;background:#fff;color:#111;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-      @page{size:A4;margin:${pageMargin};}
-      .wb-print-marker{position:fixed;left:0;right:0;top:0;z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#10374A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;box-shadow:0 3px 18px rgba(0,0,0,.18);}
-      .wb-print-marker-title{font-size:13px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-      .wb-print-marker-sub{font-size:11px;opacity:.78;margin-top:1px;}
-      .wb-print-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-      .wb-print-marker button{border:0;border-radius:999px;background:#fff;color:#10374A;font-weight:850;padding:9px 13px;font-size:13px;font-family:inherit;white-space:nowrap;}
-      .wb-print-marker .wb-print-close{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.28);}
-      body{padding-top:58px;}
-      .pdf-cover{break-after:page;page-break-after:always;}
-      .pdf-cover-logo{width:58px;height:58px;border-radius:14px;background:var(--theme);display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;}
-      .pdf-cover-title{font-size:30px;line-height:1.1;font-weight:900;letter-spacing:-.035em;margin:0 0 8px;color:#111;}
-      .pdf-cover-sub{font-size:12px;color:#6f7881;letter-spacing:.12em;text-transform:uppercase;margin:0 0 22px;}
-      .pdf-cover-list{list-style:none;margin:0;padding:0;}
-      .pdf-cover-item{display:flex;align-items:baseline;gap:8px;padding:8px 4px;border-bottom:.5px solid #ddd;}
-      .pdf-cover-num{width:28px;flex:0 0 28px;color:#9aa2aa;font-weight:800;font-size:13px;}
-      .pdf-cover-song{flex:1;font-size:15px;font-weight:650;color:#222;min-width:0;}
-      .pdf-cover-key{font-size:12px;color:var(--theme);font-weight:850;padding:2px 9px;border:1px solid color-mix(in srgb,var(--theme) 35%,transparent);border-radius:999px;}
-      .pdf-doc{width:100%;}
-      .pdf-page{break-after:page;page-break-after:always;}
-      .pdf-page:last-child{break-after:auto;page-break-after:auto;}
-      .pdf-song{margin:0 0 9mm;}
-      .pdf-song-header{break-after:avoid;page-break-after:avoid;margin:0 0 4.2mm;}
-      .pdf-song h1{font-size:var(--title);line-height:1.14;font-weight:850;letter-spacing:-.025em;margin:0 0 1.4mm;color:#111;}
-      .pdf-meta{font-size:var(--author);line-height:1.34;color:#666;margin:0 0 .9mm;}
-      .pdf-chart{font-size:var(--lyric);}
-      .pdf-section{margin:4.4mm 0 1.6mm;break-after:avoid;page-break-after:avoid;}
-      .pdf-section:first-child{margin-top:0;}
-      .pdf-section span{display:inline-block;font-size:var(--section);line-height:1.1;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#666;background:#f0f2f3;border-radius:5px;padding:2px 7px;}
-      .pdf-pair{display:flex;flex-wrap:wrap;align-items:flex-start;column-gap:0;row-gap:.28mm;margin:0 0 .85mm;break-inside:avoid;page-break-inside:avoid;}
-      .pdf-seg{display:inline-flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;min-width:max-content;max-width:100%;vertical-align:top;}
-      .pdf-seg.spacer{min-width:.35em;}
-      .pdf-chord{font-family:"SFMono-Regular","Menlo","Consolas","Liberation Mono",monospace;font-size:var(--chord);font-weight:800;line-height:1.18;min-height:calc(var(--chord) * 1.18);color:var(--theme);white-space:pre;letter-spacing:0;}
-      .pdf-chord-token{display:inline-block;padding-right:.18em;}
-      .pdf-lyric{font-size:var(--lyric);line-height:1.38;color:#111;white-space:pre-wrap;letter-spacing:0;}
-      .pdf-lyric-only{font-size:var(--lyric);line-height:1.48;color:#111;margin:0 0 .9mm;white-space:pre-wrap;break-inside:avoid;page-break-inside:avoid;}
-      .pdf-chord-only{font-family:"SFMono-Regular","Menlo","Consolas","Liberation Mono",monospace;font-size:var(--chord);font-weight:800;line-height:1.35;color:var(--theme);white-space:pre-wrap;margin:0 0 .65mm;letter-spacing:0;break-inside:avoid;page-break-inside:avoid;}
-      .pdf-space{height:2.4mm;}
-      .pdf-single-flow .pdf-song{break-inside:auto;page-break-inside:auto;}
-      .pdf-one-song .pdf-song{margin-bottom:0;}
-      .pdf-two-flow{column-count:2;columns:2;column-gap:12mm;column-fill:balance;}
-      .pdf-two-flow .pdf-song{break-inside:auto;page-break-inside:auto;margin-bottom:7mm;}
-      .pdf-two-flow .pdf-song h1{font-size:var(--title);}
-      .pdf-two-flow .pdf-song-header{margin-bottom:3mm;}
-      .pdf-two-flow .pdf-section{margin:3.4mm 0 1.2mm;}
-      .pdf-two-flow .pdf-pair{margin-bottom:.58mm;}
-      .pdf-two-flow .pdf-lyric-only{margin-bottom:.65mm;}
-      @media screen{body{padding-left:24px;padding-right:24px;padding-bottom:48px}.pdf-cover,.pdf-doc{max-width:900px;margin:0 auto}.pdf-cover{padding-top:24px}.pdf-two-flow{column-count:2;columns:2;column-fill:balance}.pdf-page{padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid #e5e8ea;}}
-      @media print{.wb-print-marker{display:none!important}body{padding-top:0!important}.pdf-page{border:0;margin:0;padding:0}.pdf-cover,.pdf-doc{max-width:none;width:100%}.pdf-cover{padding:0}.pdf-two-flow{display:block!important;column-count:2!important;columns:2!important;column-gap:12mm!important;column-fill:balance!important;width:100%!important;}.pdf-song-header,.pdf-section,.pdf-pair,.pdf-lyric-only,.pdf-chord-only{break-inside:avoid;page-break-inside:avoid;}}
-    `;
-  }
-  function toolbar(title){
-    return '<div class="wb-print-marker"><div style="min-width:0"><div class="wb-print-marker-title">'+esc(title||'WorshipBase export')+'</div><div class="wb-print-marker-sub">Text PDF print view — v64.3</div></div><div class="wb-print-actions"><button class="wb-print-close" onclick="wbBackToApp()">Back to app</button><button onclick="window.print()">Save PDF</button></div></div><script>function wbBackToApp(){try{if(window.opener&&!window.opener.closed){window.opener.focus();}}catch(e){}try{window.close();}catch(e){}setTimeout(function(){try{if(history.length>1){history.back();return;}}catch(e){}try{document.body.innerHTML=\'<div style=\"font-family:-apple-system,BlinkMacSystemFont,Helvetica,sans-serif;padding:32px;text-align:center;color:#10374A\"><h2 style=\"margin:0 0 8px\">Print view closed</h2><p style=\"color:#60717b;margin:0\">You can return to WorshipBase.</p></div>\';}catch(e){}},160);}<\/script><script>window.addEventListener("load",function(){setTimeout(function(){try{window.print()}catch(e){}},700)});<\/script>';
-  }
-  function openPrintHtml(html,title,fileBase){
-    const win=window.open('','_blank');
-    if(win){
-      try{ win.document.open(); win.document.write(html); win.document.close(); if(typeof showToast==='function') showToast('Text PDF print view v64.3 opened'); return true; }
-      catch(e){ try{win.close();}catch(_e){} }
-    }
-    const blob=new Blob([html],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url; a.download=fileNameSafe(fileBase||title,'WorshipBase')+'-text-pdf-v64-3.html'; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),30000);
-    if(typeof showToast==='function') showToast('Text PDF HTML downloaded');
-    return false;
-  }
-  function documentStart(title,opts){
-    const theme=(typeof appPrefs==='object'&&appPrefs.theme)||'#10374A';
-    return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(title||'WorshipBase PDF')+'</title><style>'+css(theme,opts)+'</style></head><body>'+toolbar(title);
-  }
-  function coverHtml(setName,items,opts){
-    const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
-    const layoutLabel=opts.exportLayout==='two'?'Two-column':(opts.exportLayout==='single'?'Single column':'One song / page');
-    const rows=items.map((it,i)=>'<li class="pdf-cover-item"><span class="pdf-cover-num">'+String(i+1).padStart(2,'0')+'</span><span class="pdf-cover-song">'+esc(it.song.title||'Untitled song')+'</span><span class="pdf-cover-key">'+esc(it.key)+'</span></li>').join('');
-    return '<section class="pdf-cover"><div class="pdf-cover-logo"><svg width="40" height="40" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg></div><h1 class="pdf-cover-title">'+esc(setName)+'</h1><div class="pdf-cover-sub">'+items.length+' song'+(items.length!==1?'s':'')+' · '+layoutLabel+' · '+contentLabel+'</div><ul class="pdf-cover-list">'+rows+'</ul></section>';
-  }
-  function exportSong(opts){
-    if(typeof currentSong==='undefined'||!currentSong)return;
-    opts=Object.assign({},opts||getOpts(),{exportLayout:normalizeLayout((opts||getOpts()).exportLayout)});
-    const key=printKey(currentSong,null,opts);
-    const title=currentSong.title||'Song';
-    const html=documentStart('Text PDF export · '+title,opts)+'<main class="pdf-doc pdf-one-song"><div class="pdf-page">'+renderSong(currentSong,key,opts,'')+'</div></main></body></html>';
-    openPrintHtml(html,'Text PDF export · '+title,title);
-  }
-  function exportSet(opts){
-    const sl=(typeof getSetList==='function'?getSetList():[]);
-    if(!sl.length){alert('No songs in set list.');return;}
-    opts=Object.assign({},opts||getOpts(),{exportLayout:normalizeLayout((opts||getOpts()).exportLayout)});
-    const items=sl.map(item=>{const song=findSongById(item.songId);return song?{song,item,key:printKey(song,item,opts)}:null;}).filter(Boolean);
-    const setName=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List')||'Worship Set List';
-    let html=documentStart('Text PDF export · '+setName,opts)+coverHtml(setName,items,opts);
-    if(opts.exportLayout==='two'){
-      html+='<main class="pdf-doc pdf-two-flow">'+items.map(it=>renderSong(it.song,it.key,opts,'')).join('\n')+'</main>';
-    }else if(opts.exportLayout==='single'){
-      html+='<main class="pdf-doc pdf-single-flow">'+items.map(it=>renderSong(it.song,it.key,opts,'')).join('\n')+'</main>';
-    }else{
-      html+='<main class="pdf-doc pdf-one-song">'+items.map(it=>'<div class="pdf-page">'+renderSong(it.song,it.key,opts,'')+'</div>').join('\n')+'</main>';
-    }
-    html+='</body></html>';
-    openPrintHtml(html,'Text PDF export · '+setName,setName);
-  }
-  window.exportSongFromOptions=function(opts){ exportSong(opts); };
-  window.exportSetListFromOptions=function(opts){ exportSet(opts); };
-  window.exportPDF=function(){ exportSong(getOpts()); };
-  window.exportAllPDF=function(){ try{ if(typeof closeBS==='function')closeBS('export'); }catch(e){} exportSet(getOpts()); };
-  window.runExportFromPage=function(){ const opts=(typeof getExportPageOptions==='function')?getExportPageOptions():getOpts(); try{ if(typeof closeExportView==='function')closeExportView(); }catch(e){} if(typeof exportPageContext!=='undefined'&&exportPageContext==='song')exportSong(opts); else exportSet(opts); };
-  window.__wb64TextPdfMode=WB64_2_MODE;
-  window.__wb64RawPdfDisabled=true;
-})();
-</script>
-
-
-<script>
-/* ── v64.5 PDF print page-break reliability fix ──
+/* ── v64.6 PDF print page-break reliability fix ──
    1) Removes automatic window.print() from the print view so browsers do not block it.
    2) Replaces CSS multicolumn printing with explicit two-column page grids, which are
       far more reliable when saving to PDF from mobile/desktop browsers. */
 (function(){
-  const WB64_4_MODE='browser-print-html-vector-v64.5-explicit-two-column-hard-breaks';
+  const WB64_4_MODE='browser-print-html-vector-v64.6-explicit-two-column-hard-breaks';
   const PX_TO_MM=25.4/96;
   function fileNameSafe(name,fallback){
     const s=String(name||fallback||'WorshipBase').trim().replace(/[^a-z0-9\-_ ]+/gi,' ').replace(/\s+/g,'-').replace(/^-+|-+$/g,'');
@@ -8147,7 +7744,7 @@ attachDrag = function(ct){
     function newPage(){ page={cols:[[],[]]}; pages.push(page); col=0; used=0; }
     function nextCol(){ if(!page)newPage(); if(col===0){ col=1; used=0; } else { newPage(); } }
     function addRaw(html,h){ if(!page)newPage(); page.cols[col].push(html); used += h; }
-    function continuation(title){ return '<div class="pdf-cont">'+esc(title)+' continued</div>'; }
+    function continuation(title){ return ''; }
     items.forEach(it=>{
       if(!it||!it.song) return;
       const blocks=songBlocks(it.song,it.key,opts);
@@ -8193,7 +7790,7 @@ attachDrag = function(ct){
       .wb-print-marker button{border:0;border-radius:999px;background:#fff;color:#10374A;font-weight:850;padding:9px 13px;font-size:13px;font-family:inherit;white-space:nowrap;}
       .wb-print-marker .wb-print-close{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.28);}
       .pdf-cover{break-after:page;page-break-after:always;}
-      .pdf-cover-logo{width:58px;height:58px;border-radius:14px;background:var(--theme);display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;}
+      .pdf-cover-logo{width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;overflow:hidden;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06);}.pdf-cover-logo img{width:100%;height:100%;object-fit:cover;display:block;}
       .pdf-cover-title{font-size:30px;line-height:1.1;font-weight:900;letter-spacing:-.035em;margin:0 0 8px;color:#111;}
       .pdf-cover-sub{font-size:12px;color:#6f7881;letter-spacing:.12em;text-transform:uppercase;margin:0 0 22px;}
       .pdf-cover-list{list-style:none;margin:0;padding:0;}
@@ -8238,16 +7835,17 @@ attachDrag = function(ct){
     `;
   }
   function toolbar(title){
-    return '<div class="wb-print-marker"><div style="min-width:0"><div class="wb-print-marker-title">'+esc(title||'WorshipBase export')+'</div><div class="wb-print-marker-sub">Text PDF print view — v64.5 · press Save PDF when ready</div></div><div class="wb-print-actions"><button class="wb-print-close" onclick="try{if(window.opener&&!window.opener.closed){window.opener.focus();}}catch(e){}try{window.close();}catch(e){}">Back to app</button><button onclick="window.print()">Save PDF</button></div></div>';
+    return '<div class="wb-print-marker"><div style="min-width:0"><div class="wb-print-marker-title">'+esc(title||'WorshipBase export')+'</div><div class="wb-print-marker-sub">Text PDF print view — v64.6 · press Save PDF when ready</div></div><div class="wb-print-actions"><button class="wb-print-close" onclick="try{if(window.opener&&!window.opener.closed){window.opener.focus();}}catch(e){}try{window.close();}catch(e){}">Back to app</button><button onclick="window.print()">Save PDF</button></div></div>';
   }
   function openPrintHtml(html,title,fileBase){
+    if(typeof showToast==='function') showToast('Building PDF view…');
     const win=window.open('','_blank');
     if(win){
-      try{ win.document.open(); win.document.write(html); win.document.close(); if(typeof showToast==='function') showToast('Text PDF print view v64.5 opened'); return true; }
+      try{ win.document.open(); win.document.write(html); win.document.close(); if(typeof showToast==='function') showToast('Text PDF print view v64.6 opened'); return true; }
       catch(e){ try{win.close();}catch(_e){} }
     }
     const blob=new Blob([html],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url; a.download=fileNameSafe(fileBase||title,'WorshipBase')+'-text-pdf-v64-5.html'; document.body.appendChild(a); a.click(); a.remove();
+    a.href=url; a.download=fileNameSafe(fileBase||title,'WorshipBase')+'-text-pdf-v64-6.html'; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),30000);
     if(typeof showToast==='function') showToast('Text PDF HTML downloaded');
     return false;
@@ -8256,11 +7854,14 @@ attachDrag = function(ct){
     const theme=(typeof appPrefs==='object'&&appPrefs.theme)||'#10374A';
     return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(title||'WorshipBase PDF')+'</title><style>'+css(theme,opts)+'</style></head><body>'+toolbar(title);
   }
+  function logoUrl(){
+    try{ return new URL('assets/wb-icon-192.png', window.location.href).href; }catch(e){ return 'assets/wb-icon-192.png'; }
+  }
   function coverHtml(setName,items,opts){
     const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
     const layoutLabel=opts.exportLayout==='two'?'Two-column':(opts.exportLayout==='single'?'Single column':'One song / page');
     const rows=items.map((it,i)=>'<li class="pdf-cover-item"><span class="pdf-cover-num">'+String(i+1).padStart(2,'0')+'</span><span class="pdf-cover-song">'+esc(it.song.title||'Untitled song')+'</span><span class="pdf-cover-key">'+esc(it.key)+'</span></li>').join('');
-    return '<section class="pdf-cover"><div class="pdf-cover-logo"><svg width="40" height="40" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg></div><h1 class="pdf-cover-title">'+esc(setName)+'</h1><div class="pdf-cover-sub">'+items.length+' song'+(items.length!==1?'s':'')+' · '+layoutLabel+' · '+contentLabel+'</div><ul class="pdf-cover-list">'+rows+'</ul></section>';
+    return '<section class="pdf-cover"><div class="pdf-cover-logo"><img src="'+esc(logoUrl())+'" alt="WorshipBase logo"></div><h1 class="pdf-cover-title">'+esc(setName)+'</h1><div class="pdf-cover-sub">'+items.length+' song'+(items.length!==1?'s':'')+' · '+layoutLabel+' · '+contentLabel+'</div><ul class="pdf-cover-list">'+rows+'</ul></section>';
   }
   function exportSong(opts){
     if(typeof currentSong==='undefined'||!currentSong)return;
@@ -8297,6 +7898,230 @@ attachDrag = function(ct){
   window.runExportFromPage=function(){ const opts=(typeof getExportPageOptions==='function')?getExportPageOptions():getOpts(); try{ if(typeof closeExportView==='function')closeExportView(); }catch(e){} if(typeof exportPageContext!=='undefined'&&exportPageContext==='song')exportSong(opts); else exportSet(opts); };
   window.__wb64TextPdfMode=WB64_4_MODE;
   window.__wb64RawPdfDisabled=true;
+})();
+</script>
+
+
+<script>
+/* ── v64.6 logic hardening: unified export surface, admin lock, PIN setup sheet, editor dirty guard ── */
+(function(){
+  const ADMIN_AUTOLOCK_MS = 10 * 60 * 1000;
+  let adminLockTimer = null;
+  let initialPinSetup = false;
+  let songEditorBaseline = '';
+  let savingSongModal = false;
+
+  function toast(msg){ try{ if(typeof showToast==='function') showToast(msg); }catch(e){} }
+  function isAdminOn(){ try{return !!adminUnlocked;}catch(e){return false;} }
+  function setAdmin(on){
+    try{ adminUnlocked=!!on; }catch(e){}
+    if(on) armAdminLock(); else disarmAdminLock();
+    try{ renderSettings(); }catch(e){}
+    try{ syncAdminOnlyUI(); }catch(e){}
+  }
+  function disarmAdminLock(){ if(adminLockTimer){ clearTimeout(adminLockTimer); adminLockTimer=null; } }
+  function armAdminLock(){
+    disarmAdminLock();
+    adminLockTimer=setTimeout(()=>{
+      if(isAdminOn()){
+        lockAdmin(true);
+        toast('Tools locked after inactivity');
+      }
+    }, ADMIN_AUTOLOCK_MS);
+  }
+  ['touchstart','mousedown','keydown','scroll'].forEach(evt=>document.addEventListener(evt,()=>{ if(isAdminOn()) armAdminLock(); },{passive:true}));
+
+  window.lockAdmin=function(silent){
+    try{ pendingAdminAction=null; }catch(e){}
+    setAdmin(false);
+    try{ if(typeof toggleManageMode==='function') toggleManageMode(false); else manageMode=false; }catch(e){}
+    try{ renderSettings(); }catch(e){}
+    try{ refresh(true); }catch(e){}
+    if(!silent) toast('Tools locked');
+  };
+
+  function updateChangePinUI(){
+    const create = initialPinSetup || !(window.appPrefs&&appPrefs.adminPin);
+    const title=document.getElementById('cp-title') || document.querySelector('#bs-changepin .m-h2');
+    const cur=document.getElementById('cp-current');
+    const curLbl=document.getElementById('cp-current-label') || (cur&&cur.previousElementSibling);
+    const newInp=document.getElementById('cp-new');
+    const confirm=document.getElementById('cp-confirm');
+    const err=document.getElementById('cp-err');
+    if(title) title.textContent=create?'Create PIN':'Change PIN';
+    if(cur){ cur.style.display=create?'none':''; cur.value=''; }
+    if(curLbl) curLbl.style.display=create?'none':'';
+    if(newInp){ newInp.value=''; newInp.placeholder=create?'Create PIN (4–8 digits)':'Enter new PIN (4–8 digits)'; }
+    if(confirm) confirm.value='';
+    if(err){ err.textContent=''; err.style.display='none'; }
+    setTimeout(()=>{ (create?newInp:cur)?.focus?.(); },180);
+  }
+
+  const oldOpenBS=window.openBS || (typeof openBS==='function'?openBS:null);
+  if(oldOpenBS){
+    window.openBS=function(name){
+      const result=oldOpenBS(name);
+      if(name==='changepin') updateChangePinUI();
+      return result;
+    };
+    try{ openBS=window.openBS; }catch(e){}
+  }
+
+  window.requireAdmin=function(action){
+    try{ if(adminUnlocked){ armAdminLock(); action&&action(); return; } }catch(e){}
+    if(!appPrefs.adminPin){
+      pendingAdminAction=action||null;
+      initialPinSetup=true;
+      window.openBS('changepin');
+      return;
+    }
+    pendingAdminAction=action||null;
+    window.openBS('pin');
+  };
+  try{ requireAdmin=window.requireAdmin; }catch(e){}
+
+  window.checkPin=function(){
+    const input=document.getElementById('pin-input');
+    const err=document.getElementById('pin-err');
+    const v=input?input.value:'';
+    if(v===appPrefs.adminPin){
+      setAdmin(true);
+      closeBS('pin');
+      const fn=pendingAdminAction; pendingAdminAction=null;
+      if(fn) fn();
+    }else{
+      if(err) err.style.display='block';
+      if(input){ input.value=''; setTimeout(()=>input.focus(),50); }
+    }
+  };
+  try{ checkPin=window.checkPin; }catch(e){}
+
+  window.changePIN=function(){
+    const cur=document.getElementById('cp-current')?.value||'';
+    const nw=document.getElementById('cp-new')?.value||'';
+    const cf=document.getElementById('cp-confirm')?.value||'';
+    const err=document.getElementById('cp-err');
+    const creating=initialPinSetup || !appPrefs.adminPin;
+    function fail(msg){ if(err){err.textContent=msg;err.style.display='block';} }
+    if(!creating && appPrefs.adminPin && cur!==appPrefs.adminPin){ fail('Current PIN is incorrect.'); return; }
+    if(nw.length<4){ fail('New PIN must be at least 4 digits.'); return; }
+    if(nw!==cf){ fail('New PINs do not match.'); return; }
+    appPrefs.adminPin=nw;
+    savePrefs();
+    initialPinSetup=false;
+    setAdmin(true);
+    closeBS('changepin');
+    toast(creating?'PIN created ✓':'PIN changed ✓');
+    const fn=pendingAdminAction; pendingAdminAction=null;
+    if(creating && fn) setTimeout(fn,40);
+  };
+  try{ changePIN=window.changePIN; }catch(e){}
+
+  const oldRenderSettings=window.renderSettings || (typeof renderSettings==='function'?renderSettings:null);
+  if(oldRenderSettings){
+    window.renderSettings=function(){
+      const r=oldRenderSettings();
+      const msv=document.getElementById('manage-songs-val'); if(msv)msv.textContent=(typeof manageMode!=='undefined'&&manageMode)?'On':'Off';
+      return r;
+    };
+    try{ renderSettings=window.renderSettings; }catch(e){}
+  }
+
+  const oldUpdateManageUI=window.updateManageUI || (typeof updateManageUI==='function'?updateManageUI:null);
+  if(oldUpdateManageUI){
+    window.updateManageUI=function(){
+      const r=oldUpdateManageUI();
+      const count=document.getElementById('manage-count');
+      if(count){
+        const n=(typeof selectedSongIds!=='undefined'&&selectedSongIds)?selectedSongIds.size:0;
+        count.textContent=n?`${n} selected`:'';
+        count.style.visibility=n?'visible':'hidden';
+      }
+      return r;
+    };
+    try{ updateManageUI=window.updateManageUI; }catch(e){}
+  }
+
+  function songEditorState(){
+    return JSON.stringify({
+      title:document.getElementById('m-title')?.value||'',
+      author:document.getElementById('m-author')?.value||'',
+      key:document.getElementById('m-key')?.value||'',
+      chart:document.getElementById('m-chart')?.value||'',
+      cat:(typeof modalCat!=='undefined'?modalCat:'')
+    });
+  }
+  function resetSongEditorDirty(){ songEditorBaseline=songEditorState(); }
+  function songEditorDirty(){ return document.getElementById('bs-modal')?.classList.contains('open') && songEditorBaseline && songEditorState()!==songEditorBaseline; }
+  function confirmDiscardEditor(){ return !songEditorDirty() || confirm('Discard unsaved changes to this song?'); }
+  ['m-title','m-author','m-key','m-chart'].forEach(id=>{
+    document.addEventListener('input',e=>{ if(e.target&&e.target.id===id){ /* state checked lazily */ } },true);
+    document.addEventListener('change',e=>{ if(e.target&&e.target.id===id){ /* state checked lazily */ } },true);
+  });
+
+  const oldCloseBS=window.closeBS || (typeof closeBS==='function'?closeBS:null);
+  if(oldCloseBS){
+    window.closeBS=function(name,force){
+      if(name==='modal' && !force && !savingSongModal && !confirmDiscardEditor()) return;
+      if(name==='changepin'){ if(initialPinSetup) pendingAdminAction=null; initialPinSetup=false; }
+      return oldCloseBS(name);
+    };
+    try{ closeBS=window.closeBS; }catch(e){}
+  }
+  const oldCloseBSBg=window.closeBSBg || (typeof closeBSBg==='function'?closeBSBg:null);
+  window.closeBSBg=function(e,name){ if(e.target===document.getElementById('bs-'+name)) window.closeBS(name); };
+  try{ closeBSBg=window.closeBSBg; }catch(e){}
+
+  const oldOpenSongModal=window.openSongModal || (typeof openSongModal==='function'?openSongModal:null);
+  if(oldOpenSongModal){
+    window.openSongModal=function(song){
+      const r=oldOpenSongModal(song);
+      setTimeout(()=>{
+        resetSongEditorDirty();
+        if(!song){ document.getElementById('m-title')?.focus?.({preventScroll:true}); }
+      },140);
+      return r;
+    };
+    try{ openSongModal=window.openSongModal; }catch(e){}
+  }
+  const oldSelectCat=window.selectCat || (typeof selectCat==='function'?selectCat:null);
+  if(oldSelectCat){
+    window.selectCat=function(cat,el){ return oldSelectCat(cat,el); };
+    try{ selectCat=window.selectCat; }catch(e){}
+  }
+  const oldSaveSong=window.saveSong || (typeof saveSong==='function'?saveSong:null);
+  if(oldSaveSong){
+    window.saveSong=function(){
+      savingSongModal=true;
+      try{ return oldSaveSong(); }
+      finally{ setTimeout(()=>{ savingSongModal=false; resetSongEditorDirty(); },10000); }
+    };
+    try{ saveSong=window.saveSong; }catch(e){}
+  }
+
+  // Unified options: legacy callers now read the same export-page state as the active PDF flow.
+  window.getUnifiedExportOptions=function(){
+    if(typeof exportPageState==='object' && exportPageState){
+      return {
+        exportKey:'set',
+        exportLayout:exportPageState.layout,
+        exportFont:exportPageState.size,
+        exportContent:exportPageState.mode,
+        showAuthor:!!exportPageState.flags.author,
+        showKey:!!exportPageState.flags.key,
+        showId:!!exportPageState.flags.songId
+      };
+    }
+    return {exportKey:'set',exportLayout:'page',exportFont:'standard',exportContent:'chords',showAuthor:true,showKey:true,showId:false};
+  };
+  window.getExportOptions=window.getUnifiedExportOptions;
+  try{ getExportOptions=window.getUnifiedExportOptions; }catch(e){}
+
+  // Legacy export surface quarantine: all user export calls go through the v64 text print path.
+  window.copyExport=function(){ toast('Use Save PDF from the export view'); };
+  try{ copyExport=window.copyExport; }catch(e){}
+  window.exportSetListHTML=function(){ if(typeof exportAllPDF==='function') return exportAllPDF(); };
+  try{ exportSetListHTML=window.exportSetListHTML; }catch(e){}
 })();
 </script>
 
