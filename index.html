@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v64.4</title>
+<title>WorshipBase v64.5</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -2175,7 +2175,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 64.4</div>
+            <div class="about-version-pill">Version 64.5</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -8005,12 +8005,12 @@ attachDrag = function(ct){
 
 
 <script>
-/* ── v64.4 PDF print reliability fix ──
+/* ── v64.5 PDF print page-break reliability fix ──
    1) Removes automatic window.print() from the print view so browsers do not block it.
    2) Replaces CSS multicolumn printing with explicit two-column page grids, which are
       far more reliable when saving to PDF from mobile/desktop browsers. */
 (function(){
-  const WB64_4_MODE='browser-print-html-vector-v64.4-explicit-two-column';
+  const WB64_4_MODE='browser-print-html-vector-v64.5-explicit-two-column-hard-breaks';
   const PX_TO_MM=25.4/96;
   function fileNameSafe(name,fallback){
     const s=String(name||fallback||'WorshipBase').trim().replace(/[^a-z0-9\-_ ]+/gi,' ').replace(/\s+/g,'-').replace(/^-+|-+$/g,'');
@@ -8170,9 +8170,10 @@ attachDrag = function(ct){
   }
   function renderTwoColumnPages(items,opts){
     const pages=flowTwoColumnPages(items,opts);
-    return '<main class="pdf-doc pdf-two-explicit">'+pages.map(pg=>{
+    return '<main class="pdf-doc pdf-two-explicit">'+pages.map((pg,idx)=>{
       const cols=pg.cols.map(c=>'<div class="pdf-two-col">'+c.join('\n')+'</div>').join('');
-      return '<section class="pdf-two-page">'+cols+'</section>';
+      const hardBreak=idx>0?'<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div>':'';
+      return hardBreak+'<section class="pdf-two-page">'+cols+'</section>';
     }).join('\n')+'</main>';
   }
   function css(themeColor,opts){
@@ -8223,8 +8224,8 @@ attachDrag = function(ct){
       .pdf-single-flow .pdf-song{break-inside:auto;page-break-inside:auto;}
       .pdf-one-song .pdf-song{margin-bottom:0;}
       .pdf-two-explicit{width:100%;}
-      .pdf-two-page{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:10mm;break-after:page;page-break-after:always;min-height:260mm;align-items:start;}
-      .pdf-two-page:last-child{break-after:auto;page-break-after:auto;}
+      .pdf-hard-break{display:none;height:0;line-height:0;font-size:0;overflow:hidden;}
+      .pdf-two-page{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:10mm;align-items:start;break-inside:avoid;page-break-inside:avoid;}
       .pdf-two-col{min-width:0;overflow:visible;}
       .pdf-two-song{margin:0 0 5.5mm;break-inside:auto;page-break-inside:auto;}
       .pdf-two-song .pdf-song-header{margin-bottom:3mm;}
@@ -8232,21 +8233,21 @@ attachDrag = function(ct){
       .pdf-two-song .pdf-pair{margin-bottom:.58mm;}
       .pdf-two-song .pdf-lyric-only{margin-bottom:.65mm;}
       .pdf-cont{font-size:9px;line-height:1.2;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:#777;margin:0 0 3mm;padding-bottom:1mm;border-bottom:.5px solid #ddd;}
-      @media screen{body{padding-left:24px;padding-right:24px;padding-bottom:48px}.pdf-cover,.pdf-doc{max-width:900px;margin:0 auto}.pdf-cover{padding-top:24px}.pdf-page,.pdf-two-page{padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid #e5e8ea;}.pdf-two-page{min-height:auto;}}
-      @media print{.wb-print-marker{display:none!important}body{padding-top:0!important}.pdf-page{border:0;margin:0;padding:0}.pdf-cover,.pdf-doc{max-width:none;width:100%}.pdf-cover{padding:0}.pdf-two-page{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;column-gap:10mm!important;border:0!important;margin:0!important;padding:0!important;min-height:260mm!important;break-after:page;page-break-after:always;}.pdf-two-page:last-child{break-after:auto;page-break-after:auto;}.pdf-song-header,.pdf-section,.pdf-pair,.pdf-lyric-only,.pdf-chord-only{break-inside:avoid;page-break-inside:avoid;}}
+      @media screen{body{padding-left:24px;padding-right:24px;padding-bottom:48px}.pdf-cover,.pdf-doc{max-width:900px;margin:0 auto}.pdf-cover{padding-top:24px}.pdf-page,.pdf-two-page{padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid #e5e8ea;}.pdf-hard-break{display:block;height:18px;margin:18px 0;border-top:2px dashed #dde3e6;}}
+      @media print{.wb-print-marker{display:none!important}body{padding-top:0!important}.pdf-page{border:0;margin:0;padding:0}.pdf-cover,.pdf-doc{max-width:none;width:100%}.pdf-cover{padding:0}.pdf-hard-break{display:block!important;break-before:page;page-break-before:always;height:0!important;line-height:0!important;font-size:0!important;margin:0!important;padding:0!important;overflow:hidden!important;}.pdf-two-page{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;column-gap:10mm!important;border:0!important;margin:0!important;padding:0!important;min-height:0!important;height:auto!important;break-after:auto!important;page-break-after:auto!important;break-inside:avoid;page-break-inside:avoid;}.pdf-song-header,.pdf-section,.pdf-pair,.pdf-lyric-only,.pdf-chord-only{break-inside:avoid;page-break-inside:avoid;}}
     `;
   }
   function toolbar(title){
-    return '<div class="wb-print-marker"><div style="min-width:0"><div class="wb-print-marker-title">'+esc(title||'WorshipBase export')+'</div><div class="wb-print-marker-sub">Text PDF print view — v64.4 · press Save PDF when ready</div></div><div class="wb-print-actions"><button class="wb-print-close" onclick="try{if(window.opener&&!window.opener.closed){window.opener.focus();}}catch(e){}try{window.close();}catch(e){}">Back to app</button><button onclick="window.print()">Save PDF</button></div></div>';
+    return '<div class="wb-print-marker"><div style="min-width:0"><div class="wb-print-marker-title">'+esc(title||'WorshipBase export')+'</div><div class="wb-print-marker-sub">Text PDF print view — v64.5 · press Save PDF when ready</div></div><div class="wb-print-actions"><button class="wb-print-close" onclick="try{if(window.opener&&!window.opener.closed){window.opener.focus();}}catch(e){}try{window.close();}catch(e){}">Back to app</button><button onclick="window.print()">Save PDF</button></div></div>';
   }
   function openPrintHtml(html,title,fileBase){
     const win=window.open('','_blank');
     if(win){
-      try{ win.document.open(); win.document.write(html); win.document.close(); if(typeof showToast==='function') showToast('Text PDF print view v64.4 opened'); return true; }
+      try{ win.document.open(); win.document.write(html); win.document.close(); if(typeof showToast==='function') showToast('Text PDF print view v64.5 opened'); return true; }
       catch(e){ try{win.close();}catch(_e){} }
     }
     const blob=new Blob([html],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url; a.download=fileNameSafe(fileBase||title,'WorshipBase')+'-text-pdf-v64-4.html'; document.body.appendChild(a); a.click(); a.remove();
+    a.href=url; a.download=fileNameSafe(fileBase||title,'WorshipBase')+'-text-pdf-v64-5.html'; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),30000);
     if(typeof showToast==='function') showToast('Text PDF HTML downloaded');
     return false;
@@ -8280,11 +8281,11 @@ attachDrag = function(ct){
     const setName=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List')||'Worship Set List';
     let html=documentStart('Text PDF export · '+setName,opts)+coverHtml(setName,items,opts);
     if(opts.exportLayout==='two'){
-      html+=renderTwoColumnPages(items,opts);
+      html+='<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div>'+renderTwoColumnPages(items,opts);
     }else if(opts.exportLayout==='single'){
-      html+='<main class="pdf-doc pdf-single-flow">'+items.map(it=>renderSong(it.song,it.key,opts,'')).join('\n')+'</main>';
+      html+='<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div><main class="pdf-doc pdf-single-flow">'+items.map(it=>renderSong(it.song,it.key,opts,'')).join('\n')+'</main>';
     }else{
-      html+='<main class="pdf-doc pdf-one-song">'+items.map(it=>'<div class="pdf-page">'+renderSong(it.song,it.key,opts,'')+'</div>').join('\n')+'</main>';
+      html+='<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div><main class="pdf-doc pdf-one-song">'+items.map(it=>'<div class="pdf-page">'+renderSong(it.song,it.key,opts,'')+'</div>').join('\n')+'</main>';
     }
     html+='</body></html>';
     openPrintHtml(html,'Text PDF export · '+setName,setName);
