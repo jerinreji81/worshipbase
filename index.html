@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v64.6</title>
+<title>WorshipBase v64.7</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -1707,6 +1707,9 @@ body.dark #song-view .sv-ctrls{background:linear-gradient(to bottom, rgba(15,31,
 }
 #bs-modal .m-body input::placeholder,
 #bs-modal .m-body textarea::placeholder{color:color-mix(in srgb,var(--txt3) 78%, var(--txt2));}
+#bs-modal .song-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:2px;}
+#bs-modal .song-meta-grid input{margin-bottom:16px;}
+@media (max-width:360px){#bs-modal .song-meta-grid{grid-template-columns:1fr;gap:0;}}
 #bs-modal .m-body input:focus,
 #bs-modal .m-body select:focus,
 #bs-modal .m-body textarea:focus{
@@ -2180,7 +2183,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 64.6</div>
+            <div class="about-version-pill">Version 64.7</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -2257,7 +2260,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
       <div class="ev-title">Export PDF</div>
       <button class="ev-act-btn" type="button" onclick="runExportFromPage()">Export</button>
     </div>
-    <div class="ev-sub">Create a clean, selectable text PDF for rehearsal or stage use. Choose a preset, preview the page, then export.</div>
+    <div class="ev-sub">Create a clean, selectable text PDF for rehearsal, stage, or compact distribution. Choose flow, columns, and text size, then export.</div>
   </div>
   <div class="ev-scroll">
     <div class="ev-sec">
@@ -2308,11 +2311,18 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
       </div>
 
       <div class="ev-group">
-        <div class="ev-group-title">Layout</div>
+        <div class="ev-group-title">Flow</div>
         <div class="ev-chip-row">
-          <button class="ev-chip active" type="button" data-layout="single" onclick="setExportLayout('single', this)">Single column</button>
-          <button class="ev-chip" type="button" data-layout="two" onclick="setExportLayout('two', this)">Two-column</button>
-          <button class="ev-chip" type="button" data-layout="page" onclick="setExportLayout('page', this)">One song / page</button>
+          <button class="ev-chip active" type="button" data-flow="continuous" onclick="setExportFlow('continuous', this)">Continuous</button>
+          <button class="ev-chip" type="button" data-flow="page" onclick="setExportFlow('page', this)">One song / page</button>
+        </div>
+      </div>
+
+      <div class="ev-group">
+        <div class="ev-group-title">Columns</div>
+        <div class="ev-chip-row">
+          <button class="ev-chip active" type="button" data-columns="single" onclick="setExportColumns('single', this)">Single</button>
+          <button class="ev-chip" type="button" data-columns="two" onclick="setExportColumns('two', this)">Two-column</button>
         </div>
       </div>
 
@@ -2555,6 +2565,16 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
       <label>Title</label><input type="text" id="m-title" placeholder="e.g. How Great Is Our God">
       <label>Author / Artist</label><input type="text" id="m-author" placeholder="e.g. Chris Tomlin">
       <label>Original key</label><select id="m-key"></select>
+      <div class="song-meta-grid">
+        <div>
+          <label>Time signature</label>
+          <input type="text" id="m-time-sig" placeholder="e.g. 4/4" inputmode="text">
+        </div>
+        <div>
+          <label>BPM</label>
+          <input type="number" id="m-bpm" min="20" max="260" step="1" placeholder="e.g. 72" inputmode="numeric">
+        </div>
+      </div>
       <label>Chord chart <span style="color:var(--txt3);font-weight:400">(optional)</span></label>
       <p class="m-hint">ChordPro: [G]The splendor of a [C]King. Or chord-above-lyrics. Blank lines = verse gaps.</p>
       <div class="editor-mode-toggle" role="tablist" aria-label="Song editor mode">
@@ -2652,7 +2672,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
     <button class="bs-cancel" onclick="closeBS('sets')">Done</button>
   </div>
 </div>
-<!-- Legacy export bottom sheet removed in v64.6; all exports use the unified text PDF export page. -->
+<!-- Legacy export bottom sheet removed in v64.7; all exports use the unified text PDF export page. -->
 
 
 <!-- SET KEY -->
@@ -3038,6 +3058,8 @@ function resetTransientUIOnResume(){
 let exportPageState={
   preset:'stage',
   mode:'chords',
+  flow:'page',
+  columns:'single',
   layout:'page',
   size:'large',
   flags:{author:true,key:true,songId:false}
@@ -3057,6 +3079,25 @@ function closeExportView(){
   document.getElementById('export-view')?.classList.remove('visible');
   document.body.classList.remove('editor-open');
 }
+function deriveExportLayout(){
+  if(exportPageState.columns==='two') return 'two';
+  return exportPageState.flow==='page' ? 'page' : 'single';
+}
+function syncExportDerivedLayout(){
+  exportPageState.layout=deriveExportLayout();
+}
+function setExportFlow(flow, btn){
+  exportPageState.flow=flow==='page'?'page':'continuous';
+  syncExportDerivedLayout();
+  document.querySelectorAll('.ev-chip[data-flow]').forEach(el=>el.classList.toggle('active', el.dataset.flow===exportPageState.flow));
+  renderExportPagePreview();
+}
+function setExportColumns(columns, btn){
+  exportPageState.columns=columns==='two'?'two':'single';
+  syncExportDerivedLayout();
+  document.querySelectorAll('.ev-chip[data-columns]').forEach(el=>el.classList.toggle('active', el.dataset.columns===exportPageState.columns));
+  renderExportPagePreview();
+}
 function setExportPreset(preset, btn){
   applyExportPresetState(preset);
   document.querySelectorAll('.export-preset').forEach(el=>el.classList.toggle('active', el===btn));
@@ -3069,8 +3110,11 @@ function setExportMode(mode, btn){
   renderExportPagePreview();
 }
 function setExportLayout(layout, btn){
-  exportPageState.layout=layout;
-  document.querySelectorAll('.ev-chip[data-layout]').forEach(el=>el.classList.toggle('active', el===btn));
+  if(layout==='two'){ exportPageState.columns='two'; exportPageState.flow='continuous'; }
+  else if(layout==='page'){ exportPageState.columns='single'; exportPageState.flow='page'; }
+  else { exportPageState.columns='single'; exportPageState.flow='continuous'; }
+  syncExportDerivedLayout();
+  syncExportPageControls();
   renderExportPagePreview();
 }
 function setExportSize(size, btn){
@@ -3086,6 +3130,9 @@ function toggleExportFlag(flag, el){
 function syncExportPageControls(){
   document.querySelectorAll('.export-preset').forEach(el=>el.classList.toggle('active', el.dataset.preset===exportPageState.preset));
   document.querySelectorAll('.ev-chip[data-mode]').forEach(el=>el.classList.toggle('active', el.dataset.mode===exportPageState.mode));
+  syncExportDerivedLayout();
+  document.querySelectorAll('.ev-chip[data-flow]').forEach(el=>el.classList.toggle('active', el.dataset.flow===exportPageState.flow));
+  document.querySelectorAll('.ev-chip[data-columns]').forEach(el=>el.classList.toggle('active', el.dataset.columns===exportPageState.columns));
   document.querySelectorAll('.ev-chip[data-layout]').forEach(el=>el.classList.toggle('active', el.dataset.layout===exportPageState.layout));
   document.querySelectorAll('.ev-chip[data-size]').forEach(el=>el.classList.toggle('active', el.dataset.size===exportPageState.size));
   document.getElementById('export-sw-author')?.classList.toggle('on', !!exportPageState.flags.author);
@@ -3103,7 +3150,10 @@ function syncExportPageFromExistingOptions(){
     if(contentSel && contentSel.value) exportPageState.mode = contentSel.value;
     if(layoutSel){
       const v=layoutSel.value;
-      exportPageState.layout = v==='two-col' ? 'two' : (v==='one' ? 'page' : 'single');
+      if(v==='two-col'){ exportPageState.columns='two'; exportPageState.flow='continuous'; }
+      else if(v==='one'){ exportPageState.columns='single'; exportPageState.flow='page'; }
+      else { exportPageState.columns='single'; exportPageState.flow='continuous'; }
+      syncExportDerivedLayout();
     }
     if(sizeSel){
       const v=sizeSel.value;
@@ -3120,7 +3170,7 @@ function getExportPreviewItems(){
     return [{song:currentSong,item:null}];
   }
   const sl = (typeof getSetList==='function' ? getSetList() : []) || [];
-  const limit = exportPageState.layout==='page' ? 1 : 2;
+  const limit = exportPageState.flow==='page' ? 1 : (exportPageState.columns==='two' ? 2 : 2);
   const items = sl.slice(0,limit).map(item => {
     const song = item?.songId && typeof findSongById==='function' ? findSongById(item.songId) : null;
     return song ? {song,item} : null;
@@ -3136,16 +3186,18 @@ function renderExportPagePreview(){
 
   const previewItems = getExportPreviewItems();
   setLbl.textContent = exportPageContext==='song' ? 'Song preview' : ((typeof currentSetName!=='undefined' && currentSetName) ? currentSetName : 'Set preview');
-  const layoutLabel = exportPageState.layout==='two' ? 'Two-column' : (exportPageState.layout==='page' ? 'One song / page' : 'Single column');
+  syncExportDerivedLayout();
+  const flowLabel = exportPageState.flow==='page' ? 'One song / page' : 'Continuous';
+  const columnLabel = exportPageState.columns==='two' ? 'Two-column' : 'Single column';
   const sizeLabel = exportPageState.size==='large' ? 'Large' : (exportPageState.size==='compact' ? 'Compact' : 'Standard');
-  meta.textContent=layoutLabel + ' • ' + sizeLabel;
+  meta.textContent=flowLabel + ' • ' + columnLabel + ' • ' + sizeLabel;
 
   if(!previewItems.length){
     content.innerHTML = '<div class="export-mini-song"><div class="export-mini-title">No songs to preview</div><div class="export-mini-meta">Add songs to your set list or open a song first.</div></div>';
     return;
   }
 
-  const wrapClass = exportPageState.layout==='two' ? 'export-mini-cols' : '';
+  const wrapClass = exportPageState.columns==='two' ? 'export-mini-cols' : '';
   const items=previewItems.map(({song,item})=>{
     const title=escapeHtml(song?.title || 'Untitled song');
     const author=escapeHtml(song?.author || '');
@@ -3154,6 +3206,8 @@ function renderExportPagePreview(){
     const metaParts=[];
     if(exportPageState.flags.author && author) metaParts.push(author);
     if(exportPageState.flags.key && keyVal) metaParts.push('Key ' + keyVal);
+    if(song?.timeSig || song?.timeSignature) metaParts.push(song.timeSig || song.timeSignature);
+    if(song?.bpm) metaParts.push(song.bpm + ' BPM');
     if(exportPageState.flags.songId && id) metaParts.push(id);
     return `<div class="export-mini-song">
       <div class="export-mini-title">${title}</div>
@@ -3171,7 +3225,9 @@ function renderExportPagePreview(){
 function getExportPageOptions(){
   return {
     exportKey:'set',
-    exportLayout:exportPageState.layout,
+    exportFlow:exportPageState.flow,
+    exportColumns:exportPageState.columns,
+    exportLayout:deriveExportLayout(),
     exportFont:exportPageState.size,
     exportContent:exportPageState.mode,
     showAuthor:!!exportPageState.flags.author,
@@ -3589,7 +3645,7 @@ let adminUnlocked=false,pendingAdminAction=null;
 function requireAdmin(action){
   if(adminUnlocked){action();return;}
   if(!appPrefs.adminPin){
-    const pin=null; // v64.6: first-time PIN setup uses the Change PIN bottom sheet
+    const pin=null; // v64.7: first-time PIN setup uses the Change PIN bottom sheet
     if(pin===null)return;
     const clean=String(pin).trim();
     if(clean.length<4){showToast('PIN must be at least 4 digits');return;}
@@ -5986,14 +6042,15 @@ function toggleKeepAwakeOnSongsSetting(){
 function applyExportPresetState(preset){
   exportPageState.preset=preset;
   if(preset==='stage'){
-    exportPageState.mode='chords'; exportPageState.layout='page'; exportPageState.size='large'; exportPageState.flags.author=true; exportPageState.flags.key=true; exportPageState.flags.songId=false;
+    exportPageState.mode='chords'; exportPageState.flow='page'; exportPageState.columns='single'; exportPageState.size='large'; exportPageState.flags.author=true; exportPageState.flags.key=true; exportPageState.flags.songId=false;
   }else if(preset==='rehearsal'){
-    exportPageState.mode='chords'; exportPageState.layout='single'; exportPageState.size='standard'; exportPageState.flags.author=true; exportPageState.flags.key=true; exportPageState.flags.songId=false;
+    exportPageState.mode='chords'; exportPageState.flow='continuous'; exportPageState.columns='single'; exportPageState.size='standard'; exportPageState.flags.author=true; exportPageState.flags.key=true; exportPageState.flags.songId=false;
   }else if(preset==='compact'){
-    exportPageState.mode='chords'; exportPageState.layout='two'; exportPageState.size='compact'; exportPageState.flags.author=false; exportPageState.flags.key=true; exportPageState.flags.songId=false;
+    exportPageState.mode='chords'; exportPageState.flow='continuous'; exportPageState.columns='two'; exportPageState.size='compact'; exportPageState.flags.author=false; exportPageState.flags.key=true; exportPageState.flags.songId=false;
   }else if(preset==='lyrics'){
-    exportPageState.mode='lyrics'; exportPageState.layout='single'; exportPageState.size='standard'; exportPageState.flags.author=true; exportPageState.flags.key=false; exportPageState.flags.songId=false;
+    exportPageState.mode='lyrics'; exportPageState.flow='continuous'; exportPageState.columns='single'; exportPageState.size='standard'; exportPageState.flags.author=true; exportPageState.flags.key=false; exportPageState.flags.songId=false;
   }
+  syncExportDerivedLayout();
 }
 function renderDefaultPdfPresetOptions(){
   const c=document.getElementById('defpdf-options'); if(!c) return;
@@ -6435,7 +6492,9 @@ function openSong(id,fromSet){
   viewMode=initialView;useFlats=!!appPrefs.useFlatsDefault;stopAutoScroll();
   document.getElementById('sv-title').textContent=currentSong.title;
   document.getElementById('sv-pres-title').textContent=currentSong.title;
-  document.getElementById('sv-author').textContent=currentSong.author;
+  const songViewMeta=[currentSong.author, currentSong.timeSig||currentSong.timeSignature||'', currentSong.bpm?currentSong.bpm+' BPM':''].filter(Boolean).join(' · ');
+  const svAuthorEl=document.getElementById('sv-author');
+  if(svAuthorEl){ svAuthorEl.textContent=songViewMeta; svAuthorEl.style.display=songViewMeta?'inline-block':'none'; }
   document.getElementById('sv-orig-key').textContent='Originally in '+currentSong.key;
   document.getElementById('sv-song-id').textContent='Song ID: '+(currentSong.songCode||ensureSongCode(currentSong));
   document.getElementById('key-select').innerHTML=NOTES.map(n=>`<option value="${n}"${n===currentKey?' selected':''}>${n}</option>`).join('');
@@ -6723,19 +6782,22 @@ function updateSongEditorPreview(){
   const author=(document.getElementById('m-author')?.value||'').trim();
   const key=document.getElementById('m-key')?.value||'C';
   const chart=document.getElementById('m-chart')?.value||'';
-  meta.textContent=(author?author+' · ':'')+'Key of '+key;
+  const bpm=(document.getElementById('m-bpm')?.value||'').trim();
+  const timeSig=(document.getElementById('m-time-sig')?.value||'').trim();
+  const extra=[timeSig,bpm?bpm+' BPM':''].filter(Boolean).join(' · ');
+  meta.textContent=(author?author+' · ':'')+'Key of '+key+(extra?' · '+extra:'');
   if(!chart.trim()){
     body.innerHTML='<div class="preview-empty">Start typing to preview the chart.</div>';
     return;
   }
-  const previewSong={title,author,key,chart};
+  const previewSong={title,author,key,chart,bpm,timeSig};
   body.innerHTML=renderSheetHTML(previewSong,key,false,false);
   body.classList.toggle('chords-highlight',!!appPrefs.highlightChords);
 }
 function wireSongEditorPreview(){
   if(editorHistoryWire) return;
   editorHistoryWire=true;
-  ['m-title','m-author','m-key','m-chart'].forEach(id=>{
+  ['m-title','m-author','m-key','m-time-sig','m-bpm','m-chart'].forEach(id=>{
     const el=document.getElementById(id);
     if(!el)return;
     const evt=id==='m-key'?'change':'input';
@@ -6761,6 +6823,8 @@ function openSongModal(song){
   document.getElementById('m-key').innerHTML=NOTES.map(n=>`<option value="${n}"${song&&song.key===n?' selected':''}>${n}</option>`).join('');
   document.getElementById('m-title').value=song?song.title:'';
   document.getElementById('m-author').value=song?song.author:'';
+  document.getElementById('m-time-sig').value=song?(song.timeSig||song.timeSignature||''):'';
+  document.getElementById('m-bpm').value=song?(song.bpm||''):'';
   document.getElementById('m-chart').value=song?song.chart:'';
   modalCat=song?song.cat:(activeTab==='setlist'||activeTab==='bible'||activeTab==='settings'?'english':activeTab);
   document.querySelectorAll('.cat-opt').forEach((b,i)=>b.classList.toggle('active',['english','malayalam'][i]===modalCat));
@@ -6777,9 +6841,12 @@ function saveSong(){
   const title=document.getElementById('m-title').value.trim();
   const author=document.getElementById('m-author').value.trim();
   const key=document.getElementById('m-key').value;
+  const timeSig=(document.getElementById('m-time-sig')?.value||'').trim();
+  const bpmRaw=(document.getElementById('m-bpm')?.value||'').trim();
+  const bpm=bpmRaw?String(Math.max(20,Math.min(260,parseInt(bpmRaw,10)||0))):'';
   const chart=document.getElementById('m-chart').value.trim();
   if(!title){alert('Please enter a song title.');return;}
-  const sd={cat:modalCat,title,author,key,chart};
+  const sd={cat:modalCat,title,author,key,timeSig,bpm,chart};
   if(editingId){
     const ex=findSongById(editingId);
     if(ex?.fbKey)songsRef.child(ex.fbKey).update({...sd,id:ex.id,songCode:ex.songCode||ensureSongCode(ex)}).then(()=>{showSync('Saved ✓');closeBS('modal');openSong(editingId,fromSetList);}).catch(()=>showSync('Save failed',true));
@@ -7598,16 +7665,16 @@ attachDrag = function(ct){
 </script>
 
 
-<!-- Legacy PDF override block removed in v64.6. -->
+<!-- Legacy PDF override block removed in v64.7. -->
 
-<!-- Legacy PDF override block removed in v64.6. -->
+<!-- Legacy PDF override block removed in v64.7. -->
 <script>
-/* ── v64.6 PDF print page-break reliability fix ──
+/* ── v64.7 PDF print page-break reliability fix ──
    1) Removes automatic window.print() from the print view so browsers do not block it.
    2) Replaces CSS multicolumn printing with explicit two-column page grids, which are
       far more reliable when saving to PDF from mobile/desktop browsers. */
 (function(){
-  const WB64_4_MODE='browser-print-html-vector-v64.6-explicit-two-column-hard-breaks';
+  const WB64_4_MODE='browser-print-html-vector-v64.7-explicit-two-column-hard-breaks';
   const PX_TO_MM=25.4/96;
   function fileNameSafe(name,fallback){
     const s=String(name||fallback||'WorshipBase').trim().replace(/[^a-z0-9\-_ ]+/gi,' ').replace(/\s+/g,'-').replace(/^-+|-+$/g,'');
@@ -7631,8 +7698,16 @@ attachDrag = function(ct){
     let o=null;
     try{ if(typeof getExportPageOptions==='function' && typeof exportPageState==='object' && exportPageState) o=getExportPageOptions(); }catch(e){}
     if(!o){ try{ if(typeof getExportOptions==='function') o=getExportOptions(); }catch(e){} }
-    o=o||{exportKey:'set',exportLayout:'page',exportFont:'standard',exportContent:'chords',showAuthor:true,showKey:true,showId:false};
-    return Object.assign({},o,{exportLayout:normalizeLayout(o.exportLayout)});
+    o=o||{exportKey:'set',exportFlow:'page',exportColumns:'single',exportLayout:'page',exportFont:'standard',exportContent:'chords',showAuthor:true,showKey:true,showId:false};
+    return normalizeOpts(o);
+  }
+  function normalizeOpts(o){
+    o=Object.assign({},o||{});
+    let layout=normalizeLayout(o.exportLayout);
+    let cols=o.exportColumns==='two'?'two':(layout==='two'?'two':'single');
+    let flow=o.exportFlow==='page'?'page':(layout==='page'?'page':'continuous');
+    if(cols==='two') layout='two'; else layout=flow==='page'?'page':'single';
+    return Object.assign({},o,{exportFlow:flow,exportColumns:cols,exportLayout:layout});
   }
   function printKey(song,item,opts){
     if(!song)return 'G';
@@ -7668,6 +7743,8 @@ attachDrag = function(ct){
     const bits=[];
     if(opts.showAuthor && song.author) bits.push(song.author);
     if(opts.showKey) bits.push('Key of '+key+(song.key!==key?' · Originally '+(song.key||'') : ''));
+    if(song.timeSig||song.timeSignature) bits.push(song.timeSig||song.timeSignature);
+    if(song.bpm) bits.push(song.bpm+' BPM');
     if(opts.showId) bits.push(song.songCode || (typeof ensureSongCode==='function'?ensureSongCode(song):''));
     if(opts.exportContent==='nns') bits.push('NNS');
     return bits.filter(Boolean).join(' · ');
@@ -7765,18 +7842,19 @@ attachDrag = function(ct){
     });
     return pages;
   }
-  function renderTwoColumnPages(items,opts){
+  function renderTwoColumnPages(items,opts,innerOnly){
     const pages=flowTwoColumnPages(items,opts);
-    return '<main class="pdf-doc pdf-two-explicit">'+pages.map((pg,idx)=>{
+    const body=pages.map((pg,idx)=>{
       const cols=pg.cols.map(c=>'<div class="pdf-two-col">'+c.join('\n')+'</div>').join('');
       const hardBreak=idx>0?'<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div>':'';
       return hardBreak+'<section class="pdf-two-page">'+cols+'</section>';
-    }).join('\n')+'</main>';
+    }).join('\n');
+    return innerOnly?body:'<main class="pdf-doc pdf-two-explicit">'+body+'</main>';
   }
   function css(themeColor,opts){
-    const p=profile(opts.exportFont,opts.exportLayout);
+    const p=profile(opts.exportFont,opts.exportColumns==='two'?'two':opts.exportLayout);
     const theme=String(themeColor||'#10374A');
-    const pageMargin=opts.exportLayout==='two'?'14mm 10mm':'20mm 18mm';
+    const pageMargin=opts.exportColumns==='two'?'11mm 8mm':'16mm 14mm';
     return `
       :root{--theme:${theme};--title:${p.title}px;--author:${p.author}px;--key:${p.key}px;--section:${p.section}px;--chord:${p.chord}px;--lyric:${p.lyric}px;}
       *{box-sizing:border-box;}
@@ -7801,51 +7879,51 @@ attachDrag = function(ct){
       .pdf-doc{width:100%;}
       .pdf-page{break-after:page;page-break-after:always;}
       .pdf-page:last-child{break-after:auto;page-break-after:auto;}
-      .pdf-song{margin:0 0 9mm;}
-      .pdf-song-header{break-after:avoid;page-break-after:avoid;margin:0 0 4.2mm;}
-      .pdf-song h1{font-size:var(--title);line-height:1.14;font-weight:850;letter-spacing:-.025em;margin:0 0 1.4mm;color:#111;}
-      .pdf-meta{font-size:var(--author);line-height:1.34;color:#666;margin:0 0 .9mm;}
+      .pdf-song{margin:0 0 5.5mm;}
+      .pdf-song-header{break-after:avoid;page-break-after:avoid;margin:0 0 2.4mm;}
+      .pdf-song h1{font-size:var(--title);line-height:1.08;font-weight:850;letter-spacing:-.025em;margin:0 0 .8mm;color:#111;}
+      .pdf-meta{font-size:var(--author);line-height:1.2;color:#666;margin:0 0 .35mm;}
       .pdf-chart{font-size:var(--lyric);}
-      .pdf-section{margin:4.4mm 0 1.6mm;break-after:avoid;page-break-after:avoid;}
+      .pdf-section{margin:2.4mm 0 .75mm;break-after:avoid;page-break-after:avoid;}
       .pdf-section:first-child{margin-top:0;}
-      .pdf-section span{display:inline-block;font-size:var(--section);line-height:1.1;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#666;background:#f0f2f3;border-radius:5px;padding:2px 7px;}
-      .pdf-pair{display:flex;flex-wrap:wrap;align-items:flex-start;column-gap:0;row-gap:.28mm;margin:0 0 .85mm;break-inside:avoid;page-break-inside:avoid;}
+      .pdf-section span{display:inline-block;font-size:var(--section);line-height:1.05;font-weight:850;letter-spacing:.09em;text-transform:uppercase;color:#666;background:#f0f2f3;border-radius:5px;padding:1px 5px;}
+      .pdf-pair{display:flex;flex-wrap:wrap;align-items:flex-start;column-gap:0;row-gap:0;margin:0 0 .38mm;break-inside:avoid;page-break-inside:avoid;}
       .pdf-seg{display:inline-flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;min-width:max-content;max-width:100%;vertical-align:top;}
       .pdf-seg.spacer{min-width:.35em;}
-      .pdf-chord{font-family:"SFMono-Regular","Menlo","Consolas","Liberation Mono",monospace;font-size:var(--chord);font-weight:800;line-height:1.18;min-height:calc(var(--chord) * 1.18);color:var(--theme);white-space:pre;letter-spacing:0;}
+      .pdf-chord{font-family:"SFMono-Regular","Menlo","Consolas","Liberation Mono",monospace;font-size:var(--chord);font-weight:800;line-height:1.02;min-height:calc(var(--chord) * 1.02);color:var(--theme);white-space:pre;letter-spacing:0;}
       .pdf-chord-token{display:inline-block;padding-right:.18em;}
-      .pdf-lyric{font-size:var(--lyric);line-height:1.38;color:#111;white-space:pre-wrap;letter-spacing:0;}
-      .pdf-lyric-only{font-size:var(--lyric);line-height:1.48;color:#111;margin:0 0 .9mm;white-space:pre-wrap;break-inside:avoid;page-break-inside:avoid;}
-      .pdf-chord-only{font-family:"SFMono-Regular","Menlo","Consolas","Liberation Mono",monospace;font-size:var(--chord);font-weight:800;line-height:1.35;color:var(--theme);white-space:pre-wrap;margin:0 0 .65mm;letter-spacing:0;break-inside:avoid;page-break-inside:avoid;}
-      .pdf-space{height:2.4mm;}
+      .pdf-lyric{font-size:var(--lyric);line-height:1.18;color:#111;white-space:pre-wrap;letter-spacing:0;}
+      .pdf-lyric-only{font-size:var(--lyric);line-height:1.22;color:#111;margin:0 0 .35mm;white-space:pre-wrap;break-inside:avoid;page-break-inside:avoid;}
+      .pdf-chord-only{font-family:"SFMono-Regular","Menlo","Consolas","Liberation Mono",monospace;font-size:var(--chord);font-weight:800;line-height:1.15;color:var(--theme);white-space:pre-wrap;margin:0 0 .32mm;letter-spacing:0;break-inside:avoid;page-break-inside:avoid;}
+      .pdf-space{height:1.1mm;}
       .pdf-single-flow .pdf-song{break-inside:auto;page-break-inside:auto;}
       .pdf-one-song .pdf-song{margin-bottom:0;}
       .pdf-two-explicit{width:100%;}
       .pdf-hard-break{display:none;height:0;line-height:0;font-size:0;overflow:hidden;}
-      .pdf-two-page{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:10mm;align-items:start;break-inside:avoid;page-break-inside:avoid;}
+      .pdf-two-page{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:7mm;align-items:start;break-inside:avoid;page-break-inside:avoid;}
       .pdf-two-col{min-width:0;overflow:visible;}
-      .pdf-two-song{margin:0 0 5.5mm;break-inside:auto;page-break-inside:auto;}
-      .pdf-two-song .pdf-song-header{margin-bottom:3mm;}
-      .pdf-two-song .pdf-section{margin:3.4mm 0 1.2mm;}
-      .pdf-two-song .pdf-pair{margin-bottom:.58mm;}
-      .pdf-two-song .pdf-lyric-only{margin-bottom:.65mm;}
+      .pdf-two-song{margin:0 0 3.2mm;break-inside:auto;page-break-inside:auto;}
+      .pdf-two-song .pdf-song-header{margin-bottom:1.7mm;}
+      .pdf-two-song .pdf-section{margin:1.8mm 0 .6mm;}
+      .pdf-two-song .pdf-pair{margin-bottom:.28mm;}
+      .pdf-two-song .pdf-lyric-only{margin-bottom:.3mm;}
       .pdf-cont{font-size:9px;line-height:1.2;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:#777;margin:0 0 3mm;padding-bottom:1mm;border-bottom:.5px solid #ddd;}
       @media screen{body{padding-left:24px;padding-right:24px;padding-bottom:48px}.pdf-cover,.pdf-doc{max-width:900px;margin:0 auto}.pdf-cover{padding-top:24px}.pdf-page,.pdf-two-page{padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid #e5e8ea;}.pdf-hard-break{display:block;height:18px;margin:18px 0;border-top:2px dashed #dde3e6;}}
-      @media print{.wb-print-marker{display:none!important}body{padding-top:0!important}.pdf-page{border:0;margin:0;padding:0}.pdf-cover,.pdf-doc{max-width:none;width:100%}.pdf-cover{padding:0}.pdf-hard-break{display:block!important;break-before:page;page-break-before:always;height:0!important;line-height:0!important;font-size:0!important;margin:0!important;padding:0!important;overflow:hidden!important;}.pdf-two-page{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;column-gap:10mm!important;border:0!important;margin:0!important;padding:0!important;min-height:0!important;height:auto!important;break-after:auto!important;page-break-after:auto!important;break-inside:avoid;page-break-inside:avoid;}.pdf-song-header,.pdf-section,.pdf-pair,.pdf-lyric-only,.pdf-chord-only{break-inside:avoid;page-break-inside:avoid;}}
+      @media print{.wb-print-marker{display:none!important}body{padding-top:0!important}.pdf-page{border:0;margin:0;padding:0}.pdf-cover,.pdf-doc{max-width:none;width:100%}.pdf-cover{padding:0}.pdf-hard-break{display:block!important;break-before:page;page-break-before:always;height:0!important;line-height:0!important;font-size:0!important;margin:0!important;padding:0!important;overflow:hidden!important;}.pdf-two-page{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;column-gap:7mm!important;border:0!important;margin:0!important;padding:0!important;min-height:0!important;height:auto!important;break-after:auto!important;page-break-after:auto!important;break-inside:avoid;page-break-inside:avoid;}.pdf-song-header,.pdf-section,.pdf-pair,.pdf-lyric-only,.pdf-chord-only{break-inside:avoid;page-break-inside:avoid;}}
     `;
   }
   function toolbar(title){
-    return '<div class="wb-print-marker"><div style="min-width:0"><div class="wb-print-marker-title">'+esc(title||'WorshipBase export')+'</div><div class="wb-print-marker-sub">Text PDF print view — v64.6 · press Save PDF when ready</div></div><div class="wb-print-actions"><button class="wb-print-close" onclick="try{if(window.opener&&!window.opener.closed){window.opener.focus();}}catch(e){}try{window.close();}catch(e){}">Back to app</button><button onclick="window.print()">Save PDF</button></div></div>';
+    return '<div class="wb-print-marker"><div style="min-width:0"><div class="wb-print-marker-title">'+esc(title||'WorshipBase export')+'</div><div class="wb-print-marker-sub">Text PDF print view — v64.7 · press Save PDF when ready · turn off browser headers/footers</div></div><div class="wb-print-actions"><button class="wb-print-close" onclick="try{if(window.opener&&!window.opener.closed){window.opener.focus();}}catch(e){}try{window.close();}catch(e){}">Back to app</button><button onclick="window.print()">Save PDF</button></div></div>';
   }
   function openPrintHtml(html,title,fileBase){
     if(typeof showToast==='function') showToast('Building PDF view…');
     const win=window.open('','_blank');
     if(win){
-      try{ win.document.open(); win.document.write(html); win.document.close(); if(typeof showToast==='function') showToast('Text PDF print view v64.6 opened'); return true; }
+      try{ win.document.open(); win.document.write(html); win.document.close(); if(typeof showToast==='function') showToast('Text PDF print view v64.7 opened'); return true; }
       catch(e){ try{win.close();}catch(_e){} }
     }
     const blob=new Blob([html],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-    a.href=url; a.download=fileNameSafe(fileBase||title,'WorshipBase')+'-text-pdf-v64-6.html'; document.body.appendChild(a); a.click(); a.remove();
+    a.href=url; a.download=fileNameSafe(fileBase||title,'WorshipBase')+'-text-pdf-v64-7.html'; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),30000);
     if(typeof showToast==='function') showToast('Text PDF HTML downloaded');
     return false;
@@ -7859,17 +7937,17 @@ attachDrag = function(ct){
   }
   function coverHtml(setName,items,opts){
     const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
-    const layoutLabel=opts.exportLayout==='two'?'Two-column':(opts.exportLayout==='single'?'Single column':'One song / page');
+    const layoutLabel=(opts.exportFlow==='page'?'One song / page':'Continuous')+' · '+(opts.exportColumns==='two'?'Two-column':'Single column');
     const rows=items.map((it,i)=>'<li class="pdf-cover-item"><span class="pdf-cover-num">'+String(i+1).padStart(2,'0')+'</span><span class="pdf-cover-song">'+esc(it.song.title||'Untitled song')+'</span><span class="pdf-cover-key">'+esc(it.key)+'</span></li>').join('');
     return '<section class="pdf-cover"><div class="pdf-cover-logo"><img src="'+esc(logoUrl())+'" alt="WorshipBase logo"></div><h1 class="pdf-cover-title">'+esc(setName)+'</h1><div class="pdf-cover-sub">'+items.length+' song'+(items.length!==1?'s':'')+' · '+layoutLabel+' · '+contentLabel+'</div><ul class="pdf-cover-list">'+rows+'</ul></section>';
   }
   function exportSong(opts){
     if(typeof currentSong==='undefined'||!currentSong)return;
-    opts=Object.assign({},opts||getOpts(),{exportLayout:normalizeLayout((opts||getOpts()).exportLayout)});
+    opts=normalizeOpts(opts||getOpts());
     const key=printKey(currentSong,null,opts);
     const title=currentSong.title||'Song';
     let html=documentStart('Text PDF export · '+title,opts);
-    if(opts.exportLayout==='two') html+=renderTwoColumnPages([{song:currentSong,item:null,key}],opts);
+    if(opts.exportColumns==='two') html+=renderTwoColumnPages([{song:currentSong,item:null,key}],opts);
     else html+='<main class="pdf-doc pdf-one-song"><div class="pdf-page">'+renderSong(currentSong,key,opts,'')+'</div></main>';
     html+='</body></html>';
     openPrintHtml(html,'Text PDF export · '+title,title);
@@ -7877,13 +7955,17 @@ attachDrag = function(ct){
   function exportSet(opts){
     const sl=(typeof getSetList==='function'?getSetList():[]);
     if(!sl.length){alert('No songs in set list.');return;}
-    opts=Object.assign({},opts||getOpts(),{exportLayout:normalizeLayout((opts||getOpts()).exportLayout)});
+    opts=normalizeOpts(opts||getOpts());
     const items=sl.map(item=>{const song=findSongById(item.songId);return song?{song,item,key:printKey(song,item,opts)}:null;}).filter(Boolean);
     const setName=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List')||'Worship Set List';
     let html=documentStart('Text PDF export · '+setName,opts)+coverHtml(setName,items,opts);
-    if(opts.exportLayout==='two'){
-      html+='<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div>'+renderTwoColumnPages(items,opts);
-    }else if(opts.exportLayout==='single'){
+    if(opts.exportColumns==='two'){
+      if(opts.exportFlow==='page'){
+        html+='<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div><main class="pdf-doc pdf-two-explicit pdf-one-song">'+items.map((it,idx)=>(idx?'<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div>':'')+renderTwoColumnPages([it],opts,true)).join('\n')+'</main>';
+      }else{
+        html+='<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div>'+renderTwoColumnPages(items,opts);
+      }
+    }else if(opts.exportFlow==='continuous'){
       html+='<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div><main class="pdf-doc pdf-single-flow">'+items.map(it=>renderSong(it.song,it.key,opts,'')).join('\n')+'</main>';
     }else{
       html+='<div class="pdf-hard-break" aria-hidden="true">&nbsp;</div><main class="pdf-doc pdf-one-song">'+items.map(it=>'<div class="pdf-page">'+renderSong(it.song,it.key,opts,'')+'</div>').join('\n')+'</main>';
@@ -7903,7 +7985,7 @@ attachDrag = function(ct){
 
 
 <script>
-/* ── v64.6 logic hardening: unified export surface, admin lock, PIN setup sheet, editor dirty guard ── */
+/* ── v64.7 logic hardening: unified export surface, admin lock, PIN setup sheet, editor dirty guard ── */
 (function(){
   const ADMIN_AUTOLOCK_MS = 10 * 60 * 1000;
   let adminLockTimer = null;
@@ -8047,6 +8129,8 @@ attachDrag = function(ct){
       title:document.getElementById('m-title')?.value||'',
       author:document.getElementById('m-author')?.value||'',
       key:document.getElementById('m-key')?.value||'',
+      timeSig:document.getElementById('m-time-sig')?.value||'',
+      bpm:document.getElementById('m-bpm')?.value||'',
       chart:document.getElementById('m-chart')?.value||'',
       cat:(typeof modalCat!=='undefined'?modalCat:'')
     });
@@ -8054,7 +8138,7 @@ attachDrag = function(ct){
   function resetSongEditorDirty(){ songEditorBaseline=songEditorState(); }
   function songEditorDirty(){ return document.getElementById('bs-modal')?.classList.contains('open') && songEditorBaseline && songEditorState()!==songEditorBaseline; }
   function confirmDiscardEditor(){ return !songEditorDirty() || confirm('Discard unsaved changes to this song?'); }
-  ['m-title','m-author','m-key','m-chart'].forEach(id=>{
+  ['m-title','m-author','m-key','m-time-sig','m-bpm','m-chart'].forEach(id=>{
     document.addEventListener('input',e=>{ if(e.target&&e.target.id===id){ /* state checked lazily */ } },true);
     document.addEventListener('change',e=>{ if(e.target&&e.target.id===id){ /* state checked lazily */ } },true);
   });
@@ -8104,7 +8188,9 @@ attachDrag = function(ct){
     if(typeof exportPageState==='object' && exportPageState){
       return {
         exportKey:'set',
-        exportLayout:exportPageState.layout,
+        exportFlow:exportPageState.flow,
+        exportColumns:exportPageState.columns,
+        exportLayout:typeof deriveExportLayout==='function'?deriveExportLayout():exportPageState.layout,
         exportFont:exportPageState.size,
         exportContent:exportPageState.mode,
         showAuthor:!!exportPageState.flags.author,
