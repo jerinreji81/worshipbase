@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v64.3</title>
+<title>WorshipBase v64.4</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -2175,7 +2175,7 @@ body.dark .set-placeholder{background:rgba(255,255,255,.04);border-color:rgba(25
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 64.3</div>
+            <div class="about-version-pill">Version 64.4</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -7999,6 +7999,302 @@ attachDrag = function(ct){
   window.exportAllPDF=function(){ try{ if(typeof closeBS==='function')closeBS('export'); }catch(e){} exportSet(getOpts()); };
   window.runExportFromPage=function(){ const opts=(typeof getExportPageOptions==='function')?getExportPageOptions():getOpts(); try{ if(typeof closeExportView==='function')closeExportView(); }catch(e){} if(typeof exportPageContext!=='undefined'&&exportPageContext==='song')exportSong(opts); else exportSet(opts); };
   window.__wb64TextPdfMode=WB64_2_MODE;
+  window.__wb64RawPdfDisabled=true;
+})();
+</script>
+
+
+<script>
+/* ── v64.4 PDF print reliability fix ──
+   1) Removes automatic window.print() from the print view so browsers do not block it.
+   2) Replaces CSS multicolumn printing with explicit two-column page grids, which are
+      far more reliable when saving to PDF from mobile/desktop browsers. */
+(function(){
+  const WB64_4_MODE='browser-print-html-vector-v64.4-explicit-two-column';
+  const PX_TO_MM=25.4/96;
+  function fileNameSafe(name,fallback){
+    const s=String(name||fallback||'WorshipBase').trim().replace(/[^a-z0-9\-_ ]+/gi,' ').replace(/\s+/g,'-').replace(/^-+|-+$/g,'');
+    return s||fallback||'WorshipBase';
+  }
+  function esc(s){
+    if(typeof escapeHtml==='function') return escapeHtml(String(s??''));
+    return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  }
+  function escSpaces(s){ return esc(String(s??'')).replace(/ /g,'&nbsp;'); }
+  function normalizeLayout(v){
+    v=String(v||'page');
+    if(v==='one') return 'page';
+    if(v==='two-col') return 'two';
+    if(v==='two') return 'two';
+    if(v==='single') return 'single';
+    if(v==='page') return 'page';
+    return 'page';
+  }
+  function getOpts(){
+    let o=null;
+    try{ if(typeof getExportPageOptions==='function' && typeof exportPageState==='object' && exportPageState) o=getExportPageOptions(); }catch(e){}
+    if(!o){ try{ if(typeof getExportOptions==='function') o=getExportOptions(); }catch(e){} }
+    o=o||{exportKey:'set',exportLayout:'page',exportFont:'standard',exportContent:'chords',showAuthor:true,showKey:true,showId:false};
+    return Object.assign({},o,{exportLayout:normalizeLayout(o.exportLayout)});
+  }
+  function printKey(song,item,opts){
+    if(!song)return 'G';
+    if(opts && opts.exportKey && opts.exportKey!=='set') return opts.exportKey==='original' ? (song.key||'G') : opts.exportKey;
+    if(item && typeof resolveSongKey==='function') return resolveSongKey(song,item);
+    return (typeof currentKey!=='undefined'&&currentKey) || song.key || 'G';
+  }
+  function profile(size,layout){
+    const two=layout==='two';
+    if(size==='compact') return {title:two?16.2:20, author:two?10.2:12, key:two?9.5:10.5, section:two?8.3:9.5, chord:two?10.4:12.2, lyric:two?12.2:14.2};
+    if(size==='large') return {title:two?18.4:24, author:two?11.2:14, key:two?10:12, section:two?8.8:10.2, chord:two?11.2:14, lyric:two?13.2:17};
+    return {title:two?17:22, author:two?10.6:13, key:two?9.8:11.2, section:two?8.5:10, chord:two?10.8:13.1, lyric:two?12.7:16};
+  }
+  function renderChordTokens(text){
+    return String(text||'').replace(/\S+/g,m=>'<span class="pdf-chord-token">'+esc(m)+'</span>');
+  }
+  function renderPairSegments(segments){
+    const items=[];
+    (segments||[]).forEach(seg=>{
+      const chord=String(seg&&seg.chord||'');
+      const lyric=String(seg&&seg.lyric!=null?seg.lyric:'');
+      const parts=(lyric.match(/\S+\s*|\s+/g) || [' ']);
+      parts.forEach((part,idx)=>{
+        const onlySpace=/^\s+$/.test(part);
+        const chordText=idx===0?chord:'';
+        items.push('<span class="pdf-seg'+(onlySpace?' spacer':'')+'"><span class="pdf-chord">'+(chordText?renderChordTokens(chordText):'&nbsp;')+'</span><span class="pdf-lyric">'+escSpaces(part||' ')+'</span></span>');
+      });
+    });
+    if(!items.length) items.push('<span class="pdf-seg"><span class="pdf-chord">&nbsp;</span><span class="pdf-lyric">&nbsp;</span></span>');
+    return '<div class="pdf-pair">'+items.join('')+'</div>';
+  }
+  function metaText(song,key,opts){
+    const bits=[];
+    if(opts.showAuthor && song.author) bits.push(song.author);
+    if(opts.showKey) bits.push('Key of '+key+(song.key!==key?' · Originally '+(song.key||'') : ''));
+    if(opts.showId) bits.push(song.songCode || (typeof ensureSongCode==='function'?ensureSongCode(song):''));
+    if(opts.exportContent==='nns') bits.push('NNS');
+    return bits.filter(Boolean).join(' · ');
+  }
+  function renderMeta(song,key,opts){
+    const txt=metaText(song,key,opts);
+    return txt?'<div class="pdf-meta">'+esc(txt)+'</div>':'';
+  }
+  function blockHtml(b){
+    if(!b) return '';
+    if(b.type==='space') return '<div class="pdf-space"></div>';
+    if(b.type==='section') return '<div class="pdf-section"><span>'+esc(String(b.text||'').toUpperCase())+'</span></div>';
+    if(b.type==='chord') return '<div class="pdf-chord-only">'+renderChordTokens(b.text||'')+'</div>';
+    if(b.type==='lyric') return '<div class="pdf-lyric-only">'+esc(b.text||'')+'</div>';
+    if(b.type==='pair-cp') return renderPairSegments(b.segments||[]);
+    if(b.type==='pair-cl'){
+      let segs=[];
+      try{ if(typeof buildCLSegments==='function') segs=buildCLSegments(b.chordText||'',b.lyricText||''); }catch(e){}
+      if(!segs.length) segs=[{chord:b.chordText||'',lyric:b.lyricText||''}];
+      return renderPairSegments(segs);
+    }
+    return '';
+  }
+  function renderBlocks(song,key,opts){
+    const blocks=(typeof buildSongExportBlocks==='function') ? buildSongExportBlocks(song,key,opts) : [{type:'lyric',text:song&&song.chart||''}];
+    return (blocks||[]).map(b=>blockHtml(b)).join('\n');
+  }
+  function renderSong(song,key,opts,extraClass){
+    if(!song) return '';
+    return '<article class="pdf-song '+(extraClass||'')+'"><header class="pdf-song-header"><h1>'+esc(song.title||'Untitled song')+'</h1>'+renderMeta(song,key,opts)+'</header><section class="pdf-chart">'+renderBlocks(song,key,opts)+'</section></article>';
+  }
+  function estimateLines(text,chars){
+    const t=String(text||'').trim();
+    if(!t) return 1;
+    return Math.max(1, Math.ceil(t.length/chars));
+  }
+  function estimateBlockHeight(b,p){
+    if(!b) return 0;
+    if(b.type==='space') return 2.4;
+    if(b.type==='section') return 5.2;
+    if(b.type==='chord') return Math.max(4.4, estimateLines(b.text||'',34)*p.chord*1.35*PX_TO_MM + .6);
+    if(b.type==='lyric') return Math.max(4.8, estimateLines(b.text||'',43)*p.lyric*1.48*PX_TO_MM + .8);
+    if(b.type==='pair-cp'){
+      let chars=0;
+      (b.segments||[]).forEach(seg=>{ chars += String(seg&&seg.lyric||'').length + String(seg&&seg.chord||'').length; });
+      const rows=Math.max(1,Math.ceil(chars/42));
+      return rows*((p.chord*1.18+p.lyric*1.38)*PX_TO_MM)+1.1;
+    }
+    if(b.type==='pair-cl'){
+      const chars=String(b.chordText||'').length+String(b.lyricText||'').length;
+      const rows=Math.max(1,Math.ceil(chars/42));
+      return rows*((p.chord*1.18+p.lyric*1.38)*PX_TO_MM)+1.1;
+    }
+    return 4;
+  }
+  function estimateHeaderHeight(song,key,opts,p){
+    const titleLines=estimateLines(song&&song.title||'Untitled song',28);
+    const meta=metaText(song,key,opts);
+    const metaLines=meta?estimateLines(meta,42):0;
+    return titleLines*p.title*1.14*PX_TO_MM + metaLines*p.author*1.34*PX_TO_MM + 4.2;
+  }
+  function songBlocks(song,key,opts){
+    const p=profile(opts.exportFont, 'two');
+    const blocks=(typeof buildSongExportBlocks==='function') ? buildSongExportBlocks(song,key,opts) : [{type:'lyric',text:song&&song.chart||''}];
+    const out=[];
+    out.push({html:'<header class="pdf-song-header"><h1>'+esc(song.title||'Untitled song')+'</h1>'+renderMeta(song,key,opts)+'</header>', h:estimateHeaderHeight(song,key,opts,p), header:true, title:song.title||'Untitled song'});
+    (blocks||[]).forEach(b=>{ out.push({html:blockHtml(b), h:estimateBlockHeight(b,p), title:song.title||'Untitled song'}); });
+    return out;
+  }
+  function flowTwoColumnPages(items,opts){
+    const columnMax=opts.exportFont==='large'?252:(opts.exportFont==='compact'?260:256);
+    const pages=[];
+    let page=null, col=0, used=0;
+    function newPage(){ page={cols:[[],[]]}; pages.push(page); col=0; used=0; }
+    function nextCol(){ if(!page)newPage(); if(col===0){ col=1; used=0; } else { newPage(); } }
+    function addRaw(html,h){ if(!page)newPage(); page.cols[col].push(html); used += h; }
+    function continuation(title){ return '<div class="pdf-cont">'+esc(title)+' continued</div>'; }
+    items.forEach(it=>{
+      if(!it||!it.song) return;
+      const blocks=songBlocks(it.song,it.key,opts);
+      if(!page)newPage();
+      const firstNeed=(blocks[0]?.h||0)+(blocks[1]?.h||0)+4;
+      if(used>0 && used+firstNeed>columnMax) nextCol();
+      addRaw('<article class="pdf-song pdf-two-song">',0);
+      const title=it.song.title||'Untitled song';
+      blocks.forEach((b,idx)=>{
+        if(used>0 && used+b.h>columnMax){
+          addRaw('</article>',0);
+          nextCol();
+          addRaw('<article class="pdf-song pdf-two-song">'+continuation(title),4.8);
+        }
+        addRaw(b.html,b.h);
+      });
+      addRaw('</article>',2.5);
+    });
+    return pages;
+  }
+  function renderTwoColumnPages(items,opts){
+    const pages=flowTwoColumnPages(items,opts);
+    return '<main class="pdf-doc pdf-two-explicit">'+pages.map(pg=>{
+      const cols=pg.cols.map(c=>'<div class="pdf-two-col">'+c.join('\n')+'</div>').join('');
+      return '<section class="pdf-two-page">'+cols+'</section>';
+    }).join('\n')+'</main>';
+  }
+  function css(themeColor,opts){
+    const p=profile(opts.exportFont,opts.exportLayout);
+    const theme=String(themeColor||'#10374A');
+    const pageMargin=opts.exportLayout==='two'?'14mm 10mm':'20mm 18mm';
+    return `
+      :root{--theme:${theme};--title:${p.title}px;--author:${p.author}px;--key:${p.key}px;--section:${p.section}px;--chord:${p.chord}px;--lyric:${p.lyric}px;}
+      *{box-sizing:border-box;}
+      html,body{margin:0;padding:0;background:#fff;color:#111;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+      @page{size:A4;margin:${pageMargin};}
+      body{padding-top:58px;}
+      .wb-print-marker{position:fixed;left:0;right:0;top:0;z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#10374A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;box-shadow:0 3px 18px rgba(0,0,0,.18);}
+      .wb-print-marker-title{font-size:13px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+      .wb-print-marker-sub{font-size:11px;opacity:.78;margin-top:1px;}
+      .wb-print-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+      .wb-print-marker button{border:0;border-radius:999px;background:#fff;color:#10374A;font-weight:850;padding:9px 13px;font-size:13px;font-family:inherit;white-space:nowrap;}
+      .wb-print-marker .wb-print-close{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.28);}
+      .pdf-cover{break-after:page;page-break-after:always;}
+      .pdf-cover-logo{width:58px;height:58px;border-radius:14px;background:var(--theme);display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;}
+      .pdf-cover-title{font-size:30px;line-height:1.1;font-weight:900;letter-spacing:-.035em;margin:0 0 8px;color:#111;}
+      .pdf-cover-sub{font-size:12px;color:#6f7881;letter-spacing:.12em;text-transform:uppercase;margin:0 0 22px;}
+      .pdf-cover-list{list-style:none;margin:0;padding:0;}
+      .pdf-cover-item{display:flex;align-items:baseline;gap:8px;padding:8px 4px;border-bottom:.5px solid #ddd;}
+      .pdf-cover-num{width:28px;flex:0 0 28px;color:#9aa2aa;font-weight:800;font-size:13px;}
+      .pdf-cover-song{flex:1;font-size:15px;font-weight:650;color:#222;min-width:0;}
+      .pdf-cover-key{font-size:12px;color:var(--theme);font-weight:850;padding:2px 9px;border:1px solid color-mix(in srgb,var(--theme) 35%,transparent);border-radius:999px;}
+      .pdf-doc{width:100%;}
+      .pdf-page{break-after:page;page-break-after:always;}
+      .pdf-page:last-child{break-after:auto;page-break-after:auto;}
+      .pdf-song{margin:0 0 9mm;}
+      .pdf-song-header{break-after:avoid;page-break-after:avoid;margin:0 0 4.2mm;}
+      .pdf-song h1{font-size:var(--title);line-height:1.14;font-weight:850;letter-spacing:-.025em;margin:0 0 1.4mm;color:#111;}
+      .pdf-meta{font-size:var(--author);line-height:1.34;color:#666;margin:0 0 .9mm;}
+      .pdf-chart{font-size:var(--lyric);}
+      .pdf-section{margin:4.4mm 0 1.6mm;break-after:avoid;page-break-after:avoid;}
+      .pdf-section:first-child{margin-top:0;}
+      .pdf-section span{display:inline-block;font-size:var(--section);line-height:1.1;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#666;background:#f0f2f3;border-radius:5px;padding:2px 7px;}
+      .pdf-pair{display:flex;flex-wrap:wrap;align-items:flex-start;column-gap:0;row-gap:.28mm;margin:0 0 .85mm;break-inside:avoid;page-break-inside:avoid;}
+      .pdf-seg{display:inline-flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;min-width:max-content;max-width:100%;vertical-align:top;}
+      .pdf-seg.spacer{min-width:.35em;}
+      .pdf-chord{font-family:"SFMono-Regular","Menlo","Consolas","Liberation Mono",monospace;font-size:var(--chord);font-weight:800;line-height:1.18;min-height:calc(var(--chord) * 1.18);color:var(--theme);white-space:pre;letter-spacing:0;}
+      .pdf-chord-token{display:inline-block;padding-right:.18em;}
+      .pdf-lyric{font-size:var(--lyric);line-height:1.38;color:#111;white-space:pre-wrap;letter-spacing:0;}
+      .pdf-lyric-only{font-size:var(--lyric);line-height:1.48;color:#111;margin:0 0 .9mm;white-space:pre-wrap;break-inside:avoid;page-break-inside:avoid;}
+      .pdf-chord-only{font-family:"SFMono-Regular","Menlo","Consolas","Liberation Mono",monospace;font-size:var(--chord);font-weight:800;line-height:1.35;color:var(--theme);white-space:pre-wrap;margin:0 0 .65mm;letter-spacing:0;break-inside:avoid;page-break-inside:avoid;}
+      .pdf-space{height:2.4mm;}
+      .pdf-single-flow .pdf-song{break-inside:auto;page-break-inside:auto;}
+      .pdf-one-song .pdf-song{margin-bottom:0;}
+      .pdf-two-explicit{width:100%;}
+      .pdf-two-page{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:10mm;break-after:page;page-break-after:always;min-height:260mm;align-items:start;}
+      .pdf-two-page:last-child{break-after:auto;page-break-after:auto;}
+      .pdf-two-col{min-width:0;overflow:visible;}
+      .pdf-two-song{margin:0 0 5.5mm;break-inside:auto;page-break-inside:auto;}
+      .pdf-two-song .pdf-song-header{margin-bottom:3mm;}
+      .pdf-two-song .pdf-section{margin:3.4mm 0 1.2mm;}
+      .pdf-two-song .pdf-pair{margin-bottom:.58mm;}
+      .pdf-two-song .pdf-lyric-only{margin-bottom:.65mm;}
+      .pdf-cont{font-size:9px;line-height:1.2;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:#777;margin:0 0 3mm;padding-bottom:1mm;border-bottom:.5px solid #ddd;}
+      @media screen{body{padding-left:24px;padding-right:24px;padding-bottom:48px}.pdf-cover,.pdf-doc{max-width:900px;margin:0 auto}.pdf-cover{padding-top:24px}.pdf-page,.pdf-two-page{padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid #e5e8ea;}.pdf-two-page{min-height:auto;}}
+      @media print{.wb-print-marker{display:none!important}body{padding-top:0!important}.pdf-page{border:0;margin:0;padding:0}.pdf-cover,.pdf-doc{max-width:none;width:100%}.pdf-cover{padding:0}.pdf-two-page{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;column-gap:10mm!important;border:0!important;margin:0!important;padding:0!important;min-height:260mm!important;break-after:page;page-break-after:always;}.pdf-two-page:last-child{break-after:auto;page-break-after:auto;}.pdf-song-header,.pdf-section,.pdf-pair,.pdf-lyric-only,.pdf-chord-only{break-inside:avoid;page-break-inside:avoid;}}
+    `;
+  }
+  function toolbar(title){
+    return '<div class="wb-print-marker"><div style="min-width:0"><div class="wb-print-marker-title">'+esc(title||'WorshipBase export')+'</div><div class="wb-print-marker-sub">Text PDF print view — v64.4 · press Save PDF when ready</div></div><div class="wb-print-actions"><button class="wb-print-close" onclick="try{if(window.opener&&!window.opener.closed){window.opener.focus();}}catch(e){}try{window.close();}catch(e){}">Back to app</button><button onclick="window.print()">Save PDF</button></div></div>';
+  }
+  function openPrintHtml(html,title,fileBase){
+    const win=window.open('','_blank');
+    if(win){
+      try{ win.document.open(); win.document.write(html); win.document.close(); if(typeof showToast==='function') showToast('Text PDF print view v64.4 opened'); return true; }
+      catch(e){ try{win.close();}catch(_e){} }
+    }
+    const blob=new Blob([html],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url; a.download=fileNameSafe(fileBase||title,'WorshipBase')+'-text-pdf-v64-4.html'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+    if(typeof showToast==='function') showToast('Text PDF HTML downloaded');
+    return false;
+  }
+  function documentStart(title,opts){
+    const theme=(typeof appPrefs==='object'&&appPrefs.theme)||'#10374A';
+    return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(title||'WorshipBase PDF')+'</title><style>'+css(theme,opts)+'</style></head><body>'+toolbar(title);
+  }
+  function coverHtml(setName,items,opts){
+    const contentLabel=opts.exportContent==='lyrics'?'Lyrics only':(opts.exportContent==='nns'?'NNS':'Lyrics + chords');
+    const layoutLabel=opts.exportLayout==='two'?'Two-column':(opts.exportLayout==='single'?'Single column':'One song / page');
+    const rows=items.map((it,i)=>'<li class="pdf-cover-item"><span class="pdf-cover-num">'+String(i+1).padStart(2,'0')+'</span><span class="pdf-cover-song">'+esc(it.song.title||'Untitled song')+'</span><span class="pdf-cover-key">'+esc(it.key)+'</span></li>').join('');
+    return '<section class="pdf-cover"><div class="pdf-cover-logo"><svg width="40" height="40" viewBox="0 0 34 34" fill="none"><path d="M3 10L9 26L14.5 16.5L18 22L21.5 16.5L27 26L33 10" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="31" r="1.8" fill="white" opacity=".5"/></svg></div><h1 class="pdf-cover-title">'+esc(setName)+'</h1><div class="pdf-cover-sub">'+items.length+' song'+(items.length!==1?'s':'')+' · '+layoutLabel+' · '+contentLabel+'</div><ul class="pdf-cover-list">'+rows+'</ul></section>';
+  }
+  function exportSong(opts){
+    if(typeof currentSong==='undefined'||!currentSong)return;
+    opts=Object.assign({},opts||getOpts(),{exportLayout:normalizeLayout((opts||getOpts()).exportLayout)});
+    const key=printKey(currentSong,null,opts);
+    const title=currentSong.title||'Song';
+    let html=documentStart('Text PDF export · '+title,opts);
+    if(opts.exportLayout==='two') html+=renderTwoColumnPages([{song:currentSong,item:null,key}],opts);
+    else html+='<main class="pdf-doc pdf-one-song"><div class="pdf-page">'+renderSong(currentSong,key,opts,'')+'</div></main>';
+    html+='</body></html>';
+    openPrintHtml(html,'Text PDF export · '+title,title);
+  }
+  function exportSet(opts){
+    const sl=(typeof getSetList==='function'?getSetList():[]);
+    if(!sl.length){alert('No songs in set list.');return;}
+    opts=Object.assign({},opts||getOpts(),{exportLayout:normalizeLayout((opts||getOpts()).exportLayout)});
+    const items=sl.map(item=>{const song=findSongById(item.songId);return song?{song,item,key:printKey(song,item,opts)}:null;}).filter(Boolean);
+    const setName=(typeof getActiveSetName==='function'?getActiveSetName():'Worship Set List')||'Worship Set List';
+    let html=documentStart('Text PDF export · '+setName,opts)+coverHtml(setName,items,opts);
+    if(opts.exportLayout==='two'){
+      html+=renderTwoColumnPages(items,opts);
+    }else if(opts.exportLayout==='single'){
+      html+='<main class="pdf-doc pdf-single-flow">'+items.map(it=>renderSong(it.song,it.key,opts,'')).join('\n')+'</main>';
+    }else{
+      html+='<main class="pdf-doc pdf-one-song">'+items.map(it=>'<div class="pdf-page">'+renderSong(it.song,it.key,opts,'')+'</div>').join('\n')+'</main>';
+    }
+    html+='</body></html>';
+    openPrintHtml(html,'Text PDF export · '+setName,setName);
+  }
+  window.exportSongFromOptions=function(opts){ exportSong(opts); };
+  window.exportSetListFromOptions=function(opts){ exportSet(opts); };
+  window.exportPDF=function(){ exportSong(getOpts()); };
+  window.exportAllPDF=function(){ try{ if(typeof closeBS==='function')closeBS('export'); }catch(e){} exportSet(getOpts()); };
+  window.runExportFromPage=function(){ const opts=(typeof getExportPageOptions==='function')?getExportPageOptions():getOpts(); try{ if(typeof closeExportView==='function')closeExportView(); }catch(e){} if(typeof exportPageContext!=='undefined'&&exportPageContext==='song')exportSong(opts); else exportSet(opts); };
+  window.__wb64TextPdfMode=WB64_4_MODE;
   window.__wb64RawPdfDisabled=true;
 })();
 </script>
