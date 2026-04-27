@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v69.14</title>
+<title>WorshipBase v70</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -3054,6 +3054,17 @@ body.dark .key-option-btn.active{background:var(--accent-surface);border-color:v
 body.dark .choice-dot{background:#101010;border-color:rgba(255,255,255,.18);}
 .performance-mode .playback-btn,.performance-mode .sv-top-actions{display:none!important;}
 
+/* ── v70 polish: cleaner set header, compact set action, and safer playback launch ── */
+#setlist-section .sl-hdr{justify-content:flex-end;padding-top:6px;}
+#setlist-section .sl-hdr-meta{display:none;}
+#setlist-section #sl-count{display:none!important;}
+#setlist-section .sl-option-btn.icon-only{width:36px;height:36px;min-width:36px;padding:0;border-radius:50%;justify-content:center;gap:0;background:var(--surface-tint);}
+#setlist-section .sl-option-btn.icon-only svg{display:block;}
+.sv-set-btn{width:36px!important;height:36px!important;min-width:36px!important;padding:0!important;border-radius:50%!important;background:var(--bg2)!important;border:.5px solid var(--bdr2)!important;color:var(--tc)!important;gap:0!important;box-shadow:none!important;}
+.sv-set-btn svg{display:block;pointer-events:none;}
+body.dark .sv-set-btn{background:rgba(255,255,255,.04)!important;border-color:rgba(255,255,255,.08)!important;color:var(--accent)!important;}
+body.dark #setlist-section .sl-option-btn.icon-only{background:rgba(143,180,255,.10)!important;border-color:rgba(143,180,255,.22)!important;color:var(--accent)!important;}
+
 </style>
 </head>
 <body>
@@ -3182,7 +3193,7 @@ body.dark .choice-dot{background:#101010;border-color:rgba(255,255,255,.18);}
         
       </div>
       <div class="sl-btns">
-        <button class="sl-option-btn" onclick="openSetListOptions()"><span>Options</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5" r="1.8" fill="currentColor"></circle><circle cx="12" cy="12" r="1.8" fill="currentColor"></circle><circle cx="12" cy="19" r="1.8" fill="currentColor"></circle></svg></button>
+        <button class="sl-option-btn icon-only" onclick="openSetListOptions()" aria-label="Set options" title="Set options"><svg width="18" height="4" viewBox="0 0 18 4" fill="none" aria-hidden="true"><circle cx="2" cy="2" r="2" fill="currentColor"></circle><circle cx="9" cy="2" r="2" fill="currentColor"></circle><circle cx="16" cy="2" r="2" fill="currentColor"></circle></svg></button>
         <button class="sl-clear-btn" onclick="clearSet()">Clear</button>
       </div>
     </div>
@@ -3368,7 +3379,7 @@ body.dark .choice-dot{background:#101010;border-color:rgba(255,255,255,.18);}
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 69.14</div>
+            <div class="about-version-pill">Version 70</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -3599,8 +3610,8 @@ body.dark .choice-dot{background:#101010;border-color:rgba(255,255,255,.18);}
           <button class="seg-btn" id="seg-nns" onclick="setViewMode('nns')">NNS</button>
         </div>
         <div class="sv-inline-actions">
-          <button class="sv-set-btn" id="sv-add-set-btn" type="button" aria-label="Add to set list" onclick="openSetDestChooser(currentSong)">
-            <span class="sv-set-plus">+</span><span>Set</span>
+          <button class="sv-set-btn" id="sv-add-set-btn" type="button" aria-label="Add to set list" title="Add to set list" onclick="openSetDestChooser(currentSong)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 6h8M5 12h8M5 18h6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path><path d="M17 14v6M14 17h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
           </button>
           <button class="sv-fav-btn" id="sv-favorite-btn" type="button" aria-label="Add to favourites" onclick="toggleCurrentFavorite()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5l-1.2-1.08C5.2 14.36 2 11.46 2 7.9 2 5.08 4.24 3 7.05 3c1.59 0 3.12.74 4.1 1.9C12.83 3.74 14.36 3 15.95 3 18.76 3 21 5.08 21 7.9c0 3.56-3.2 6.46-8.8 11.52L12 20.5z"></path></svg>
@@ -3726,10 +3737,6 @@ body.dark .choice-dot{background:#101010;border-color:rgba(255,255,255,.18);}
       <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M4 2.5h9v12H4z" stroke="currentColor" stroke-width="1.4"></path><path d="M6.5 6h4M6.5 8.5h4M6.5 11h2.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
       Notes &amp; cues<span class="song-note-badge hidden" id="mi-song-notes-badge">NOTE</span>
     </button>
-    <button class="mi" onclick="openSetDestChooser(currentSong);closeBS('songmenu')">
-      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M8.5 3v11M3 8.5h11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path><rect x="2" y="2" width="13" height="13" rx="3" stroke="currentColor" stroke-width="1.4"></rect></svg></span>
-      <span id="mi-setlist-label">Add to set list…</span>
-    </button>
     <button class="mi" id="mi-presentation" onclick="togglePresentationMode();closeBS('songmenu')">
       <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="2" y="3" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.4"></rect><path d="M6 6.5h5M5 9h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
       Focus mode<span class="mi-check">✓</span>
@@ -3846,8 +3853,8 @@ line 18 | Hold / pause"></textarea>
           <input type="url" id="m-spotify-url" placeholder="https://open.spotify.com/..." inputmode="url">
         </div>
         <div>
-          <label>YouTube link</label>
-          <input type="url" id="m-youtube-url" placeholder="https://youtube.com/..." inputmode="url">
+          <label>YouTube / YouTube Music link</label>
+          <input type="url" id="m-youtube-url" placeholder="https://youtube.com or music.youtube.com" inputmode="url">
         </div>
       </div>
       <label>Chart <span style="color:var(--txt3);font-weight:400">(lyrics/chords)</span></label>
@@ -6403,7 +6410,7 @@ function downloadTextFile(filename,text,mime='application/json'){
 }
 function exportMySongsJSON(){
   const mine=songs.filter(isMySong).map(buildUserSongPayload);
-  const data={format:'worshipbase-my-songs',version:'69.14',exportedAt:new Date().toISOString(),count:mine.length,songs:mine};
+  const data={format:'worshipbase-my-songs',version:'70',exportedAt:new Date().toISOString(),count:mine.length,songs:mine};
   downloadTextFile('worshipbase-my-songs.json',JSON.stringify(data,null,2));
   showToast("Exported "+mine.length+" My Songs");
 }
@@ -6413,7 +6420,7 @@ function safeDownloadName(name,fallback='worshipbase'){
 function buildPortableSongPayload(song,includeNotes=true){
   const copy=buildUserSongPayload(song||{});
   copy.format='worshipbase-song';
-  copy.version='69.13';
+  copy.version='70';
   if(includeNotes){
     const mem=getSongMemory(song);
     if(mem&&Object.keys(mem).length)copy.worshipbaseNotes={...mem};
@@ -6422,7 +6429,7 @@ function buildPortableSongPayload(song,includeNotes=true){
 }
 function exportCurrentSongJSON(){
   if(!currentSong){showToast('Open a song first');return;}
-  const payload={format:'worshipbase-song',version:'69.14',exportedAt:new Date().toISOString(),song:buildPortableSongPayload(currentSong,true)};
+  const payload={format:'worshipbase-song',version:'70',exportedAt:new Date().toISOString(),song:buildPortableSongPayload(currentSong,true)};
   downloadTextFile(safeDownloadName(currentSong.title,'worshipbase-song')+'.json',JSON.stringify(payload,null,2));
   showToast('Song JSON exported');
 }
@@ -6435,7 +6442,7 @@ function buildNotesCuesExportRows(){
 }
 function exportNotesCuesJSON(){
   const notes=buildNotesCuesExportRows();
-  const data={format:'worshipbase-notes-cues',version:'69.14',exportedAt:new Date().toISOString(),count:notes.length,notes};
+  const data={format:'worshipbase-notes-cues',version:'70',exportedAt:new Date().toISOString(),count:notes.length,notes};
   downloadTextFile('worshipbase-notes-cues.json',JSON.stringify(data,null,2));
   showToast('Exported '+notes.length+' notes/cues');
 }
@@ -6443,7 +6450,7 @@ function exportAppBackupJSON(){
   const admin=!!(adminUnlocked||manageMode);
   const backupSongs=(admin?(songs||[]):(songs||[]).filter(isMySong)).map(s=>buildPortableSongPayload(s,true));
   const data={
-    format:'worshipbase-app-backup',version:'69.14',exportedAt:new Date().toISOString(),
+    format:'worshipbase-app-backup',version:'70',exportedAt:new Date().toISOString(),
     scope:admin?'admin-full-library':'local-user',
     songs:backupSongs,
     songMemory:loadSongMemory(),
@@ -8127,7 +8134,7 @@ function collectPlaybackLinks(song=currentSong){
   const links=[];
   const add=(label,url)=>{url=String(url||'').trim(); if(/^https?:\/\//i.test(url))links.push({label,url});};
   add('Spotify',song.spotifyUrl||song.spotify||song.spotifyLink);
-  add('YouTube',song.youtubeUrl||song.youtube||song.youtubeLink);
+  add('YouTube / YouTube Music',song.youtubeUrl||song.youtube||song.youtubeLink);
   if(Array.isArray(song.playbackLinks))song.playbackLinks.forEach(l=>add(l.label||l.name||'Playback',l.url||l.href));
   return links;
 }
@@ -8135,16 +8142,30 @@ function updatePlaybackButton(){
   const btn=document.getElementById('song-playback-btn');
   if(btn)btn.classList.toggle('empty',!collectPlaybackLinks(currentSong).length);
 }
+function openExternalPlaybackUrl(url){
+  url=String(url||'').trim();
+  if(!/^https?:\/\//i.test(url)){showToast('Playback link must start with https://');return;}
+  // Real anchor click avoids the blank iOS browser sheet left behind by window.open().
+  const a=document.createElement('a');
+  a.href=url;
+  a.target='_blank';
+  a.rel='noopener noreferrer';
+  a.style.position='fixed';
+  a.style.left='-9999px';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{try{a.remove();}catch(e){}},250);
+}
 function openPlaybackOptions(){
   const links=collectPlaybackLinks(currentSong);
-  if(!links.length){showToast('Add a Spotify or YouTube link in the song editor');return;}
+  if(!links.length){showToast('Add a Spotify or YouTube / YouTube Music link in the song editor');return;}
   const wrap=document.getElementById('playback-list');
   if(wrap){
     wrap.innerHTML=links.map((l,i)=>`<button class="mi" type="button" data-playback-index="${i}"><span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M6.5 4.5v8l6-4-6-4z" fill="currentColor"/></svg></span>${escapeHtml(l.label)}</button>`).join('');
     wrap.querySelectorAll('[data-playback-index]').forEach(btn=>btn.addEventListener('click',()=>{
       const link=links[Number(btn.dataset.playbackIndex)];
-      if(link?.url)window.open(link.url,'_blank','noopener');
       closeBS('playback');
+      if(link?.url)setTimeout(()=>openExternalPlaybackUrl(link.url),60);
     }));
   }
   openBS('playback');
