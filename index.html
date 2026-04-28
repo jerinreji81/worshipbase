@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v70.1</title>
+<title>WorshipBase v70.2</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -3188,7 +3188,7 @@ body.dark #setlist-section .sl-option-btn.icon-only{background:rgba(143,180,255,
       </button>
     </div>
     <div class="sl-hdr">
-      <div class="sl-hdr-meta">
+      <div class="sl-hdr-meta" style="display: flex;">
         <span class="sl-lbl" id="sl-count">0 songs</span>
         
       </div>
@@ -3258,7 +3258,7 @@ body.dark #setlist-section .sl-option-btn.icon-only{background:rgba(143,180,255,
         <div class="ss-title">Library</div>
         <div class="ss-card">
           <div class="ss-row" onclick="openBS('defaultkey')">
-            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="5.5" cy="10.5" r="3" stroke="currentColor" stroke-width="1.5"></circle><path d="M8.5 10.5h5M12 8.5v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></div>
+            <div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 5.2h10M3 8h10M3 10.8h10" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" opacity=".42"></path><path d="M9.6 3.4v7.1a2.1 2.1 0 1 1-1.1-1.85" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"></path><path d="M11.2 4.2l2-.62v1.8l-2 .62V4.2z" fill="currentColor"></path></svg></div>
             <div class="ss-body"><div class="ss-lbl">Default display key</div><div class="ss-sub" id="def-key-sub">Show songs in their original key</div></div>
             <div class="ss-right"><span class="ss-val" id="def-key-val">Original</span><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
           </div>
@@ -3585,7 +3585,7 @@ body.dark #setlist-section .sl-option-btn.icon-only{background:rgba(143,180,255,
       </button>
       <div class="sv-pres-title" id="sv-pres-title"></div>
       <!-- Song action buttons -->
-      <div class="sv-top-actions"><button class="pad-btn" id="song-pad-btn" type="button" title="Pad" aria-label="Open pad"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 14c2.2-4.8 5.1-7.2 8.5-7.2 3.1 0 5.6 1.8 7.5 5.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path><path d="M5 17c1.9-2.3 4.1-3.5 6.7-3.5 2.5 0 4.6 1.1 6.3 3.3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path><path d="M8 20c1.1-.9 2.4-1.4 4-1.4s2.9.5 4 1.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg></button>
+      <div class="sv-top-actions"><button class="pad-btn pad-text" id="song-pad-btn" type="button" title="Pad" aria-label="Open pad controls">Pad</button>
         <button class="playback-btn" id="song-playback-btn" type="button" aria-label="Open playback links" title="Playback" onclick="openPlaybackOptions()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5.5v13l10-6.5-10-6.5z" fill="currentColor"></path></svg>
         </button>
@@ -4115,7 +4115,7 @@ line 18 | Hold / pause"></textarea>
       Set notes
     </button>
     <button class="mi" onclick="openSetAllKeySheet();closeBS('setoptions')">
-      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="6.2" cy="10.6" r="2.6" stroke="currentColor" stroke-width="1.4"></circle><path d="M8.8 10.6h5M12.2 8.7v3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
+      <span class="mi-icon-wrap"><svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true"><path d="M3.2 5.4h10.6M3.2 8.4h10.6M3.2 11.4h10.6" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" opacity=".42"></path><path d="M9.6 3.3v7.6a2.2 2.2 0 1 1-1.15-1.95" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"></path><path d="M11.4 4.2l2.1-.65v1.9l-2.1.65V4.2z" fill="currentColor"></path></svg></span>
       Set key
     </button>
     <button class="bs-cancel" onclick="closeBS('setoptions')">Cancel</button>
@@ -11982,6 +11982,213 @@ body.dark .pad-chip.active,body.dark .pad-key.active{background:var(--accent-sur
   window.WorshipBasePad={start:startPad,stop:stopPad,setKey:setPadKey,setMode:setPadMode,state:PAD_STATE};
 })();
 </script><div class="bs-bg" id="bs-pad" onclick="closeBSBg(event,'pad')"><div class="bs"><div class="bs-handle"></div><div class="bs-title">Pad</div><div class="pad-panel"><div class="pad-status-card"><div class="pad-status-copy"><div class="pad-status-title" id="pad-status-title">Pad ready</div><div class="pad-status-sub" id="pad-status-sub">Ambient · C</div></div><button class="pad-power" id="pad-power-btn" type="button">Start</button></div><div class="pad-row-title">Type</div><div class="pad-seg"><button class="pad-chip active" type="button" data-pad-mode="ambient">Ambient</button><button class="pad-chip" type="button" data-pad-mode="drone">Drone</button></div><div class="pad-row-title">Key</div><div class="pad-key-grid"><button class="pad-key active" type="button" data-pad-key="C">C</button><button class="pad-key" type="button" data-pad-key="C#">C#</button><button class="pad-key" type="button" data-pad-key="D">D</button><button class="pad-key" type="button" data-pad-key="Eb">Eb</button><button class="pad-key" type="button" data-pad-key="E">E</button><button class="pad-key" type="button" data-pad-key="F">F</button><button class="pad-key" type="button" data-pad-key="F#">F#</button><button class="pad-key" type="button" data-pad-key="G">G</button><button class="pad-key" type="button" data-pad-key="Ab">Ab</button><button class="pad-key" type="button" data-pad-key="A">A</button><button class="pad-key" type="button" data-pad-key="Bb">Bb</button><button class="pad-key" type="button" data-pad-key="B">B</button></div><div class="pad-row-title">Volume</div><div class="pad-volume-row"><input id="pad-volume" type="range" min="2" max="60" step="1" value="22"><span class="pad-volume-label" id="pad-volume-label">22%</span></div><p class="pad-note">Prototype uses generated Web Audio so there are no bundled audio files yet. Tap Start first; iPhone will not allow audio to begin silently.</p></div><button class="bs-cancel" type="button" onclick="closeBS('pad')">Close</button></div></div>
+
+
+<style>
+/* ── v70.2 corrections: visible set counter, clear pad affordance, musical-key icons ── */
+#setlist-section .sl-hdr{
+  justify-content:space-between!important;
+  align-items:center!important;
+  padding:8px 16px 8px!important;
+}
+#setlist-section .sl-hdr-meta{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+#setlist-section #sl-count{
+  display:inline-block!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--txt3)!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  line-height:1.2!important;
+  letter-spacing:.01em!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+}
+#setlist-section .sl-btns{margin-left:12px!important;flex-shrink:0!important;}
+body.dark #setlist-section #sl-count{color:var(--txt3)!important;background:transparent!important;border:0!important;}
+
+.pad-btn.pad-text{
+  font-size:10.5px!important;
+  font-weight:900!important;
+  letter-spacing:-.02em!important;
+  color:var(--tc)!important;
+}
+.pad-btn.pad-text.on{color:var(--tc)!important;}
+body.dark .pad-btn.pad-text{color:var(--accent)!important;}
+
+.ss-ico svg[aria-hidden="true"], .mi-icon-wrap svg[aria-hidden="true"]{
+  overflow:visible;
+}
+</style>
+<script>
+(function(){
+  // Keep the Set List counter immediately visible, in the same quiet style as Library count.
+  function updateVisibleSetCounter(){
+    try{
+      const sl=(typeof getSetList==='function'?getSetList():[])||[];
+      const countEl=document.getElementById('sl-count');
+      if(countEl) countEl.textContent=sl.length+' song'+(sl.length===1?'':'s');
+      const meta=document.querySelector('#setlist-section .sl-hdr-meta');
+      if(meta) meta.style.display='flex';
+    }catch(e){}
+  }
+  const oldRenderSetList_v702=typeof renderSetList==='function'?renderSetList:null;
+  if(oldRenderSetList_v702){
+    renderSetList=function(){
+      const out=oldRenderSetList_v702.apply(this,arguments);
+      updateVisibleSetCounter();
+      return out;
+    };
+    try{window.renderSetList=renderSetList;}catch(e){}
+  }
+  document.addEventListener('DOMContentLoaded',updateVisibleSetCounter);
+  setTimeout(updateVisibleSetCounter,0);
+  setTimeout(updateVisibleSetCounter,450);
+
+  // Make the pad control obvious and re-bind it robustly.
+  window.openPadSheet=function(){
+    try{
+      const state=window.WorshipBasePad&&window.WorshipBasePad.state;
+      if(state && !state.on && window.WorshipBasePad.setKey){
+        const k=(typeof currentKey!=='undefined'&&currentKey)||(typeof currentSong!=='undefined'&&currentSong&&currentSong.key)||'C';
+        window.WorshipBasePad.setKey(k);
+      }
+    }catch(e){}
+    const sheet=document.getElementById('bs-pad');
+    if(!sheet){ if(typeof showToast==='function')showToast('Pad controls not ready'); return; }
+    if(typeof openBS==='function')openBS('pad');
+    else sheet.classList.add('open');
+  };
+  function fixPadButton(){
+    const btn=document.getElementById('song-pad-btn');
+    if(!btn)return;
+    btn.classList.add('pad-text');
+    btn.innerHTML='Pad';
+    btn.setAttribute('aria-label','Open pad controls');
+    btn.setAttribute('title','Pad');
+    btn.onclick=function(ev){ev.preventDefault();ev.stopPropagation();window.openPadSheet();};
+  }
+  document.addEventListener('click',function(ev){
+    const btn=ev.target&&ev.target.closest&&ev.target.closest('#song-pad-btn');
+    if(btn){ev.preventDefault();ev.stopPropagation();window.openPadSheet();}
+  },true);
+  document.addEventListener('DOMContentLoaded',fixPadButton);
+  setTimeout(fixPadButton,0);
+  setTimeout(fixPadButton,450);
+
+  // Stronger, more reliable metronome unlock/click for iPhone/PWA.
+  async function ensureMetroAudio(){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)throw new Error('AudioContext not supported');
+    if(typeof metronomeAudioCtx==='undefined' || !metronomeAudioCtx){
+      metronomeAudioCtx=new AC({latencyHint:'interactive'});
+    }
+    if(metronomeAudioCtx.state==='suspended') await metronomeAudioCtx.resume();
+    // Tiny unlock pulse; must be called from the user's Start tap.
+    try{
+      const g=metronomeAudioCtx.createGain();
+      const o=metronomeAudioCtx.createOscillator();
+      g.gain.value=0.00001;
+      o.frequency.value=60;
+      o.connect(g); g.connect(metronomeAudioCtx.destination);
+      o.start();
+      o.stop(metronomeAudioCtx.currentTime+0.018);
+    }catch(e){}
+    return metronomeAudioCtx;
+  }
+  function flashMetro_v702(downbeat){
+    const flash=document.getElementById('metro-flash');
+    if(flash){
+      flash.classList.toggle('downbeat',!!downbeat);
+      flash.classList.add('on');
+      setTimeout(()=>flash.classList.remove('on','downbeat'),downbeat?155:115);
+    }
+  }
+  function soundMetro_v702(downbeat){
+    try{
+      const ctx=metronomeAudioCtx;
+      if(!ctx || ctx.state!=='running'){
+        ensureMetroAudio().then(()=>soundMetro_v702(downbeat)).catch(()=>{});
+        return;
+      }
+      const now=ctx.currentTime;
+      const out=ctx.createGain();
+      out.gain.setValueAtTime(0.0001,now);
+      out.gain.exponentialRampToValueAtTime(downbeat?0.62:0.42,now+0.006);
+      out.gain.exponentialRampToValueAtTime(0.0001,now+(downbeat?0.105:0.082));
+      out.connect(ctx.destination);
+
+      const osc=ctx.createOscillator();
+      osc.type='square';
+      osc.frequency.setValueAtTime(downbeat?1760:1174.66,now);
+      const filt=ctx.createBiquadFilter();
+      filt.type='bandpass';
+      filt.frequency.setValueAtTime(downbeat?2200:1500,now);
+      filt.Q.value=2.8;
+      osc.connect(filt); filt.connect(out);
+      osc.start(now); osc.stop(now+0.12);
+
+      // Add a tiny transient click so it cuts through phone speakers.
+      const click=ctx.createOscillator();
+      const clickGain=ctx.createGain();
+      click.type='triangle';
+      click.frequency.setValueAtTime(downbeat?2800:2100,now);
+      clickGain.gain.setValueAtTime(0.0001,now);
+      clickGain.gain.exponentialRampToValueAtTime(downbeat?0.36:0.24,now+0.003);
+      clickGain.gain.exponentialRampToValueAtTime(0.0001,now+0.026);
+      click.connect(clickGain); clickGain.connect(ctx.destination);
+      click.start(now); click.stop(now+0.035);
+    }catch(e){
+      console.warn('Metronome sound failed',e);
+    }
+  }
+  try{
+    metronomeTick=function(){
+      metronomeBeat++;
+      const downbeat=metronomeBeat%4===1;
+      flashMetro_v702(downbeat);
+      soundMetro_v702(downbeat);
+    };
+    startMetronome=async function(){
+      if(metronomeOn)return;
+      try{await ensureMetroAudio();}
+      catch(e){ if(typeof showToast==='function')showToast('Audio could not start'); return; }
+      metronomeOn=true;
+      metronomeBeat=0;
+      metronomeTick();
+      if(typeof scheduleMetronome==='function')scheduleMetronome();
+      if(typeof updateMetronomeUI==='function')updateMetronomeUI();
+      if(typeof showToast==='function')showToast('Metronome on');
+    };
+    stopMetronome=function(){
+      metronomeOn=false;
+      clearTimeout(metronomeTimer);
+      metronomeTimer=null;
+      if(typeof updateMetronomeUI==='function')updateMetronomeUI();
+    };
+    toggleMetronome=function(){
+      metronomeOn?stopMetronome():startMetronome();
+      try{if(presentationMode)setMetronomePanel(true);}catch(e){}
+    };
+    window.metronomeTick=metronomeTick;
+    window.startMetronome=startMetronome;
+    window.stopMetronome=stopMetronome;
+    window.toggleMetronome=toggleMetronome;
+  }catch(e){console.warn('Metronome v70.2 patch failed',e);}
+})();
+</script>
 
 
 
