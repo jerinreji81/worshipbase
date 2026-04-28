@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v70.2</title>
+<title>WorshipBase v70.3</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -3379,7 +3379,7 @@ body.dark #setlist-section .sl-option-btn.icon-only{background:rgba(143,180,255,
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 70</div>
+            <div class="about-version-pill">Version 70.3</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -11981,7 +11981,7 @@ body.dark .pad-chip.active,body.dark .pad-key.active{background:var(--accent-sur
   updatePadUI();
   window.WorshipBasePad={start:startPad,stop:stopPad,setKey:setPadKey,setMode:setPadMode,state:PAD_STATE};
 })();
-</script><div class="bs-bg" id="bs-pad" onclick="closeBSBg(event,'pad')"><div class="bs"><div class="bs-handle"></div><div class="bs-title">Pad</div><div class="pad-panel"><div class="pad-status-card"><div class="pad-status-copy"><div class="pad-status-title" id="pad-status-title">Pad ready</div><div class="pad-status-sub" id="pad-status-sub">Ambient · C</div></div><button class="pad-power" id="pad-power-btn" type="button">Start</button></div><div class="pad-row-title">Type</div><div class="pad-seg"><button class="pad-chip active" type="button" data-pad-mode="ambient">Ambient</button><button class="pad-chip" type="button" data-pad-mode="drone">Drone</button></div><div class="pad-row-title">Key</div><div class="pad-key-grid"><button class="pad-key active" type="button" data-pad-key="C">C</button><button class="pad-key" type="button" data-pad-key="C#">C#</button><button class="pad-key" type="button" data-pad-key="D">D</button><button class="pad-key" type="button" data-pad-key="Eb">Eb</button><button class="pad-key" type="button" data-pad-key="E">E</button><button class="pad-key" type="button" data-pad-key="F">F</button><button class="pad-key" type="button" data-pad-key="F#">F#</button><button class="pad-key" type="button" data-pad-key="G">G</button><button class="pad-key" type="button" data-pad-key="Ab">Ab</button><button class="pad-key" type="button" data-pad-key="A">A</button><button class="pad-key" type="button" data-pad-key="Bb">Bb</button><button class="pad-key" type="button" data-pad-key="B">B</button></div><div class="pad-row-title">Volume</div><div class="pad-volume-row"><input id="pad-volume" type="range" min="2" max="60" step="1" value="22"><span class="pad-volume-label" id="pad-volume-label">22%</span></div><p class="pad-note">Prototype uses generated Web Audio so there are no bundled audio files yet. Tap Start first; iPhone will not allow audio to begin silently.</p></div><button class="bs-cancel" type="button" onclick="closeBS('pad')">Close</button></div></div>
+</script><div class="bs-bg" id="bs-pad" onclick="closeBSBg(event,'pad')"><div class="bs"><div class="bs-handle"></div><div class="bs-title">Pad</div><div class="pad-panel"><div class="pad-status-card"><div class="pad-status-copy"><div class="pad-status-title" id="pad-status-title">Real C pad ready</div><div class="pad-status-sub" id="pad-status-sub">Ambient · C</div></div><button class="pad-power" id="pad-power-btn" type="button">Start</button></div><div class="pad-row-title">Type</div><div class="pad-seg"><button class="pad-chip active" type="button" data-pad-mode="ambient" title="Ambient C pad file loaded">Ambient</button><button class="pad-chip" type="button" data-pad-mode="drone" disabled="" title="Drone files not added yet">Drone</button></div><div class="pad-row-title">Key</div><div class="pad-key-grid"><button class="pad-key active" type="button" data-pad-key="C" title="C pad file loaded">C</button><button class="pad-key" type="button" data-pad-key="C#" disabled="" title="Add this key when a pad file is available">C#</button><button class="pad-key" type="button" data-pad-key="D" disabled="" title="Add this key when a pad file is available">D</button><button class="pad-key" type="button" data-pad-key="Eb" disabled="" title="Add this key when a pad file is available">Eb</button><button class="pad-key" type="button" data-pad-key="E" disabled="" title="Add this key when a pad file is available">E</button><button class="pad-key" type="button" data-pad-key="F" disabled="" title="Add this key when a pad file is available">F</button><button class="pad-key" type="button" data-pad-key="F#" disabled="" title="Add this key when a pad file is available">F#</button><button class="pad-key" type="button" data-pad-key="G" disabled="" title="Add this key when a pad file is available">G</button><button class="pad-key" type="button" data-pad-key="Ab" disabled="" title="Add this key when a pad file is available">Ab</button><button class="pad-key" type="button" data-pad-key="A" disabled="" title="Add this key when a pad file is available">A</button><button class="pad-key" type="button" data-pad-key="Bb" disabled="" title="Add this key when a pad file is available">Bb</button><button class="pad-key" type="button" data-pad-key="B" disabled="" title="Add this key when a pad file is available">B</button></div><div class="pad-row-title">Volume</div><div class="pad-volume-row"><input id="pad-volume" type="range" min="2" max="60" step="1" value="22"><span class="pad-volume-label" id="pad-volume-label">22%</span></div><p class="pad-note"><strong>Real audio test:</strong> using the uploaded “Pads Worship C.mp3” file. This build only includes C ambient pad audio. Other keys need their own audio files later.<br><span class="pad-source">Audio file loaded · C pad</span></p></div><button class="bs-cancel" type="button" onclick="closeBS('pad')">Close</button></div></div>
 
 
 <style>
@@ -12187,6 +12187,207 @@ body.dark .pad-btn.pad-text{color:var(--accent)!important;}
     window.stopMetronome=stopMetronome;
     window.toggleMetronome=toggleMetronome;
   }catch(e){console.warn('Metronome v70.2 patch failed',e);}
+})();
+</script>
+
+
+<style>
+/* ── v70.3 real audio pad test + media metronome ───────────────── */
+#bs-pad .pad-chip[disabled],#bs-pad .pad-key[disabled]{opacity:.38;cursor:default;}
+#bs-pad .pad-chip[disabled]:active,#bs-pad .pad-key[disabled]:active{transform:none;}
+#bs-pad .pad-note strong{color:var(--txt2);}
+#bs-pad .pad-source{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:6px 9px;border-radius:999px;background:var(--surface-tint);border:1px solid var(--surface-border);font-size:11px;font-weight:800;color:var(--txt2);}
+.metro-silent-note{font-size:12px;color:var(--txt3);line-height:1.45;margin-top:8px;}
+</style>
+<script>
+(function(){
+  'use strict';
+  const WB_REAL_PAD_C_SRC='assets/pads/pad-c.mp3';
+  const WB_SILENT_SRC='data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU0UAAAAOAAADTGF2ZjYxLjcuMTAwAAAAAAAAAAAAAAD/+0DAAAAAAAAAAAAAAAAAAAAAAABJbmZvAAAADwAAAAgAAAP2AEhISEhISEhISEhISGJiYmJiYmJiYmJiYnx8fHx8fHx8fHx8fHyWlpaWlpaWlpaWlpaxsbGxsbGxsbGxsbGxy8vLy8vLy8vLy8vL5eXl5eXl5eXl5eXl5f///////////////wAAAABMYXZjNjEuMTkAAAAAAAAAAAAAAAAkAr4AAAAAAAAD9jtXoogAAAAAAP/7EMQAA8AAAaQAAAAgAAA0gAAABExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVV//sQxCmDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVX/+xDEUwPAAAGkAAAAIAAANIAAAARVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/7EMR8g8AAAaQAAAAgAAA0gAAABFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxKYDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+xDEz4PAAAGkAAAAIAAANIAAAARVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/7EMTWA8AAAaQAAAAgAAA0gAAABFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxNYDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVU=';
+  const WB_CLICK_SRC='data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU0UAAAAOAAADTGF2ZjYxLjcuMTAwAAAAAAAAAAAAAAD/+0DAAAAAAAAAAAAAAAAAAAAAAABYaW5nAAAADwAAAAQAAATJAL6+vr6+vr6+vr6+vr6+vr6+vr6+vr6+vtTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTq6urq6urq6urq6urq6urq6urq6urq6urq/////////////////////////////////wAAAABMYXZjNjEuMTkAAAAAAAAAAAAAAAAkAtQAAAAAAAAEyZd758AAAAAAAP/7wMQAAAzkL0z0wwApuxVp/zVAAAAh3623r169evXv3usWLIjsQwJgfHcIIECBAAAGw8P/4AAI/w8P/+ADvM//A3/8cz//P//MAd8ADD/zDwAR4ABh58cPAAAAAAMPH5h4AAOgIw8/x4AAAAABh4eHh4AAAAABh4eHh4AnAc2IgtQmUlhgMBwMBgAApUXedFpv+CQSPNYxZTxqGIIoIQCBSHwGIDakEgYAyEAW2A1RBq3GXC4UY4WUVjFjDFbEyQUgKSnX5DhzhliZIr/5ATIixFjEu//kVMi8TRiXS7/BoKgqIj3+sFREeDRMQU0AD9oAGuAAAP///2ArCsFRtZSWd1KhGQq9ZbDoqRC8hM82QA3/wwO+lAbSIDaYxMvBTv4FSz9KeexKJXCMJeB5jkxBTUWqqqp2iYQAB4/AAAAVrA4zlJeorGBAMNS+cFG4xG04GGQOB2FwS0pksVdado71+1iVpEqfSAB34IFW2IWyVI1bAyO5NjhAvGYzm4TaeW1VTEFNRTMuMTAwVVVVVVVVVVVVdmiFAAiOAAAAAGNgUTiUglMqaBG5AFVx5bQYrfxgrh7gJoTlV8eBHkmotmYXBC4mErKN4+ToJMFRouKzDWNIQJVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxPaAxFAxU92EgCh6Beo4AORFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+xDE/ADGNDs14euk6GYF6bgMJKVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/7EMT2gMUoNzXg6YUoXAYlkBelDVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
+  const WB_CLICK_STRONG_SRC='data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU0UAAAAOAAADTGF2ZjYxLjcuMTAwAAAAAAAAAAAAAAD/+0DAAAAAAAAAAAAAAAAAAAAAAABYaW5nAAAADwAAAAUAAAUxAK+vr6+vr6+vr6+vr6+vr6+vr6/Dw8PDw8PDw8PDw8PDw8PDw8PDw9fX19fX19fX19fX19fX19fX19fX6+vr6+vr6+vr6+vr6+vr6+vr6+v//////////////////////////wAAAABMYXZjNjEuMTkAAAAAAAAAAAAAAAAkA+IAAAAAAAAFMS4CrdIAAAAAAP/7wMQAAAvwN1T0FIAp0xVqdx/QgAgBX7W7jGMYxjGMAAAABQT2iAKAgCAYYfHDz/wADP8PD//wB3mf/o3/+Yj/4Bn/8cA/+AY//jgDv4jH/84B/+jDw8PDwAAAAADDw8PDwAAAAADDw8PHgAAAACMPDx+wD8Xh4EFjSjwUDAUDgAACSAASJQn8AuEdJ8ivxbQBaZRMf2fGFoCCIRzJq2WlGDQkGHgFtKYkYihvu8BiG/qpn1clyaat3H//2lLuWGfVyd8y////+M1qaVVaX///////+M1qamq0tL/EQVBURHv9YKiIKgqIlUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVQAAAPwALgAAAD//AOC+FoCr/1n2HZI0xXxmWw+AWgAIebwWAwq4FDnIqkxBTUUzLjEwMKqqqqqqqqqqqqoAAAd4AAHAAAA03cHDVsXxjAK/oBk2JsmnnD+hIA7s0MAB8KEytq2J46Hlqx6qCgxv5jnwZg+TT28t1u6zodDVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUAAAD/YG4AAAAwsScFd2WNM7I6ZFl7dMvWYLlqrEIJSisAoM4UmNpumVVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQd3ZocADcAAADEaJhhIUGK3MxbTu9U8JCBKgSQolDFnqGSoQKLLMkxBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//sQxOsCQ2A1W/ysACg4hip8BGWMqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqr/+xDE9gDDjEE14CKooI0IJngWcRyqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqv/7EMTrAsL8MVXgCwooRYapuAS9Vaqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//sQxOmDxNRDM+C8augAAD/AAAAEqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqo=';
+  const OLD_PAD=window.WorshipBasePad||null;
+  const REAL_PAD={on:false,key:'C',mode:'ambient',volume:.22,audio:null,silent:null,fadeRAF:0,unlocked:false,mediaReady:false};
+  let clickPool=null, strongClickPool=null, clickIndex=0, strongClickIndex=0;
+
+  function safeToast(msg){try{if(typeof showToast==='function')showToast(msg);}catch(e){}}
+  function makeAudio(src,loop){
+    const a=new Audio();
+    a.preload='auto';
+    a.src=src;
+    a.loop=!!loop;
+    a.setAttribute('playsinline','');
+    a.setAttribute('webkit-playsinline','');
+    return a;
+  }
+  function ensureRealPadMedia(){
+    if(!REAL_PAD.audio){
+      REAL_PAD.audio=makeAudio(WB_REAL_PAD_C_SRC,true);
+      REAL_PAD.audio.volume=0;
+    }
+    if(!REAL_PAD.silent){
+      REAL_PAD.silent=makeAudio(WB_SILENT_SRC,false);
+      REAL_PAD.silent.volume=0.001;
+    }
+    if(!clickPool){
+      clickPool=Array.from({length:4},()=>{const a=makeAudio(WB_CLICK_SRC,false);a.volume=.95;return a;});
+      strongClickPool=Array.from({length:4},()=>{const a=makeAudio(WB_CLICK_STRONG_SRC,false);a.volume=1;return a;});
+    }
+  }
+  async function unlockRealMedia(){
+    ensureRealPadMedia();
+    if(REAL_PAD.unlocked)return true;
+    try{
+      const s=REAL_PAD.silent;
+      s.currentTime=0;
+      await s.play();
+      try{s.pause();s.currentTime=0;}catch(e){}
+      REAL_PAD.unlocked=true;
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+  function fadeAudio(audio,target,ms,after){
+    if(!audio)return;
+    if(REAL_PAD.fadeRAF)cancelAnimationFrame(REAL_PAD.fadeRAF);
+    const start=audio.volume||0;
+    const t0=performance.now();
+    function step(t){
+      const p=Math.min(1,(t-t0)/Math.max(1,ms));
+      const eased=1-Math.pow(1-p,3);
+      audio.volume=Math.max(0,Math.min(1,start+(target-start)*eased));
+      if(p<1)REAL_PAD.fadeRAF=requestAnimationFrame(step);
+      else{REAL_PAD.fadeRAF=0; if(after)after();}
+    }
+    REAL_PAD.fadeRAF=requestAnimationFrame(step);
+  }
+  async function startRealPad(){
+    ensureRealPadMedia();
+    try{await unlockRealMedia();}catch(e){}
+    try{if(OLD_PAD&&OLD_PAD.state&&OLD_PAD.state.on&&typeof OLD_PAD.stop==='function')OLD_PAD.stop(120);}catch(e){}
+    const a=REAL_PAD.audio;
+    try{
+      a.loop=true;
+      if(!a.currentTime || a.ended)a.currentTime=0;
+      a.volume=0.001;
+      await a.play();
+      REAL_PAD.on=true; REAL_PAD.key='C'; REAL_PAD.mode='ambient';
+      fadeAudio(a,REAL_PAD.volume,1300);
+      updateRealPadUI();
+      safeToast('C pad playing');
+    }catch(err){
+      console.warn('Real pad audio failed',err);
+      safeToast('Pad audio could not start');
+      updateRealPadUI();
+    }
+  }
+  function stopRealPad(ms){
+    ensureRealPadMedia();
+    const a=REAL_PAD.audio;
+    REAL_PAD.on=false;
+    updateRealPadUI();
+    if(!a)return;
+    fadeAudio(a,0.001,ms||750,function(){try{a.pause();}catch(e){}});
+  }
+  function setRealPadVolume(v){
+    REAL_PAD.volume=Math.max(.02,Math.min(.8,Number(v)||.22));
+    if(REAL_PAD.audio&&REAL_PAD.on)REAL_PAD.audio.volume=REAL_PAD.volume;
+    updateRealPadUI();
+  }
+  function setRealPadKey(k){
+    REAL_PAD.key='C';
+    if(k&&k!=='C')safeToast('This test build only has a C pad file');
+    updateRealPadUI();
+  }
+  function setRealPadMode(m){
+    REAL_PAD.mode='ambient';
+    if(m&&m!=='ambient')safeToast('Drone files are not added yet');
+    updateRealPadUI();
+  }
+  function updateRealPadUI(){
+    const btn=document.getElementById('song-pad-btn');
+    if(btn)btn.classList.toggle('on',!!REAL_PAD.on);
+    const title=document.getElementById('pad-status-title');
+    if(title)title.textContent=REAL_PAD.on?'Real C pad playing':'Real C pad ready';
+    const sub=document.getElementById('pad-status-sub');
+    if(sub)sub.textContent='Ambient · C';
+    const power=document.getElementById('pad-power-btn');
+    if(power){power.textContent=REAL_PAD.on?'Stop':'Start';power.classList.toggle('stop',!!REAL_PAD.on);}
+    const vol=document.getElementById('pad-volume');
+    if(vol&&Number(vol.value)!==Math.round(REAL_PAD.volume*100))vol.value=Math.round(REAL_PAD.volume*100);
+    const lab=document.getElementById('pad-volume-label');
+    if(lab)lab.textContent=Math.round(REAL_PAD.volume*100)+'%';
+    document.querySelectorAll('[data-pad-key]').forEach(b=>{
+      b.classList.toggle('active',b.dataset.padKey==='C');
+      if(b.dataset.padKey!=='C'){b.disabled=true;b.title='Add this key when a pad file is available';}
+      else{b.disabled=false;b.title='C pad file loaded';}
+    });
+    document.querySelectorAll('[data-pad-mode]').forEach(b=>{
+      b.classList.toggle('active',b.dataset.padMode==='ambient');
+      if(b.dataset.padMode!=='ambient'){b.disabled=true;b.title='Drone files not added yet';}
+      else{b.disabled=false;b.title='Ambient C pad file loaded';}
+    });
+    const note=document.querySelector('#bs-pad .pad-note');
+    if(note)note.innerHTML='<strong>Real audio test:</strong> using the uploaded “Pads Worship C.mp3” file. This build only includes C ambient pad audio. Other keys need their own audio files later.<br><span class="pad-source">Audio file loaded · C pad</span>';
+  }
+  function installRealPadUI(retries){
+    ensureRealPadMedia();
+    const sheet=document.getElementById('bs-pad');
+    if(!sheet&&retries>0){setTimeout(()=>installRealPadUI(retries-1),250);return;}
+    updateRealPadUI();
+  }
+
+  document.addEventListener('click',function(ev){
+    const power=ev.target&&ev.target.closest&&ev.target.closest('#pad-power-btn');
+    if(power){ev.preventDefault();ev.stopImmediatePropagation();REAL_PAD.on?stopRealPad():startRealPad();return;}
+    const key=ev.target&&ev.target.closest&&ev.target.closest('[data-pad-key]');
+    if(key){ev.preventDefault();ev.stopImmediatePropagation();setRealPadKey(key.dataset.padKey);return;}
+    const mode=ev.target&&ev.target.closest&&ev.target.closest('[data-pad-mode]');
+    if(mode){ev.preventDefault();ev.stopImmediatePropagation();setRealPadMode(mode.dataset.padMode);return;}
+  },true);
+  document.addEventListener('input',function(ev){
+    if(ev.target&&ev.target.id==='pad-volume'){ev.stopImmediatePropagation();setRealPadVolume(Number(ev.target.value)/100);}
+  },true);
+
+  function flashMetro703(downbeat){
+    const flash=document.getElementById('metro-flash');
+    if(flash){flash.classList.toggle('downbeat',!!downbeat);flash.classList.add('on');setTimeout(()=>flash.classList.remove('on','downbeat'),downbeat?155:115);}
+  }
+  function playMediaClick(downbeat){
+    ensureRealPadMedia();
+    const pool=downbeat?strongClickPool:clickPool;
+    let idx=downbeat?strongClickIndex++:clickIndex++;
+    const a=pool[idx%pool.length];
+    try{a.pause();a.currentTime=0;a.volume=downbeat?1:.92;const p=a.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}
+  }
+  try{
+    metronomeTick=function(){
+      metronomeBeat++;
+      const downbeat=metronomeBeat%4===1;
+      flashMetro703(downbeat);
+      playMediaClick(downbeat);
+    };
+    startMetronome=async function(){
+      if(metronomeOn)return;
+      try{await unlockRealMedia();}catch(e){}
+      metronomeOn=true;metronomeBeat=0;metronomeTick();
+      if(typeof scheduleMetronome==='function')scheduleMetronome();
+      if(typeof updateMetronomeUI==='function')updateMetronomeUI();
+      safeToast('Metronome on');
+    };
+    stopMetronome=function(){
+      metronomeOn=false;clearTimeout(metronomeTimer);metronomeTimer=null;
+      if(typeof updateMetronomeUI==='function')updateMetronomeUI();
+    };
+    toggleMetronome=function(){metronomeOn?stopMetronome():startMetronome();try{if(presentationMode)setMetronomePanel(true);}catch(e){}};
+    window.metronomeTick=metronomeTick;window.startMetronome=startMetronome;window.stopMetronome=stopMetronome;window.toggleMetronome=toggleMetronome;
+  }catch(e){console.warn('v70.3 media metronome patch failed',e);}
+
+  window.WorshipBasePad={start:startRealPad,stop:stopRealPad,setKey:setRealPadKey,setMode:setRealPadMode,setVolume:setRealPadVolume,state:REAL_PAD};
+  document.addEventListener('DOMContentLoaded',()=>installRealPadUI(12));
+  setTimeout(()=>installRealPadUI(12),0);
+  setTimeout(()=>installRealPadUI(12),700);
 })();
 </script>
 
