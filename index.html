@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v70</title>
+<title>WorshipBase v70.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -3585,7 +3585,7 @@ body.dark #setlist-section .sl-option-btn.icon-only{background:rgba(143,180,255,
       </button>
       <div class="sv-pres-title" id="sv-pres-title"></div>
       <!-- Song action buttons -->
-      <div class="sv-top-actions">
+      <div class="sv-top-actions"><button class="pad-btn" id="song-pad-btn" type="button" title="Pad" aria-label="Open pad"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 14c2.2-4.8 5.1-7.2 8.5-7.2 3.1 0 5.6 1.8 7.5 5.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path><path d="M5 17c1.9-2.3 4.1-3.5 6.7-3.5 2.5 0 4.6 1.1 6.3 3.3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path><path d="M8 20c1.1-.9 2.4-1.4 4-1.4s2.9.5 4 1.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg></button>
         <button class="playback-btn" id="song-playback-btn" type="button" aria-label="Open playback links" title="Playback" onclick="openPlaybackOptions()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5.5v13l10-6.5-10-6.5z" fill="currentColor"></path></svg>
         </button>
@@ -11741,6 +11741,247 @@ window.__wbPdfEngine='paged-preview-v67.6-deterministic';
 })();
 
 </script>
+
+<style>
+/* ── v70.1 pad/metronome test + set counter polish ───────────────── */
+#setlist-section #sl-count{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:auto!important;
+  height:auto!important;
+  padding:0!important;
+  margin:0!important;
+  border:none!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--txt3)!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:1.2!important;
+  letter-spacing:.01em!important;
+  text-transform:none!important;
+}
+#setlist-section .sl-hdr-meta{gap:0!important;justify-content:center;min-height:32px;}
+body.dark #setlist-section #sl-count{background:transparent!important;border:none!important;color:var(--txt3)!important;}
+.pad-btn{width:36px;height:36px;border-radius:50%;background:var(--bg2);border:.5px solid var(--bdr2);cursor:pointer;color:var(--txt2);display:flex;align-items:center;justify-content:center;font-family:inherit;transition:background .12s,transform .12s,opacity .12s,color .12s,border-color .12s;}
+.pad-btn:active{background:var(--bg3);transform:scale(.92);}
+.pad-btn.on{color:var(--tc);background:var(--surface-tint-strong);border-color:var(--surface-border);}
+body.dark .pad-btn{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:var(--txt2);}
+body.dark .pad-btn.on{color:var(--accent);background:var(--accent-surface);border-color:var(--accent-border);}
+.performance-mode .pad-btn{display:none!important;}
+.pad-panel{padding:0 18px 18px;}
+.pad-status-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;border:1px solid var(--surface-border);background:var(--surface-tint);border-radius:18px;margin-bottom:14px;}
+.pad-status-copy{min-width:0;}
+.pad-status-title{font-size:15px;font-weight:900;color:var(--txt1);letter-spacing:-.01em;}
+.pad-status-sub{font-size:12px;color:var(--txt3);margin-top:2px;}
+.pad-power{min-width:76px;height:38px;border:none;border-radius:999px;background:var(--tc);color:#fff;font-size:13px;font-weight:900;font-family:inherit;cursor:pointer;}
+.pad-power.stop{background:rgba(217,52,72,.10);border:1px solid rgba(217,52,72,.30);color:#d93448;}
+.pad-row-title{font-size:11px;font-weight:900;color:var(--txt3);letter-spacing:.08em;text-transform:uppercase;margin:16px 2px 8px;}
+.pad-seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pad-chip{min-height:40px;border:1px solid var(--surface-border);background:var(--surface-tint);border-radius:999px;color:var(--txt2);font-size:13px;font-weight:850;font-family:inherit;cursor:pointer;}
+.pad-chip.active{background:var(--tc);border-color:var(--tc);color:#fff;}
+.pad-key-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;}
+.pad-key{min-height:38px;border:1px solid var(--surface-border);background:var(--surface-tint);border-radius:14px;color:var(--txt2);font-size:13px;font-weight:900;font-family:inherit;cursor:pointer;}
+.pad-key.active{background:var(--tc);border-color:var(--tc);color:#fff;}
+.pad-volume-row{display:flex;align-items:center;gap:12px;padding:4px 2px 0;}
+.pad-volume-row input{flex:1;accent-color:var(--tc);}
+.pad-volume-label{min-width:42px;text-align:right;font-size:12px;font-weight:900;color:var(--txt2);}
+.pad-note{font-size:12px;line-height:1.45;color:var(--txt3);margin:14px 2px 0;}
+body.dark .pad-status-card,body.dark .pad-chip,body.dark .pad-key{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);}
+body.dark .pad-power{background:var(--accent-surface);border:1px solid var(--accent-border);color:var(--accent);}
+body.dark .pad-power.stop{background:rgba(239,143,162,.12);border-color:rgba(239,143,162,.22);color:#ef8fa2;}
+body.dark .pad-chip.active,body.dark .pad-key.active{background:var(--accent-surface);border-color:var(--accent-border);color:var(--accent);}
+</style>
+<script>
+(function(){
+  const PAD_KEYS=['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
+  const PAD_KEY_INDEX={C:0,'C#':1,Db:1,D:2,'D#':3,Eb:3,E:4,F:5,'F#':6,Gb:6,G:7,'G#':8,Ab:8,A:9,'A#':10,Bb:10,B:11};
+  const PAD_STATE={on:false,mode:'ambient',key:'C',volume:.22,nodes:[],master:null,startedAt:0};
+  let wbAudioCtx=null;
+
+  function normalPadKey(k){
+    k=String(k||'').trim().replace(/♭/g,'b').replace(/♯/g,'#').replace(/m$/,'');
+    if(PAD_KEYS.includes(k))return k;
+    const idx=PAD_KEY_INDEX[k];
+    return idx==null?'C':PAD_KEYS[idx];
+  }
+  function freqFor(key,octaveOffset=0,interval=0){
+    const semi=(PAD_KEY_INDEX[normalPadKey(key)]||0)+interval+octaveOffset*12;
+    const midi=48+semi; // C3 base
+    return 440*Math.pow(2,(midi-69)/12);
+  }
+  async function wbGetAudio(){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)throw new Error('Audio not supported');
+    if(!wbAudioCtx)wbAudioCtx=new AC();
+    try{ if(typeof metronomeAudioCtx!=='undefined')metronomeAudioCtx=wbAudioCtx; }catch(e){}
+    if(wbAudioCtx.state==='suspended')await wbAudioCtx.resume();
+    return wbAudioCtx;
+  }
+  async function wbUnlockAudio(){
+    const ctx=await wbGetAudio();
+    try{
+      const g=ctx.createGain(); g.gain.value=0.00001;
+      const o=ctx.createOscillator(); o.frequency.value=40; o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+.025);
+    }catch(e){}
+    return ctx;
+  }
+  function stopPad(fadeMs=850){
+    const ctx=wbAudioCtx;
+    const master=PAD_STATE.master;
+    PAD_STATE.on=false;
+    updatePadUI();
+    if(!ctx||!master){PAD_STATE.nodes=[];PAD_STATE.master=null;return;}
+    const now=ctx.currentTime;
+    try{
+      master.gain.cancelScheduledValues(now);
+      master.gain.setValueAtTime(Math.max(0.0001,master.gain.value||0.0001),now);
+      master.gain.linearRampToValueAtTime(0.0001,now+fadeMs/1000);
+    }catch(e){}
+    const oldNodes=PAD_STATE.nodes.slice();
+    setTimeout(()=>{
+      oldNodes.forEach(n=>{try{n.stop?.();}catch(e){} try{n.disconnect?.();}catch(e){}});
+      try{master.disconnect();}catch(e){}
+    },fadeMs+120);
+    PAD_STATE.nodes=[];PAD_STATE.master=null;
+  }
+  async function startPad(){
+    try{
+      const ctx=await wbUnlockAudio();
+      if(PAD_STATE.on)stopPad(120);
+      const master=ctx.createGain();
+      const filter=ctx.createBiquadFilter();
+      filter.type='lowpass'; filter.frequency.value=PAD_STATE.mode==='ambient'?1850:1250; filter.Q.value=.55;
+      const comp=ctx.createDynamicsCompressor();
+      comp.threshold.value=-28; comp.knee.value=18; comp.ratio.value=2.5; comp.attack.value=.02; comp.release.value=.25;
+      master.gain.setValueAtTime(0.0001,ctx.currentTime);
+      master.gain.linearRampToValueAtTime(PAD_STATE.volume,ctx.currentTime+1.15);
+      master.connect(filter); filter.connect(comp); comp.connect(ctx.destination);
+      const nodes=[];
+      const config=PAD_STATE.mode==='drone'
+        ? [{int:0,oct:-1,type:'sine',gain:.62,detune:0},{int:7,oct:-1,type:'sine',gain:.42,detune:-3},{int:12,oct:-1,type:'triangle',gain:.20,detune:4}]
+        : [{int:0,oct:-1,type:'sine',gain:.35,detune:-5},{int:7,oct:-1,type:'sine',gain:.25,detune:6},{int:12,oct:-1,type:'triangle',gain:.18,detune:-8},{int:16,oct:-1,type:'sine',gain:.12,detune:4},{int:19,oct:-1,type:'triangle',gain:.10,detune:8},{int:24,oct:-1,type:'sine',gain:.07,detune:-10}];
+      config.forEach((c,i)=>{
+        const osc=ctx.createOscillator(); const g=ctx.createGain(); const pan=ctx.createStereoPanner?ctx.createStereoPanner():null;
+        osc.type=c.type; osc.frequency.value=freqFor(PAD_STATE.key,c.oct,c.int); osc.detune.value=c.detune||0;
+        g.gain.setValueAtTime(0.0001,ctx.currentTime);
+        g.gain.linearRampToValueAtTime(c.gain,ctx.currentTime+1.3+i*.08);
+        if(pan){pan.pan.value=((i%2)?1:-1)*(PAD_STATE.mode==='ambient'?.18:.08); osc.connect(g); g.connect(pan); pan.connect(master); nodes.push(pan);} else {osc.connect(g); g.connect(master);} 
+        osc.start(); nodes.push(osc,g);
+      });
+      PAD_STATE.master=master; PAD_STATE.nodes=nodes; PAD_STATE.on=true; PAD_STATE.startedAt=Date.now();
+      updatePadUI();
+      showToast(`${PAD_STATE.mode==='ambient'?'Ambient':'Drone'} pad · ${PAD_STATE.key}`);
+    }catch(err){
+      showToast('Audio could not start on this device');
+      console.warn('Pad start failed',err);
+    }
+  }
+  function restartPad(){ if(PAD_STATE.on){stopPad(260); setTimeout(startPad,300);} else updatePadUI(); }
+  function setPadKey(k){PAD_STATE.key=normalPadKey(k);restartPad();}
+  function setPadMode(m){PAD_STATE.mode=m==='drone'?'drone':'ambient';restartPad();}
+  function setPadVolume(v){
+    const n=Math.max(.02,Math.min(.6,Number(v)||.22)); PAD_STATE.volume=n;
+    if(PAD_STATE.master&&wbAudioCtx){try{PAD_STATE.master.gain.cancelScheduledValues(wbAudioCtx.currentTime); PAD_STATE.master.gain.setTargetAtTime(n,wbAudioCtx.currentTime,.08);}catch(e){}}
+    updatePadUI(false);
+  }
+  function updatePadUI(full=true){
+    const padBtn=document.getElementById('song-pad-btn'); if(padBtn)padBtn.classList.toggle('on',PAD_STATE.on);
+    const power=document.getElementById('pad-power-btn'); if(power){power.textContent=PAD_STATE.on?'Stop':'Start'; power.classList.toggle('stop',PAD_STATE.on);}
+    const title=document.getElementById('pad-status-title'); if(title)title.textContent=PAD_STATE.on?'Pad playing':'Pad ready';
+    const sub=document.getElementById('pad-status-sub'); if(sub)sub.textContent=`${PAD_STATE.mode==='ambient'?'Ambient':'Drone'} · ${PAD_STATE.key}`;
+    const vol=document.getElementById('pad-volume'); if(vol&&Number(vol.value)!==Math.round(PAD_STATE.volume*100))vol.value=Math.round(PAD_STATE.volume*100);
+    const vl=document.getElementById('pad-volume-label'); if(vl)vl.textContent=Math.round(PAD_STATE.volume*100)+'%';
+    if(full){
+      document.querySelectorAll('[data-pad-mode]').forEach(b=>b.classList.toggle('active',b.dataset.padMode===PAD_STATE.mode));
+      document.querySelectorAll('[data-pad-key]').forEach(b=>b.classList.toggle('active',b.dataset.padKey===PAD_STATE.key));
+    }
+  }
+  function defaultPadKeyFromSong(){
+    try{return normalPadKey(currentKey||currentSong?.key||'C');}catch(e){return 'C';}
+  }
+  function installPadUI(){
+    if(!document.getElementById('song-pad-btn')){
+      const topActions=document.querySelector('.sv-top-actions');
+      if(topActions){
+        const btn=document.createElement('button');
+        btn.className='pad-btn'; btn.id='song-pad-btn'; btn.type='button'; btn.title='Pad'; btn.setAttribute('aria-label','Open pad');
+        btn.innerHTML='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 14c2.2-4.8 5.1-7.2 8.5-7.2 3.1 0 5.6 1.8 7.5 5.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M5 17c1.9-2.3 4.1-3.5 6.7-3.5 2.5 0 4.6 1.1 6.3 3.3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M8 20c1.1-.9 2.4-1.4 4-1.4s2.9.5 4 1.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
+        btn.addEventListener('click',()=>{if(!PAD_STATE.on)PAD_STATE.key=defaultPadKeyFromSong(); updatePadUI(); openBS('pad');});
+        topActions.insertBefore(btn,topActions.firstChild);
+      }
+    }
+    if(!document.getElementById('bs-pad')){
+      const sheet=document.createElement('div');
+      sheet.className='bs-bg'; sheet.id='bs-pad'; sheet.setAttribute('onclick',"closeBSBg(event,'pad')");
+      sheet.innerHTML=`<div class="bs"><div class="bs-handle"></div><div class="bs-title">Pad</div><div class="pad-panel"><div class="pad-status-card"><div class="pad-status-copy"><div class="pad-status-title" id="pad-status-title">Pad ready</div><div class="pad-status-sub" id="pad-status-sub">Ambient · C</div></div><button class="pad-power" id="pad-power-btn" type="button">Start</button></div><div class="pad-row-title">Type</div><div class="pad-seg"><button class="pad-chip active" type="button" data-pad-mode="ambient">Ambient</button><button class="pad-chip" type="button" data-pad-mode="drone">Drone</button></div><div class="pad-row-title">Key</div><div class="pad-key-grid">${PAD_KEYS.map(k=>`<button class="pad-key" type="button" data-pad-key="${k}">${k}</button>`).join('')}</div><div class="pad-row-title">Volume</div><div class="pad-volume-row"><input id="pad-volume" type="range" min="2" max="60" step="1" value="22"><span class="pad-volume-label" id="pad-volume-label">22%</span></div><p class="pad-note">Prototype uses generated Web Audio so there are no bundled audio files yet. Tap Start first; iPhone will not allow audio to begin silently.</p></div><button class="bs-cancel" type="button" onclick="closeBS('pad')">Close</button></div>`;
+      document.body.appendChild(sheet);
+      document.getElementById('pad-power-btn')?.addEventListener('click',()=>{PAD_STATE.on?stopPad():startPad();});
+      document.querySelectorAll('[data-pad-mode]').forEach(b=>b.addEventListener('click',()=>setPadMode(b.dataset.padMode)));
+      document.querySelectorAll('[data-pad-key]').forEach(b=>b.addEventListener('click',()=>setPadKey(b.dataset.padKey)));
+      document.getElementById('pad-volume')?.addEventListener('input',e=>setPadVolume(Number(e.target.value)/100));
+    }
+    updatePadUI();
+  }
+
+  const prevRenderSetList=typeof renderSetList==='function'?renderSetList:null;
+  if(prevRenderSetList){
+    renderSetList=function(){
+      prevRenderSetList.apply(this,arguments);
+      try{
+        const sl=getSetList(); const countLabel=`${sl.length} song${sl.length!==1?'s':''}`;
+        const countEl=document.getElementById('sl-count'); if(countEl)countEl.textContent=countLabel;
+        const subEl=document.getElementById('sl-active-set-sub'); if(subEl)subEl.textContent='Planning board';
+      }catch(e){}
+    };
+    try{window.renderSetList=renderSetList;}catch(e){}
+  }
+
+  function flashMetro(downbeat){
+    const flash=document.getElementById('metro-flash');
+    if(flash){flash.classList.toggle('downbeat',!!downbeat);flash.classList.add('on');setTimeout(()=>flash.classList.remove('on','downbeat'),downbeat?150:115);}
+  }
+  function playMetroClick(downbeat){
+    const ctx=wbAudioCtx||metronomeAudioCtx;
+    if(!ctx||ctx.state==='suspended')return;
+    const now=ctx.currentTime;
+    try{
+      const osc=ctx.createOscillator(); const gain=ctx.createGain(); const filter=ctx.createBiquadFilter();
+      osc.type='square'; osc.frequency.setValueAtTime(downbeat?1568:1046.5,now);
+      filter.type='bandpass'; filter.frequency.value=downbeat?1800:1350; filter.Q.value=2.2;
+      gain.gain.setValueAtTime(0.0001,now);
+      gain.gain.exponentialRampToValueAtTime(downbeat?.34:.24,now+.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001,now+.085);
+      osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination); osc.start(now); osc.stop(now+.095);
+    }catch(e){console.warn('Metronome click failed',e);}
+  }
+  try{
+    metronomeTick=function(){
+      metronomeBeat++;
+      const downbeat=metronomeBeat%4===1;
+      flashMetro(downbeat);
+      playMetroClick(downbeat);
+    };
+    startMetronome=async function(){
+      if(metronomeOn)return;
+      try{await wbUnlockAudio();}catch(e){showToast('Audio could not start');return;}
+      metronomeOn=true; metronomeBeat=0; metronomeTick(); scheduleMetronome(); updateMetronomeUI();
+    };
+    stopMetronome=function(){metronomeOn=false;clearTimeout(metronomeTimer);metronomeTimer=null;updateMetronomeUI();};
+    toggleMetronome=function(){metronomeOn?stopMetronome():startMetronome();if(presentationMode)setMetronomePanel(true);};
+    window.metronomeTick=metronomeTick; window.startMetronome=startMetronome; window.stopMetronome=stopMetronome; window.toggleMetronome=toggleMetronome;
+  }catch(e){console.warn('Metronome override failed',e);}
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)return;
+    if(PAD_STATE.on){try{wbGetAudio();}catch(e){}}
+    try{if(metronomeOn)wbGetAudio();}catch(e){}
+  });
+  installPadUI();
+  updatePadUI();
+  window.WorshipBasePad={start:startPad,stop:stopPad,setKey:setPadKey,setMode:setPadMode,state:PAD_STATE};
+})();
+</script><div class="bs-bg" id="bs-pad" onclick="closeBSBg(event,'pad')"><div class="bs"><div class="bs-handle"></div><div class="bs-title">Pad</div><div class="pad-panel"><div class="pad-status-card"><div class="pad-status-copy"><div class="pad-status-title" id="pad-status-title">Pad ready</div><div class="pad-status-sub" id="pad-status-sub">Ambient · C</div></div><button class="pad-power" id="pad-power-btn" type="button">Start</button></div><div class="pad-row-title">Type</div><div class="pad-seg"><button class="pad-chip active" type="button" data-pad-mode="ambient">Ambient</button><button class="pad-chip" type="button" data-pad-mode="drone">Drone</button></div><div class="pad-row-title">Key</div><div class="pad-key-grid"><button class="pad-key active" type="button" data-pad-key="C">C</button><button class="pad-key" type="button" data-pad-key="C#">C#</button><button class="pad-key" type="button" data-pad-key="D">D</button><button class="pad-key" type="button" data-pad-key="Eb">Eb</button><button class="pad-key" type="button" data-pad-key="E">E</button><button class="pad-key" type="button" data-pad-key="F">F</button><button class="pad-key" type="button" data-pad-key="F#">F#</button><button class="pad-key" type="button" data-pad-key="G">G</button><button class="pad-key" type="button" data-pad-key="Ab">Ab</button><button class="pad-key" type="button" data-pad-key="A">A</button><button class="pad-key" type="button" data-pad-key="Bb">Bb</button><button class="pad-key" type="button" data-pad-key="B">B</button></div><div class="pad-row-title">Volume</div><div class="pad-volume-row"><input id="pad-volume" type="range" min="2" max="60" step="1" value="22"><span class="pad-volume-label" id="pad-volume-label">22%</span></div><p class="pad-note">Prototype uses generated Web Audio so there are no bundled audio files yet. Tap Start first; iPhone will not allow audio to begin silently.</p></div><button class="bs-cancel" type="button" onclick="closeBS('pad')">Close</button></div></div>
 
 
 
