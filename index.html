@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v71.6</title>
+<title>WorshipBase v71.7</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -3105,8 +3105,8 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
 </style>
 
 
-<style id="wb-v71-6-bottom-sheet-backdrop-shield-css">
-/* v71.6 — backdrop taps close sheets without activating controls behind them. */
+<style id="wb-v71-7-bottom-sheet-backdrop-shield-css">
+/* v71.7 — robust bottom-sheet backdrops: outside taps close only the sheet, never controls behind it. */
 .bs-bg.open{pointer-events:auto;}
 .bs-bg.open:not(#bs-modal){touch-action:none;}
 .bs-bg.open .bs{touch-action:auto;}
@@ -3424,7 +3424,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 71.6</div>
+            <div class="about-version-pill">Version 71.7</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -3725,7 +3725,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
 <!-- ═══ BOTTOM SHEETS ═══ -->
 
 <!-- SONG MENU -->
-<div class="bs-bg" id="bs-biblepicker" onclick="closeBSBg(event,'biblepicker')">
+<div class="bs-bg" id="bs-biblepicker" onclick="closeBSBg(event,'biblepicker')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Select book &amp; chapter</h2><button class="m-close" onclick="closeBS('biblepicker')">×</button></div>
@@ -3742,7 +3742,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
     <button class="bs-cancel" onclick="closeBS('biblepicker')">Close</button>
   </div>
 </div>
-<div class="bs-bg" id="bs-bibleversion" onclick="closeBSBg(event,'bibleversion')">
+<div class="bs-bg" id="bs-bibleversion" onclick="closeBSBg(event,'bibleversion')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Select version</h2><button class="m-close" onclick="closeBS('bibleversion')">×</button></div>
@@ -3750,7 +3750,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
     <button class="bs-cancel" onclick="closeBS('bibleversion')">Close</button>
   </div>
 </div>
-<div class="bs-bg" id="bs-songmenu" onclick="closeBSBg(event,'songmenu')">
+<div class="bs-bg" id="bs-songmenu" onclick="closeBSBg(event,'songmenu')" data-wb-backdrop-bound="1">
   <div class="bs" id="bsp-songmenu">
     <div class="bs-handle"></div>
     <div class="bs-title">Song options</div>
@@ -3841,7 +3841,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
 
 
 <!-- SONG NOTES / CUES -->
-<div class="bs-bg" id="bs-songnotes" onclick="closeBSBg(event,'songnotes')">
+<div class="bs-bg" id="bs-songnotes" onclick="closeBSBg(event,'songnotes')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Song cues</h2><button class="m-close" onclick="closeBS('songnotes')">×</button></div>
@@ -3870,7 +3870,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- SONG EDIT -->
-<div class="bs-bg" id="bs-modal" onclick="closeBSBg(event,'modal')">
+<div class="bs-bg" id="bs-modal" onclick="closeBSBg(event,'modal')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><button class="editor-nav-btn" onclick="closeBS('modal')">Cancel</button><h2 class="m-h2" id="modal-heading">Add song</h2><button class="editor-save-btn" onclick="saveSong()">Save</button></div>
@@ -3950,7 +3950,7 @@ line 18 | Hold / pause"></textarea>
   </div>
 </div>
 
-<div class="bs-bg ug-page" id="bs-ug-import" onclick="closeBSBg(event,'ug-import')">
+<div class="bs-bg ug-page" id="bs-ug-import" onclick="closeBSBg(event,'ug-import')" data-wb-backdrop-bound="1">
   <div class="bs ug-page-panel">
     <div class="ug-page-head">
       <button class="ug-head-btn" type="button" onclick="closeBS('ug-import')">Cancel</button>
@@ -3991,7 +3991,7 @@ line 18 | Hold / pause"></textarea>
   </div>
 </div>
 
-<div class="bs-bg ug-page" id="bs-sop-import" onclick="closeBSBg(event,'sop-import')">
+<div class="bs-bg ug-page" id="bs-sop-import" onclick="closeBSBg(event,'sop-import')" data-wb-backdrop-bound="1">
   <div class="bs ug-page-panel">
     <div class="ug-page-head">
       <button class="ug-head-btn" type="button" onclick="closeBS('sop-import')">Cancel</button>
@@ -4032,7 +4032,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 
-<div class="bs-bg ug-page" id="bs-file-import" onclick="closeBSBg(event,'file-import')">
+<div class="bs-bg ug-page" id="bs-file-import" onclick="closeBSBg(event,'file-import')" data-wb-backdrop-bound="1">
   <div class="bs ug-page-panel">
     <div class="ug-page-head">
       <button class="ug-head-btn" type="button" onclick="closeBS('file-import')">Cancel</button>
@@ -4081,7 +4081,7 @@ line 18 | Hold / pause"></textarea>
 
 
 <!-- PICKER -->
-<div class="bs-bg" id="bs-picker" onclick="closeBSBg(event,'picker')">
+<div class="bs-bg" id="bs-picker" onclick="closeBSBg(event,'picker')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Add to set</h2><button class="m-close" onclick="closeBS('picker')">×</button></div>
@@ -4099,7 +4099,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- CHORD DIAGRAMS -->
-<div class="bs-bg" id="bs-chords" onclick="closeBSBg(event,'chords')">
+<div class="bs-bg" id="bs-chords" onclick="closeBSBg(event,'chords')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Chord diagrams</h2><button class="m-close" onclick="closeBS('chords')">×</button></div>
@@ -4115,7 +4115,7 @@ line 18 | Hold / pause"></textarea>
 
 <!-- EXPORT -->
 
-<div class="bs-bg" id="bs-sets" onclick="closeBSBg(event,'sets')">
+<div class="bs-bg" id="bs-sets" onclick="closeBSBg(event,'sets')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2" id="sets-title">Shared set lists</h2><button class="m-close" onclick="closeBS('sets')">×</button></div>
@@ -4134,7 +4134,7 @@ line 18 | Hold / pause"></textarea>
 
 
 <!-- SET KEY -->
-<div class="bs-bg" id="bs-setkey" onclick="closeBSBg(event,'setkey')">
+<div class="bs-bg" id="bs-setkey" onclick="closeBSBg(event,'setkey')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Set list key</h2><button class="m-close" onclick="closeBS('setkey')">×</button></div>
@@ -4148,7 +4148,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- SET LIST OPTIONS -->
-<div class="bs-bg" id="bs-setoptions" onclick="closeBSBg(event,'setoptions')">
+<div class="bs-bg" id="bs-setoptions" onclick="closeBSBg(event,'setoptions')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="bs-title">Set options</div>
@@ -4169,7 +4169,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- SET NOTES -->
-<div class="bs-bg" id="bs-setnotes" onclick="closeBSBg(event,'setnotes')">
+<div class="bs-bg" id="bs-setnotes" onclick="closeBSBg(event,'setnotes')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Set notes</h2><button class="m-close" onclick="closeBS('setnotes')">×</button></div>
@@ -4184,7 +4184,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- SET ALL KEYS -->
-<div class="bs-bg" id="bs-setallkey" onclick="closeBSBg(event,'setallkey')">
+<div class="bs-bg" id="bs-setallkey" onclick="closeBSBg(event,'setallkey')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Set key</h2><button class="m-close" onclick="closeBS('setallkey')">×</button></div>
@@ -4197,7 +4197,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- PLAYBACK LINKS -->
-<div class="bs-bg" id="bs-playback" onclick="closeBSBg(event,'playback')">
+<div class="bs-bg" id="bs-playback" onclick="closeBSBg(event,'playback')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="bs-title">Playback</div>
@@ -4207,7 +4207,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- IMPORT DESTINATION -->
-<div class="bs-bg" id="bs-importdest" onclick="if(event.target.id==='bs-importdest')resolveImportDestination('')">
+<div class="bs-bg" id="bs-importdest" onclick="if(event.target.id==='bs-importdest')resolveImportDestination('')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Save song to</h2><button class="m-close" onclick="resolveImportDestination('')">×</button></div>
@@ -4220,7 +4220,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- SET LIST DESTINATION -->
-<div class="bs-bg" id="bs-setdest" onclick="closeBSBg(event,'setdest')">
+<div class="bs-bg" id="bs-setdest" onclick="closeBSBg(event,'setdest')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Add to set list</h2><button class="m-close" onclick="closeBS('setdest')">×</button></div>
@@ -4237,7 +4237,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- PIN -->
-<div class="bs-bg" id="bs-dupes" onclick="closeBSBg(event,'dupes')">
+<div class="bs-bg" id="bs-dupes" onclick="closeBSBg(event,'dupes')" data-wb-backdrop-bound="1">
   <div class="bs" role="dialog" aria-modal="true">
     <div class="bs-handle"></div>
     <div class="m-tr"><div class="m-h2">Possible duplicates</div><button class="m-close" onclick="closeBS('dupes')">×</button></div>
@@ -4249,7 +4249,7 @@ line 18 | Hold / pause"></textarea>
   </div>
 </div>
 
-<div class="bs-bg" id="bs-pin" onclick="closeBSBg(event,'pin')">
+<div class="bs-bg" id="bs-pin" onclick="closeBSBg(event,'pin')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Admin access</h2><button class="m-close" onclick="closeBS('pin');pendingAdminAction=null">×</button></div>
@@ -4278,7 +4278,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- DEFAULT KEY picker -->
-<div class="bs-bg" id="bs-defaultkey" onclick="closeBSBg(event,'defaultkey')">
+<div class="bs-bg" id="bs-defaultkey" onclick="closeBSBg(event,'defaultkey')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Default display key</h2><button class="m-close" onclick="closeBS('defaultkey')">×</button></div>
@@ -4291,7 +4291,7 @@ line 18 | Hold / pause"></textarea>
 
 
 <!-- DEFAULT SONG VIEW picker -->
-<div class="bs-bg" id="bs-defaultsongview" onclick="closeBSBg(event,'defaultsongview')">
+<div class="bs-bg" id="bs-defaultsongview" onclick="closeBSBg(event,'defaultsongview')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Default song view</h2><button class="m-close" onclick="closeBS('defaultsongview')">×</button></div>
@@ -4304,7 +4304,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 
-<div class="bs-bg" id="bs-defaultpdfpreset" onclick="closeBSBg(event,'defaultpdfpreset')">
+<div class="bs-bg" id="bs-defaultpdfpreset" onclick="closeBSBg(event,'defaultpdfpreset')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Default PDF preset</h2><button class="m-close" onclick="closeBS('defaultpdfpreset')">×</button></div>
@@ -4316,7 +4316,7 @@ line 18 | Hold / pause"></textarea>
   </div>
 </div>
 
-<div class="bs-bg" id="bs-addtosetbehavior" onclick="closeBSBg(event,'addtosetbehavior')">
+<div class="bs-bg" id="bs-addtosetbehavior" onclick="closeBSBg(event,'addtosetbehavior')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Add to set list</h2><button class="m-close" onclick="closeBS('addtosetbehavior')">×</button></div>
@@ -4328,7 +4328,7 @@ line 18 | Hold / pause"></textarea>
   </div>
 </div>
 
-<div class="bs-bg" id="bs-defaultbibleversion" onclick="closeBSBg(event,'defaultbibleversion')">
+<div class="bs-bg" id="bs-defaultbibleversion" onclick="closeBSBg(event,'defaultbibleversion')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Default Bible version</h2><button class="m-close" onclick="closeBS('defaultbibleversion')">×</button></div>
@@ -4340,7 +4340,7 @@ line 18 | Hold / pause"></textarea>
   </div>
 </div>
 <!-- CHANGE PIN -->
-<div class="bs-bg" id="bs-changepin" onclick="closeBSBg(event,'changepin')">
+<div class="bs-bg" id="bs-changepin" onclick="closeBSBg(event,'changepin')" data-wb-backdrop-bound="1">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2" id="cp-title">Change PIN</h2><button class="m-close" onclick="closeBS('changepin')">×</button></div>
@@ -12126,7 +12126,7 @@ body.dark .pad-chip.active,body.dark .pad-key.active{background:var(--accent-sur
   updatePadUI();
   window.WorshipBasePad={start:startPad,stop:stopPad,setKey:setPadKey,setMode:setPadMode,state:PAD_STATE};
 })();
-</script><div class="bs-bg" id="bs-pad" onclick="closeBSBg(event,'pad')" data-wb-pad-library3-cat="1"><div class="bs"><div class="bs-handle"></div><div class="bs-title">Pad</div><div class="pad-panel"><div class="pad-status-card"><div class="pad-status-copy"><div class="pad-status-title" id="pad-status-title">Pad ready</div><div class="pad-status-sub" id="pad-status-sub" style="display: none;">Peaceful · C</div></div><button class="pad-power" id="pad-power-btn" type="button">Start</button></div><div class="pad-row-title">Category</div><div class="pad-seg"><button class="pad-chip active" type="button" data-pad-mode="peaceful">Peaceful</button><button class="pad-chip" type="button" data-pad-mode="analog">Analog</button><button class="pad-chip" type="button" data-pad-mode="drones">Drones</button></div><div class="pad-row-title">Key</div><div class="pad-key-grid"><button class="pad-key active" type="button" data-pad-key="C">C</button><button class="pad-key" type="button" data-pad-key="C#">C#</button><button class="pad-key" type="button" data-pad-key="D">D</button><button class="pad-key" type="button" data-pad-key="Eb">Eb</button><button class="pad-key" type="button" data-pad-key="E">E</button><button class="pad-key" type="button" data-pad-key="F">F</button><button class="pad-key" type="button" data-pad-key="F#">F#</button><button class="pad-key" type="button" data-pad-key="G">G</button><button class="pad-key" type="button" data-pad-key="Ab">Ab</button><button class="pad-key" type="button" data-pad-key="A">A</button><button class="pad-key" type="button" data-pad-key="Bb">Bb</button><button class="pad-key" type="button" data-pad-key="B">B</button></div></div><button class="bs-cancel" type="button" onclick="closeBS('pad')">Close</button></div></div>
+</script><div class="bs-bg" id="bs-pad" onclick="closeBSBg(event,'pad')" data-wb-backdrop-bound="1" data-wb-pad-library3-cat="1"><div class="bs"><div class="bs-handle"></div><div class="bs-title">Pad</div><div class="pad-panel"><div class="pad-status-card"><div class="pad-status-copy"><div class="pad-status-title" id="pad-status-title">Pad ready</div><div class="pad-status-sub" id="pad-status-sub" style="display: none;">Peaceful · C</div></div><button class="pad-power" id="pad-power-btn" type="button">Start</button></div><div class="pad-row-title">Category</div><div class="pad-seg"><button class="pad-chip active" type="button" data-pad-mode="peaceful">Peaceful</button><button class="pad-chip" type="button" data-pad-mode="analog">Analog</button><button class="pad-chip" type="button" data-pad-mode="drones">Drones</button></div><div class="pad-row-title">Key</div><div class="pad-key-grid"><button class="pad-key active" type="button" data-pad-key="C">C</button><button class="pad-key" type="button" data-pad-key="C#">C#</button><button class="pad-key" type="button" data-pad-key="D">D</button><button class="pad-key" type="button" data-pad-key="Eb">Eb</button><button class="pad-key" type="button" data-pad-key="E">E</button><button class="pad-key" type="button" data-pad-key="F">F</button><button class="pad-key" type="button" data-pad-key="F#">F#</button><button class="pad-key" type="button" data-pad-key="G">G</button><button class="pad-key" type="button" data-pad-key="Ab">Ab</button><button class="pad-key" type="button" data-pad-key="A">A</button><button class="pad-key" type="button" data-pad-key="Bb">Bb</button><button class="pad-key" type="button" data-pad-key="B">B</button></div></div><button class="bs-cancel" type="button" onclick="closeBS('pad')">Close</button></div></div>
 
 
 <style>
@@ -13029,7 +13029,7 @@ button:focus-visible,.tab-btn:focus-visible,.mi:focus-visible,.pill:focus-visibl
 
 <script id="wb-v71-5-polish-js">
 (function(){
-  const VERSION='v71.6';
+  const VERSION='v71.7';
   let inlineNotesExpanded=false;
   let pendingConfirmAction=null;
 
@@ -13318,80 +13318,86 @@ button:focus-visible,.tab-btn:focus-visible,.mi:focus-visible,.pill:focus-visibl
 </script>
 
 
-<script id="wb-v71-6-bottom-sheet-backdrop-shield-js">
-/* v71.6 — make the blurred backdrop a real close layer, not a pass-through tap. */
+<script id="wb-v71-7-bottom-sheet-backdrop-shield-js">
+/* v71.7 — bottom sheet tap shield.
+   Tapping outside a bottom sheet closes the top sheet and swallows the whole
+   gesture/click sequence so controls behind it cannot activate. */
 (function(){
-  let suppressNextBackgroundClick=false;
-  let lastDismissAt=0;
-
-  function openSheets(){
-    return Array.from(document.querySelectorAll('.bs-bg.open'));
-  }
-  function topOpenSheet(){
-    const sheets=openSheets();
-    return sheets.length?sheets[sheets.length-1]:null;
-  }
-  function sheetName(bg){
-    return bg && bg.id ? bg.id.replace(/^bs-/,'') : '';
-  }
-  function dismissSheet(bg){
-    if(!bg)return;
+  const SHIELD_MS=900;
+  let outsideGesture=null;
+  let swallowUntil=0;
+  let suppressClick=false;
+  function now(){return Date.now();}
+  function openSheets(){return Array.from(document.querySelectorAll('.bs-bg.open'));}
+  function topOpenSheet(){const a=openSheets();return a.length?a[a.length-1]:null;}
+  function sheetName(bg){return bg&&bg.id?bg.id.replace(/^bs-/,''):'';}
+  function insidePanel(target,bg){const p=target&&target.closest?target.closest('.bs'):null;return !!(p&&bg&&bg.contains(p));}
+  function outsideSheet(e,bg){if(!bg||!bg.classList.contains('open'))return false;if(!bg.contains(e.target))return true;return !insidePanel(e.target,bg);}
+  function swallow(e){if(!e)return;try{e.preventDefault();}catch(_){}try{e.stopImmediatePropagation();}catch(_){try{e.stopPropagation();}catch(__){}}}
+  function closeBackdrop(bg){
+    if(!bg||!bg.classList.contains('open'))return;
     const name=sheetName(bg);
-    suppressNextBackgroundClick=true;
-    lastDismissAt=Date.now();
-    setTimeout(()=>{ suppressNextBackgroundClick=false; },650);
-
-    if(name==='importdest' && typeof window.resolveImportDestination==='function'){
-      window.resolveImportDestination('');
-      return;
+    swallowUntil=now()+SHIELD_MS;
+    suppressClick=true;
+    if(name==='importdest'&&typeof window.resolveImportDestination==='function'){
+      window.resolveImportDestination('');return;
     }
-    if(typeof window.closeBS==='function'){
-      window.closeBS(name);
-    }else if(typeof closeBS==='function'){
-      closeBS(name);
-    }else{
-      bg.classList.remove('open');
-    }
+    if(typeof window.closeBS==='function')window.closeBS(name);
+    else bg.classList.remove('open');
   }
-  function eventIsInsidePanel(e,bg){
-    const panel=e.target && e.target.closest ? e.target.closest('.bs') : null;
-    return !!(panel && bg && bg.contains(panel));
-  }
-  function isBackdropOrOutside(e,bg){
-    if(!bg)return false;
-    if(!bg.contains(e.target))return true;
-    return !eventIsInsidePanel(e,bg);
-  }
-  function swallow(e){
-    try{ e.preventDefault(); }catch(_){}
-    try{ e.stopImmediatePropagation(); }catch(_){ try{ e.stopPropagation(); }catch(__){} }
-  }
-  function handleBackdropPointer(e){
+  function beginOutsideGesture(e){
     const bg=topOpenSheet();
-    if(!bg)return;
-    if(!isBackdropOrOutside(e,bg))return;
+    if(!bg||!outsideSheet(e,bg))return;
+    outsideGesture={bg:bg,pointerId:e.pointerId||'touch'};
+    swallowUntil=now()+SHIELD_MS;
+    suppressClick=true;
     swallow(e);
-    dismissSheet(bg);
   }
-  function handleGhostClick(e){
+  function finishOutsideGesture(e){
+    const bg=(outsideGesture&&outsideGesture.bg)||topOpenSheet();
+    if(!bg)return;
+    const same=!outsideGesture||outsideGesture.pointerId==='touch'||outsideGesture.pointerId===(e.pointerId||'touch');
+    if(!same)return;
+    if(outsideGesture||outsideSheet(e,bg)){
+      swallow(e);
+      closeBackdrop(bg);
+      outsideGesture=null;
+    }
+  }
+  function cancelOutsideGesture(e){if(outsideGesture){swallow(e);outsideGesture=null;swallowUntil=now()+SHIELD_MS;suppressClick=true;}}
+  document.addEventListener('pointerdown',beginOutsideGesture,true);
+  document.addEventListener('pointerup',finishOutsideGesture,true);
+  document.addEventListener('pointercancel',cancelOutsideGesture,true);
+  document.addEventListener('mousedown',beginOutsideGesture,true);
+  document.addEventListener('mouseup',finishOutsideGesture,true);
+  document.addEventListener('touchstart',beginOutsideGesture,{capture:true,passive:false});
+  document.addEventListener('touchend',finishOutsideGesture,{capture:true,passive:false});
+  document.addEventListener('touchcancel',cancelOutsideGesture,{capture:true,passive:false});
+  document.addEventListener('click',function(e){
     const bg=topOpenSheet();
-    if(bg && isBackdropOrOutside(e,bg)){
-      swallow(e);
-      dismissSheet(bg);
-      return;
-    }
-    if(suppressNextBackgroundClick || Date.now()-lastDismissAt<650){
-      swallow(e);
-      suppressNextBackgroundClick=false;
-    }
+    if(bg&&outsideSheet(e,bg)){swallow(e);closeBackdrop(bg);outsideGesture=null;return;}
+    if(suppressClick||now()<swallowUntil){swallow(e);suppressClick=false;}
+  },true);
+  window.closeBSBg=function(e,name){
+    const bg=document.getElementById('bs-'+name);
+    if(!bg||!bg.classList.contains('open'))return false;
+    if(e&&insidePanel(e.target,bg))return false;
+    swallow(e);closeBackdrop(bg);outsideGesture=null;return false;
+  };
+  try{closeBSBg=window.closeBSBg;}catch(_){}
+  function bindBackdrop(bg){
+    if(!bg||bg.dataset.wbBackdropBound==='1')return;
+    bg.dataset.wbBackdropBound='1';
+    bg.addEventListener('click',function(e){
+      if(!bg.classList.contains('open')||insidePanel(e.target,bg))return;
+      swallow(e);closeBackdrop(bg);
+    },true);
   }
-
-  document.addEventListener('pointerdown',handleBackdropPointer,true);
-  document.addEventListener('mousedown',handleBackdropPointer,true);
-  document.addEventListener('touchstart',handleBackdropPointer,{capture:true,passive:false});
-  document.addEventListener('click',handleGhostClick,true);
+  function bindAll(){document.querySelectorAll('.bs-bg').forEach(bindBackdrop);}
+  bindAll();
+  new MutationObserver(bindAll).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
 
 
-<div id="wb-pad-float" class="wb-pad-float"><button class="wb-pad-float-label" id="wb-pad-float-label" type="button">Pad</button><button class="wb-pad-float-stop" id="wb-pad-float-stop" type="button" aria-label="Stop pad"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"></rect></svg></button></div><div class="bs-bg" id="bs-confirm"><div class="bs"><div class="bs-handle"></div><div class="bs-title" id="confirm-title">Are you sure?</div><div class="confirm-copy" id="confirm-copy"></div><div class="confirm-actions"><button class="confirm-cancel" type="button" id="confirm-cancel">Cancel</button><button class="confirm-danger" type="button" id="confirm-action">Delete</button></div></div></div></body><div style="position: fixed; top: 0px; left: 0px; width: 1px; height: env(safe-area-inset-top,0px); pointer-events: none; opacity: 0; z-index: -1;"></div><div style="position: fixed; bottom: 0px; left: 0px; width: 1px; height: env(safe-area-inset-bottom,0px); pointer-events: none; opacity: 0; z-index: -1;"></div></html>
+<div id="wb-pad-float" class="wb-pad-float"><button class="wb-pad-float-label" id="wb-pad-float-label" type="button">Pad</button><button class="wb-pad-float-stop" id="wb-pad-float-stop" type="button" aria-label="Stop pad"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"></rect></svg></button></div><div class="bs-bg" id="bs-confirm" data-wb-backdrop-bound="1"><div class="bs"><div class="bs-handle"></div><div class="bs-title" id="confirm-title">Are you sure?</div><div class="confirm-copy" id="confirm-copy"></div><div class="confirm-actions"><button class="confirm-cancel" type="button" id="confirm-cancel">Cancel</button><button class="confirm-danger" type="button" id="confirm-action">Delete</button></div></div></div></body><div style="position: fixed; top: 0px; left: 0px; width: 1px; height: env(safe-area-inset-top,0px); pointer-events: none; opacity: 0; z-index: -1;"></div><div style="position: fixed; bottom: 0px; left: 0px; width: 1px; height: env(safe-area-inset-bottom,0px); pointer-events: none; opacity: 0; z-index: -1;"></div></html>
