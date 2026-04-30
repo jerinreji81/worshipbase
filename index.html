@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v71.10</title>
+<title>WorshipBase v71.12</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -594,6 +594,8 @@ label.ctrl-lbl{font-size:11px;color:var(--txt2);font-weight:600;}
 .editor-helper-sep{width:1px;align-self:stretch;background:var(--bdr);margin:0 2px;}
 .editor-helper-meta{font-size:11px;color:var(--txt3);margin:-4px 0 10px;line-height:1.45;}
 #bs-modal #m-chart{line-height:1.55;tab-size:4;}
+#bs-modal #m-chart.editor-nowrap{white-space:pre;overflow-x:auto;overflow-y:auto;word-wrap:normal;}
+#bs-modal #m-chart.editor-wrap{white-space:pre-wrap;overflow-x:hidden;overflow-y:auto;overflow-wrap:anywhere;}
 body.dark .editor-helper-btn.primary{background:var(--accent-surface);color:var(--accent);border-color:var(--accent-border);}
 body.dark .editor-helper-btn{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);color:var(--txt2);}
 .editor-mode-toggle{display:inline-flex;gap:3px;padding:3px;background:var(--bg2);border:.5px solid var(--bdr2);border-radius:999px;margin:4px 0 12px;}
@@ -3066,44 +3068,6 @@ body.dark .sv-set-btn{background:rgba(255,255,255,.04)!important;border-color:rg
 body.dark #setlist-section .sl-option-btn.icon-only{background:rgba(143,180,255,.10)!important;border-color:rgba(143,180,255,.22)!important;color:var(--accent)!important;}
 
 </style>
-
-<style id="wb-v71-10-polish">
-/* v71.10 rehearsal polish: notes surface, safer confirms, offline clarity */
-.song-note-strip{display:none;align-items:center;gap:8px;width:calc(100% - 32px);margin:10px 16px 0;padding:9px 12px;border-radius:16px;border:1px solid var(--surface-border);background:var(--surface-tint);color:var(--txt1);font-family:inherit;text-align:left;cursor:pointer;box-shadow:none;}
-.song-note-strip.show{display:flex;}
-.song-note-tag{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;height:22px;padding:0 8px;border-radius:999px;background:var(--tc);color:#fff;font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;}
-.song-note-preview{flex:1;min-width:0;font-size:13px;font-weight:650;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;}
-.song-note-chevron{flex:0 0 auto;font-size:13px;color:var(--txt3);transition:transform .16s ease;}
-.song-note-strip.expanded .song-note-chevron{transform:rotate(180deg);}
-.song-note-expanded{display:none;margin:8px 16px 0;padding:11px 13px;border-radius:16px;border:1px solid var(--surface-border);background:var(--bg1);color:var(--txt2);font-size:13px;line-height:1.45;box-shadow:var(--shadow-sm);}
-.song-note-expanded.show{display:block;}
-.song-note-expanded-title{font-size:11px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);margin:0 0 5px;}
-.song-note-expanded-block + .song-note-expanded-block{margin-top:10px;padding-top:10px;border-top:.5px solid var(--bdr);}
-.set-notes-chip{background:rgba(217,52,72,.08)!important;border-color:rgba(217,52,72,.22)!important;color:#d93448!important;}
-.confirm-copy{padding:0 20px 10px;color:var(--txt2);font-size:14px;line-height:1.5;white-space:pre-wrap;}
-.confirm-actions{display:flex;gap:10px;padding:8px 16px calc(var(--sab) + 12px);}
-.confirm-actions button{flex:1;border:none;border-radius:999px;padding:14px 12px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;}
-.confirm-cancel{background:var(--surface-tint);color:var(--txt1);border:1px solid var(--surface-border)!important;}
-.confirm-danger{background:#d93448;color:#fff;}
-.confirm-primary{background:var(--tc);color:#fff;}
-.offline-status-card .ss-row{cursor:default;}
-.offline-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:var(--surface-tint);border:1px solid var(--surface-border);font-size:11px;font-weight:850;color:var(--txt2);white-space:nowrap;}
-.offline-pill.ok{background:rgba(45,106,79,.09);border-color:rgba(45,106,79,.22);color:#2d6a4f;}
-.offline-pill.warn{background:rgba(217,52,72,.08);border-color:rgba(217,52,72,.22);color:#d93448;}
-.export-safe-note{margin:10px 18px 0;padding:9px 11px;border-radius:14px;background:var(--surface-tint);border:1px solid var(--surface-border);color:var(--txt2);font-size:12px;line-height:1.4;}
-.performance-mode .song-note-strip{width:auto;margin:7px 116px 0 20px;padding:6px 9px;border-radius:999px;min-height:30px;background:color-mix(in srgb,var(--bg1) 84%, transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:none;}
-.performance-mode .song-note-tag{height:20px;font-size:9px;padding:0 7px;}
-.performance-mode .song-note-preview{font-size:11px;font-weight:750;}
-.performance-mode .song-note-expanded{display:none!important;}
-.performance-mode .song-note-strip .song-note-chevron{display:none;}
-body.dark .song-note-strip,body.dark .song-note-expanded{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);box-shadow:none;}
-body.dark .song-note-tag,body.dark .confirm-primary{background:var(--accent-surface);color:var(--accent);border:1px solid var(--accent-border);}
-body.dark .set-notes-chip{background:rgba(239,143,162,.12)!important;border-color:rgba(239,143,162,.22)!important;color:#ef8fa2!important;}
-body.dark .offline-pill.ok{background:rgba(143,180,255,.14);border-color:rgba(143,180,255,.28);color:var(--accent);}
-body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(239,143,162,.22);color:#ef8fa2;}
-@media (max-width:380px){.performance-mode .song-note-strip{margin-right:86px}.song-note-preview{font-size:12px}}
-</style>
-
 </head>
 <body>
 
@@ -3124,7 +3088,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
       <div class="wm">
         <div><div class="wm-name">WorshipBase</div><div class="wm-sub">Chord Library</div></div>
       </div>
-      <button class="hdr-btn" style="display: flex;" onclick="openAddSongMenu(event)" id="hdr-add-btn" title="Add song" aria-label="Add song">
+      <button class="hdr-btn" style="display: none;" onclick="openAddSongMenu(event)" id="hdr-add-btn" title="Add song" aria-label="Add song">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 5v14M5 12h14"></path>
         </svg>
@@ -3154,7 +3118,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
   </div>
 
   <!-- Search + library filters -->
-  <div class="srch-wrap" id="srch-wrap" style="display: block;">
+  <div class="srch-wrap" id="srch-wrap" style="display: none;">
     <div class="srch-row">
       <div class="srch-inner">
         <span class="srch-ico"><svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"></circle><path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span>
@@ -3171,7 +3135,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
         </select>
       </label>
     </div>
-    <div class="filter-row" id="library-filter-row" style="display: flex;">
+    <div class="filter-row" id="library-filter-row" style="display: none;">
       <button class="filter-chip active" data-filter="all" onclick="setLibraryFilter('all',this)">All</button>
       <button class="filter-chip" data-filter="mine" onclick="setLibraryFilter('mine',this)">My Songs</button>
       <button class="filter-chip" data-filter="english" onclick="setLibraryFilter('english',this)">English</button>
@@ -3185,13 +3149,13 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
         <button class="manage-chip" type="button" onclick="openDuplicateReview()">Duplicates</button>
         <button class="manage-chip danger" type="button" onclick="bulkDeleteSelected()">Delete</button>
       </div>
-      <span class="manage-count" id="manage-count">0 selected</span>
+      <span class="manage-count" id="manage-count" style="visibility: hidden;"></span>
       <button class="manage-chip primary manage-done" id="manage-done-btn" type="button" onclick="toggleManageMode(false)">Done</button>
     </div>
   </div>
 
   <!-- SONG LIST -->
-  <div id="song-section" style="flex: 1 1 0%; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
+  <div id="song-section" style="flex: 1 1 0%; display: none; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
     <div class="vs-host ptr-wrap">
       <div id="ptr-indicator"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v4M9 2l-2 2M9 2l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 9a7 7 0 1 1-7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
       <div id="vscroll" class="vs-wrap" style="-webkit-overflow-scrolling: touch;"><div class="library-count-row" id="library-count-row"><span class="song-count" id="song-count">72 songs</span></div><div id="home-quick-wrap" class="home-quick-wrap" style="display: flex;">
@@ -3212,7 +3176,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
   </div>
 
   <!-- SET LIST -->
-  <div id="setlist-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;position:relative;min-height:0;">
+  <div id="setlist-section" style="display: none; flex: 1 1 0%; flex-direction: column; overflow: hidden; position: relative; min-height: 0px;">
     <div class="sl-scope-row">
       <div class="sl-scope-pills">
         <button class="sl-scope-btn active" id="sl-scope-shared" onclick="setSetListScope('shared')">Shared</button>
@@ -3225,7 +3189,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
         <span class="sl-setpick-caret"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
       </button>
     </div>
-    <div class="sl-hdr">
+    <div class="sl-hdr" style="--sl-align-left: 16px; --sl-align-right: 16px;">
       <div class="sl-hdr-meta" style="display: flex;">
         <span class="sl-lbl" id="sl-count">0 songs</span><span id="sl-set-key-info" class="sl-set-key-info"></span>
         
@@ -3236,14 +3200,14 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
       </div>
     </div>
     <div class="sl-scroll-host vs-host">
-      <div style="position: absolute; inset: 0px; overflow: hidden auto; -webkit-overflow-scrolling: touch;"><div id="sl-items" class="sl-items"></div></div>
+      <div style="position: absolute; inset: 0px; overflow: hidden auto; -webkit-overflow-scrolling: touch;"><div id="sl-items" class="sl-items"><div class="sl-empty"><div class="wb-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18.5a2.5 2.5 0 1 1-1-2V5l10-2v11.5a2.5 2.5 0 1 1-1-2V7L9 8.5z"></path></svg></div><div class="sl-et">No songs in Shared Set</div></div></div></div>
     </div>
     <button class="add-fab" onclick="openBS('picker')" aria-label="Add to set list"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path></svg></button>
   </div>
 
 
   <!-- BIBLE -->
-  <div id="bible-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;">
+  <div id="bible-section" style="display: none; flex: 1 1 0%; flex-direction: column; overflow: hidden; min-height: 0px;">
     <div class="bible-combo">
       <button class="bible-combo-btn" type="button" onclick="openBiblePicker('book')"><span class="truncate" id="bible-book-label">Genesis</span></button>
       <span class="bible-combo-divider"></span>
@@ -3253,16 +3217,14 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
     </div>
     <div class="bible-meta" id="bible-meta">ESV Bible</div>
     <div class="bible-scroll" id="bible-scroll" style="-webkit-overflow-scrolling: touch;">
-      <div class="bible-card" id="bible-card">
-        <div class="bible-empty" id="bible-empty">Loading Bible…</div>
-      </div>
+      <div class="bible-card" id="bible-card"><div class="bible-empty">Loading Bible…</div></div>
     </div>
     <button class="bible-fab bible-fab-prev" type="button" aria-label="Previous chapter" onclick="changeBibleChapter(-1)">‹</button>
     <button class="bible-fab bible-fab-next" type="button" aria-label="Next chapter" onclick="changeBibleChapter(1)">›</button>
   </div>
 
   <!-- SETTINGS -->
-  <div id="settings-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;">
+  <div id="settings-section" style="display: flex; flex: 1 1 0%; flex-direction: column; overflow: hidden; min-height: 0px;">
     <div class="settings-scroll" style="-webkit-overflow-scrolling: touch;">
 
       <div class="ss-section">
@@ -3365,7 +3327,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
             <div class="ss-right"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
           </div>
         </div>
-      </div><div class="ss-section" id="sync-offline-section"><div class="ss-title">Sync &amp; Offline</div><div class="ss-card offline-status-card"><div class="ss-row no-tap"><div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5a5 5 0 0 1 10 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path><path d="M5.2 10.6a3 3 0 0 1 5.6 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path><circle cx="8" cy="12.6" r="1" fill="currentColor"></circle></svg></div><div class="ss-body"><div class="ss-lbl">Connection</div><div class="ss-sub" id="offline-status-sub">Checking…</div></div><span class="offline-pill" id="offline-status-pill">Checking</span></div><div class="ss-row no-tap"><div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10v8H3z" stroke="currentColor" stroke-width="1.4"></path><path d="M5.5 7h5M5.5 9.5h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></div><div class="ss-body"><div class="ss-lbl">Offline app shell</div><div class="ss-sub" id="offline-sw-sub">Checking cache status…</div></div></div><div class="ss-row" onclick="wbClearOfflineCache()"><div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4h8M6 4V2.8h4V4M5 6v7h6V6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="ss-body"><div class="ss-lbl">Clear offline cache</div><div class="ss-sub">Forces a fresh download next time you open WorshipBase</div></div></div></div></div>
+      </div>
 
       <div class="ss-section">
         <div class="ss-title">Bible</div>
@@ -3417,7 +3379,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 71.5</div>
+            <div class="about-version-pill">Version 71.12</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -3430,7 +3392,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
   <div class="tab-bar" id="tab-bar">
 
     <!-- Library tab -->
-    <button class="tab-btn active" id="tab-songs" onclick="switchTab('songs')">
+    <button class="tab-btn" id="tab-songs" onclick="switchTab('songs')">
       <span class="tab-ico">
         <svg class="ico-outline" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
         <svg class="ico-filled" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 6h16" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path><path d="M4 12h10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path><path d="M4 18h16" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path></svg>
@@ -3461,7 +3423,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
     </button>
 
     <!-- Settings tab -->
-    <button class="tab-btn" id="tab-settings" onclick="switchTab('settings')">
+    <button class="tab-btn active" id="tab-settings" onclick="switchTab('settings')">
       <span class="tab-ico">
         <!-- outline: thin gear -->
         <svg class="ico-outline" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -3586,7 +3548,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
       </div>
     </div>
 
-    <div id="export-safe-note" class="export-safe-note">PDF export keeps the current active export engine. Use Preview PDF first; the downloaded PDF is generated from the same layout.</div><div class="ev-footer">
+    <div class="ev-footer">
       <button class="ev-ghost" type="button" onclick="closeExportView()">Cancel</button>
       <button class="ev-ghost" type="button" onclick="sharePdfFromPage()">Share PDF</button>
       <button class="ev-primary" type="button" onclick="runExportFromPage()">Preview PDF</button>
@@ -3675,7 +3637,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
       <div class="pa" id="ph-author"></div>
       <div class="pk" id="ph-key"></div>
     </div>
-    <button type="button" id="song-note-strip" class="song-note-strip" aria-expanded="false"><span class="song-note-tag">Notes</span><span class="song-note-preview" id="song-note-preview">Song notes</span><span class="song-note-chevron">⌄</span></button><div id="song-note-expanded" class="song-note-expanded"></div><div class="sheet" id="sv-sheet"></div>
+    <div class="sheet" id="sv-sheet"></div>
   </div>
   <div class="pres-section-rail" id="pres-section-rail" aria-label="Section navigation"></div>
   <div class="pres-autoscroll" id="pres-autoscroll">
@@ -3704,7 +3666,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"></path><path d="M8 8l4-4 4 4"></path><path d="M8 16l4 4 4-4"></path></svg>
       </button>
       <button class="live-tool" id="live-tool-metronome" type="button" title="Metronome" aria-label="Show metronome controls" onclick="toggleMetronomePanel()"><span class="two-line"><span>MET</span><span id="live-metro-bpm">120</span></span></button>
-      <button class="live-tool" id="live-tool-view" type="button" title="Chart view" aria-label="Change chart view" onclick="cycleLiveViewMode()"><span class="two-line"><span>VIEW</span><span id="live-view-mode-label">CHORDS</span></span></button>
+      <button class="live-tool" id="live-tool-view" type="button" title="Chart view" aria-label="Change chart view" onclick="cycleLiveViewMode()"><span class="two-line"><span>VIEW</span><span id="live-view-label">CHORDS</span></span></button>
       <button class="live-tool soft" type="button" title="Smaller text" aria-label="Smaller text" onclick="stepTextSize(-1);showToast('Text '+(appPrefs.textSize||100)+'%');showLiveToolsTemporarily()">A−</button>
       <button class="live-tool soft" type="button" title="Larger text" aria-label="Larger text" onclick="stepTextSize(1);showToast('Text '+(appPrefs.textSize||100)+'%');showLiveToolsTemporarily()">A+</button>
       <button class="live-tool" id="live-tool-notes" type="button" title="Notes and cues" aria-label="Notes and cues" onclick="openLiveNotesPlaceholder()" style="position:relative">
@@ -3736,10 +3698,10 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
   </div>
 </div>
 <div class="bs-bg" id="bs-bibleversion" onclick="closeBSBg(event,'bibleversion')">
-  <div class="bs">
+  <div class="bs" data-swipe-attached="1">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Select version</h2><button class="m-close" onclick="closeBS('bibleversion')">×</button></div>
-    <div class="bible-version-list" id="bible-version-list"></div>
+    <div class="bible-version-list" id="bible-version-list"><button class="bible-version-item" onclick="selectBibleVersion('esv')"><div class="bible-version-copy"><div class="bible-version-title">ESV - English Standard Version</div></div><div class="setdest-state">Selected</div></button></div>
     <button class="bs-cancel" onclick="closeBS('bibleversion')">Close</button>
   </div>
 </div>
@@ -3917,14 +3879,14 @@ line 18 | Hold / pause"></textarea>
           <button class="editor-helper-btn" type="button" onclick="insertChordLine()">Chord line</button>
           <button class="editor-helper-btn" type="button" onclick="duplicateCurrentSection()">Duplicate section</button>
           <button class="editor-helper-btn" type="button" onclick="normalizeEditorSpacing()" title="Remove trailing spaces and tidy blank lines">Clean spacing</button>
+          <button class="editor-helper-btn" id="editor-wrap-toggle" type="button" onclick="toggleEditorWrap()" title="Toggle visual line wrapping in the editor">Wrap: Off</button>
         </div>
         <div class="editor-helper-meta">Quick tools: add sections, insert chord spacing, duplicate a section, or clean extra blank spaces.</div>
-        <textarea id="m-chart" placeholder="[Verse 1]
+        <textarea id="m-chart" class="editor-nowrap" wrap="off" placeholder="[Verse 1]
 [G]The splendor of a [C]King
-[Em]Let all the earth [C]rejoice" class="editor-wrap-off" wrap="off"></textarea>
+[Em]Let all the earth [C]rejoice"></textarea>
         <div class="m-subacts">
           <button class="m-mini-btn" type="button" onclick="pasteChordsFromClipboard()">Paste chords from clipboard</button>
-          <button class="m-mini-btn" id="editor-wrap-toggle-btn" type="button" onclick="toggleEditorWrap()" title="Turn visual wrapping on or off for long chord lines">Wrap: Off</button>
         </div>
       </div>
       <div class="editor-pane hidden" id="editor-preview-pane">
@@ -4067,7 +4029,7 @@ line 18 | Hold / pause"></textarea>
         </div>
         <div class="preview-body" id="file-import-preview-body"><div class="preview-empty">No import preview yet.</div></div>
       </div>
-      <div class="m-hint ug-bottom-hint">Use Edit to review before saving selected songs.</div>
+      <div class="m-hint ug-bottom-hint">Use Edit to review before saving. Save stores selected songs.</div>
     </div>
   </div>
 </div>
@@ -4109,7 +4071,7 @@ line 18 | Hold / pause"></textarea>
 <!-- EXPORT -->
 
 <div class="bs-bg" id="bs-sets" onclick="closeBSBg(event,'sets')">
-  <div class="bs">
+  <div class="bs" data-swipe-attached="1">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2" id="sets-title">Shared set lists</h2><button class="m-close" onclick="closeBS('sets')">×</button></div>
     <div class="m-body" style="padding-bottom:6px;">
@@ -4142,7 +4104,7 @@ line 18 | Hold / pause"></textarea>
 
 <!-- SET LIST OPTIONS -->
 <div class="bs-bg" id="bs-setoptions" onclick="closeBSBg(event,'setoptions')">
-  <div class="bs">
+  <div class="bs" data-swipe-attached="1">
     <div class="bs-handle"></div>
     <div class="bs-title">Set options</div>
     <button class="mi" onclick="openExportView('setlist');closeBS('setoptions')">
@@ -4200,7 +4162,7 @@ line 18 | Hold / pause"></textarea>
 </div>
 
 <!-- IMPORT DESTINATION -->
-<div class="bs-bg" id="bs-importdest" onclick="closeBSBg(event,'importdest')">
+<div class="bs-bg" id="bs-importdest" onclick="if(event.target.id==='bs-importdest')resolveImportDestination('')">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="m-tr"><h2 class="m-h2">Save song to</h2><button class="m-close" onclick="resolveImportDestination('')">×</button></div>
@@ -4353,10 +4315,7 @@ line 18 | Hold / pause"></textarea>
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script id="wb-export-layout-refinement-js">
-window.addEventListener('DOMContentLoaded', function(){
-  if (typeof buildSongExportBlocks !== 'function' || typeof buildExportCanvases !== 'function') return;
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js">
 /* ── v58.1 export layout refinement ── */
 (function(){
   const __oldBuildSongExportBlocks = buildSongExportBlocks;
@@ -4559,8 +4518,6 @@ window.addEventListener('DOMContentLoaded', function(){
   };
 })();
 
-
-});
 </script>
 <script>
 function resetTransientUIOnResume(){
@@ -5174,16 +5131,7 @@ function closeAllBS(){
     el.classList.remove('open');
   });
 }
-function closeBSBg(e,name){
-  const bg=document.getElementById('bs-'+name);
-  if(!bg || !bg.classList.contains('open') || !e || e.target!==bg)return false;
-  if(e.cancelable)e.preventDefault();
-  if(e.stopImmediatePropagation)e.stopImmediatePropagation();
-  else e.stopPropagation();
-  if(name==='importdest' && typeof resolveImportDestination==='function')resolveImportDestination('');
-  else closeBS(name);
-  return false;
-}
+function closeBSBg(e,name){if(e.target===document.getElementById('bs-'+name))closeBS(name);}
 window.visualViewport?.addEventListener('resize',adjustPinSheetForKeyboard,{passive:true});
 window.visualViewport?.addEventListener('scroll',adjustPinSheetForKeyboard,{passive:true});
 document.addEventListener('focusin',e=>{ if(e.target?.id==='pin-input') setTimeout(adjustPinSheetForKeyboard, 30); });
@@ -5436,31 +5384,15 @@ function renderChordDiagrams(){
 }
 
 /* ══ ACTIONS ══ */
-let viewMode='chords',lastSongViewMode=null,useFlats=false,autoScrollRate=0.1,autoScrollOn=false,autoScrollTimer=null,autoScrollLastTs=0,autoScrollCarry=0,presentationMode=false,pendingSetDestSong=null;
-let liveSectionRailOn=true,liveToolsExpanded=false,liveToolsAutoTimer=null,liveAutoscrollPanelOn=false,liveChromeTimer=null;
+let viewMode='chords',lastSongViewMode='',useFlats=false,autoScrollRate=0.1,autoScrollOn=false,autoScrollTimer=null,autoScrollLastTs=0,autoScrollCarry=0,presentationMode=false,pendingSetDestSong=null;
+let liveSectionRailOn=false,liveToolsExpanded=false,liveToolsAutoTimer=null,liveAutoscrollPanelOn=false,liveChromeTimer=null;
 const AUTO_SCROLL_BASE=24;
-function normalizeSongViewMode(mode){return ['lyrics','chords','nns'].includes(mode)?mode:'chords';}
-function getInitialSongViewMode(){return normalizeSongViewMode(lastSongViewMode||(appPrefs&&appPrefs.defaultSongView)||'chords');}
-function songViewModeLabel(mode,short=false){
-  mode=normalizeSongViewMode(mode);
-  if(mode==='nns')return 'NNS';
-  if(mode==='lyrics')return short?'LYR':'Lyrics';
-  return short?'CHORDS':'Chords';
-}
 function formatAutoScrollRate(){return 'x'+autoScrollRate.toFixed(1);}
-function setViewMode(mode,opts={}){
-  mode=normalizeSongViewMode(mode);
-  viewMode=mode;
-  if(!opts || opts.remember!==false)lastSongViewMode=mode;
-  ['lyrics','chords','nns'].forEach(name=>document.getElementById('seg-'+name)?.classList.toggle('active',name===mode));
-  document.getElementById('key-controls').style.display=mode==='lyrics'?'none':'flex';
-  updateLiveToolsUI();
-  if(!opts || opts.render!==false)updateSongView();
-}
+function setViewMode(mode,opts={}){if(!['lyrics','chords','nns'].includes(mode))mode='chords';viewMode=mode;if(opts.remember!==false)lastSongViewMode=mode;['lyrics','chords','nns'].forEach(name=>document.getElementById('seg-'+name)?.classList.toggle('active',name===mode));document.getElementById('key-controls').style.display=mode==='lyrics'?'none':'flex';updateLiveToolsUI();if(opts.render!==false)updateSongView();}
 function toggleFlats(){useFlats=!useFlats;document.getElementById('mi-flats').classList.toggle('on',useFlats);updateSongView();}
 function setPresentationMode(on){
   presentationMode=!!on;
-  liveSectionRailOn=!!presentationMode;
+  liveSectionRailOn=presentationMode;
   if(!presentationMode){setLiveAutoscrollPanel(false);setMetronomePanel(false);}
   if(presentationMode){setLiveToolsExpanded(false,false);wakeLiveChrome(3200);}
   else {sleepLiveChrome(); if(liveToolsAutoTimer){clearTimeout(liveToolsAutoTimer);liveToolsAutoTimer=null;}}
@@ -5568,10 +5500,10 @@ function toggleLiveSectionRail(){
 }
 function cycleLiveViewMode(){
   const order=['chords','lyrics','nns'];
-  const idx=order.indexOf(normalizeSongViewMode(viewMode));
-  const next=order[(idx+1)%order.length];
+  const next=order[(Math.max(0,order.indexOf(viewMode))+1)%order.length];
   setViewMode(next);
-  showToast('View: '+songViewModeLabel(next));
+  const label=next==='lyrics'?'Lyrics':(next==='nns'?'NNS':'Chords');
+  showToast('View: '+label);
   showLiveToolsTemporarily();
 }
 function openLiveNotesPlaceholder(){
@@ -5585,13 +5517,8 @@ function updateLiveToolsUI(){
     tools.classList.toggle('collapsed',!liveToolsExpanded);
   }
   document.getElementById('live-tool-autoscroll')?.classList.toggle('active',!!(autoScrollOn||liveAutoscrollPanelOn));
-  const viewTool=document.getElementById('live-tool-view');
-  if(viewTool){
-    viewTool.classList.toggle('active',normalizeSongViewMode(viewMode)!=='chords');
-    viewTool.setAttribute('aria-label','Change chart view. Current: '+songViewModeLabel(viewMode));
-  }
-  const viewLabel=document.getElementById('live-view-mode-label');
-  if(viewLabel)viewLabel.textContent=songViewModeLabel(viewMode,true);
+  const liveViewLabel=document.getElementById('live-view-label');if(liveViewLabel)liveViewLabel.textContent=viewMode==='lyrics'?'LYRICS':(viewMode==='nns'?'NNS':'CHORDS');
+  document.getElementById('live-tool-view')?.classList.toggle('active',viewMode!=='chords');
   document.getElementById('live-tool-metronome')?.classList.toggle('active',!!(metronomeOn||metronomePanelOn));
   const sv=document.getElementById('song-view');
   sv?.classList.toggle('live-tools-expanded',!!liveToolsExpanded&&presentationMode);
@@ -6981,7 +6908,6 @@ function applyUnifiedSongToEditor(song){
   document.getElementById('m-spotify-url')&&(document.getElementById('m-spotify-url').value=song.spotifyUrl||song.spotify||'');
   document.getElementById('m-youtube-url')&&(document.getElementById('m-youtube-url').value=song.youtubeUrl||song.youtube||'');
   document.getElementById('m-chart').value=song.chart||'';
-  applyEditorWrapMode();
   document.querySelectorAll('.cat-opt').forEach((b,i)=>b.classList.toggle('active',['english','malayalam'][i]===modalCat));
   closeBS('file-import');
   setTimeout(()=>{
@@ -8713,7 +8639,7 @@ function renderDefaultSongViewOptions(){
 }
 function setDefaultSongView(k){
   if(!['lyrics','chords','nns'].includes(k))k='chords';
-  appPrefs.defaultSongView=k;lastSongViewMode=k;savePrefs();
+  appPrefs.defaultSongView=k;savePrefs();
   const sub=document.getElementById('def-songview-sub');
   const val=document.getElementById('def-songview-val');
   const label=k==='lyrics'?'Lyrics':(k==='nns'?'NNS':'Chords');
@@ -9143,7 +9069,8 @@ function openSong(id,fromSet,focusMode=false){
   } else {
     currentKey=appPrefs.defaultKey;
   }
-  const initialView=getInitialSongViewMode();
+  const defaultView=['lyrics','chords','nns'].includes(appPrefs.defaultSongView)?appPrefs.defaultSongView:'chords';
+  const initialView=['lyrics','chords','nns'].includes(lastSongViewMode)?lastSongViewMode:defaultView;
   viewMode=initialView;useFlats=!!appPrefs.useFlatsDefault;stopAutoScroll();initMetronomeForSong();
   document.getElementById('sv-title').textContent=currentSong.title;
   document.getElementById('sv-pres-title').textContent=currentSong.title;
@@ -9158,14 +9085,14 @@ function openSong(id,fromSet,focusMode=false){
   if(darkMode)document.getElementById('mi-dark').classList.add('on');
   else document.getElementById('mi-dark').classList.remove('on');
   updateFavoriteMenuUI();
-  setViewMode(initialView,{render:false});
+  setViewMode(initialView,{remember:false,render:false});
   if(presentationMode)setPresentationMode(true);
   setLiveToolsExpanded(false,false);
+  updateLiveScrolledState();
+  updateAutoScrollUI();
   // back button is icon-only now, no label to update
   svScrollEl.scrollTop=0;
   updateSongView();
-  updateLiveScrolledState();
-  updateAutoScrollUI();
   updateSongNoteIndicators();
   updatePlaybackButton();
   document.body.classList.add('song-open');
@@ -9231,22 +9158,18 @@ let songEditorMode='edit';
 let editorHistory=[],editorFuture=[],editorHistoryWire=false,editorHistorySilent=false,editorHistoryTimer=null;
 
 function getChartEditor(){ return document.getElementById('m-chart'); }
-let editorWrapChart=false;
-function applyEditorWrapMode(){
+let editorWrapOn=false;
+function applyEditorWrap(){
   const ta=getChartEditor();
-  const btn=document.getElementById('editor-wrap-toggle-btn');
+  const btn=document.getElementById('editor-wrap-toggle');
   if(ta){
-    ta.classList.toggle('editor-wrap-on',!!editorWrapChart);
-    ta.classList.toggle('editor-wrap-off',!editorWrapChart);
-    ta.setAttribute('wrap',editorWrapChart?'soft':'off');
+    ta.classList.toggle('editor-wrap',!!editorWrapOn);
+    ta.classList.toggle('editor-nowrap',!editorWrapOn);
+    ta.setAttribute('wrap',editorWrapOn?'soft':'off');
   }
-  if(btn)btn.textContent='Wrap: '+(editorWrapChart?'On':'Off');
+  if(btn)btn.textContent='Wrap: '+(editorWrapOn?'On':'Off');
 }
-function toggleEditorWrap(){
-  editorWrapChart=!editorWrapChart;
-  applyEditorWrapMode();
-  showToast(editorWrapChart?'Editor wrap on':'Editor wrap off');
-}
+function toggleEditorWrap(){editorWrapOn=!editorWrapOn;applyEditorWrap();}
 function getEditorSnapshot(){
   const ta=getChartEditor();
   if(!ta) return null;
@@ -9482,7 +9405,6 @@ function updateSongEditorPreview(){
   body.classList.toggle('chords-highlight',!!appPrefs.highlightChords);
 }
 function wireSongEditorPreview(){
-  applyEditorWrapMode();
   if(editorHistoryWire) return;
   editorHistoryWire=true;
   ['m-title','m-author','m-key','m-time-sig','m-bpm','m-chart'].forEach(id=>{
@@ -10112,7 +10034,7 @@ function openSongModal(song){
   document.getElementById('m-spotify-url')&&(document.getElementById('m-spotify-url').value=song?(song.spotifyUrl||song.spotify||''):'');
   document.getElementById('m-youtube-url')&&(document.getElementById('m-youtube-url').value=song?(song.youtubeUrl||song.youtube||''):'');
   document.getElementById('m-chart').value=song?song.chart:'';
-  applyEditorWrapMode();
+  editorWrapOn=false;applyEditorWrap();
   modalCat=song?song.cat:(libraryFilter==='malayalam'?'malayalam':'english');
   document.querySelectorAll('.cat-opt').forEach((b,i)=>b.classList.toggle('active',['english','malayalam'][i]===modalCat));
   updateSongEditorPreview();
@@ -10185,7 +10107,7 @@ function deleteSong(){
 
 /* ══ INIT ══ */
 function applyStoredPrefs(){
-  loadPrefs();lastSongViewMode=normalizeSongViewMode(appPrefs.defaultSongView);loadDeviceSetList();loadPersonalNamedSets();
+  loadPrefs();loadDeviceSetList();loadPersonalNamedSets();
   // Dark mode
   if(appPrefs.darkMode){
     darkMode=true;document.body.classList.add('dark');
@@ -12882,61 +12804,11 @@ body.dark #setlist-section #sl-set-key-info{background:rgba(255,255,255,.03)!imp
 .wb-pad-float-stop{flex:0 0 32px!important;}
 .bs-bg.open{touch-action:manipulation;}
 .bs-bg.open > .bs{will-change:transform;}
-</style>
-<style id="wb-polish-pass-css">
-/* ── POLISH PASS: song-page scroll stability + accessibility helpers ── */
-#sv-scroll,.sv-scroll{
-  overscroll-behavior-y:contain!important;
-  overscroll-behavior-x:none!important;
-  touch-action:pan-y;
-  -webkit-overflow-scrolling:touch;
-}
-#sv-scroll .sheet{transform:translateZ(0);}
-button:focus-visible,.tab-btn:focus-visible,.mi:focus-visible,.pill:focus-visible,.seg-btn:focus-visible,.filter-chip:focus-visible,.manage-chip:focus-visible,.editor-helper-btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
-  outline:2px solid color-mix(in srgb,var(--accent,var(--tc)) 58%, transparent);
-  outline-offset:2px;
-}
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{
-    animation-duration:.001ms!important;
-    animation-iteration-count:1!important;
-    scroll-behavior:auto!important;
-    transition-duration:.001ms!important;
-  }
-}
-</style>
-<style id="wb-v71-4-css">
-/* v71.4: protect the iPhone home-indicator safe area from accidental bottom-tab taps. */
-.tab-bar,#tab-bar{
-  height:calc(var(--tab-h) + var(--sab))!important;
-  padding-bottom:var(--sab)!important;
-  align-items:flex-start!important;
-}
-.tab-btn{
-  height:var(--tab-h)!important;
-  min-height:var(--tab-h)!important;
-  max-height:var(--tab-h)!important;
-  padding:6px 0 6px!important;
-}
-</style>
-<style id="wb-v71-2-css">
-/* v71.2: editor wrap control + live chart-view polish */
-/* v71.3: section rail is always available in focus mode; only the rail toggle was removed. */
-#bs-modal #m-chart.editor-wrap-off{
-  white-space:pre!important;
-  overflow:auto!important;
-  overflow-x:auto!important;
-  overflow-wrap:normal!important;
-  word-break:normal!important;
-  font-family:ui-monospace,'SF Mono','SFMono-Regular',Menlo,Monaco,monospace!important;
-}
-#bs-modal #m-chart.editor-wrap-on{
-  white-space:pre-wrap!important;
-  overflow-x:hidden!important;
-  overflow-wrap:anywhere!important;
-}
-#editor-wrap-toggle-btn{min-width:88px;}
-#live-tool-view .two-line span:last-child{font-size:9px;letter-spacing:.02em;}
+
+/* v71.12 rebuilt polish: song scroll stability and home-indicator tab protection */
+#sv-scroll,.sv-scroll{overscroll-behavior-y:contain;touch-action:pan-y;}
+.tab-bar{align-items:flex-start;}
+.tab-btn{height:var(--tab-h)!important;min-height:var(--tab-h)!important;padding:6px 0!important;align-self:flex-start;}
 </style>
 <script id="wb-v70-final-behaviour-pass-js">
 (function(){
@@ -12952,375 +12824,30 @@ button:focus-visible,.tab-btn:focus-visible,.mi:focus-visible,.pill:focus-visibl
   function refreshAll(){refreshSetHeader();refreshPad();}
   ['renderSetList','applySetAllKey','setSetItemKey','modSetList','setActiveNamedSet','setSetListScope','clearSet','openSetKeyEditor'].forEach(function(name){try{var old=window[name];if(typeof old==='function'&&!old.__wbBehaviourPassWrapped){var wrapped=function(){var r=old.apply(this,arguments);requestAnimationFrame(refreshAll);setTimeout(refreshAll,120);return r;};wrapped.__wbBehaviourPassWrapped=true;window[name]=wrapped;}}catch(e){}});
   function closeOverlay(bg){if(!bg||!bg.classList||!bg.classList.contains('open'))return;var name=(bg.id||'').replace(/^bs-/,'');var panel=bg.querySelector('.bs');if(panel){panel.style.transition='';panel.style.transform='';panel.style.marginBottom='';}bg.style.pointerEvents='';try{if(typeof closeBS==='function')closeBS(name);else bg.classList.remove('open');}catch(e){bg.classList.remove('open');}}
-  /* v71.10: Do not close bottom sheets on touchstart/pointerdown. On iOS, removing
-     the backdrop before the tap sequence finishes can retarget the final click to
-     controls behind the sheet. Backdrop closing is handled by each .bs-bg onclick
-     through closeBSBg(), which swallows the final click before closing. */
+  document.addEventListener('click',function(e){var bg=e.target&&e.target.classList&&e.target.classList.contains('bs-bg')?e.target:null;if(!bg||!bg.classList.contains('open'))return;e.preventDefault();e.stopPropagation();closeOverlay(bg);},true);
   document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.bs-bg.open').forEach(closeOverlay);});
-  function stopMomentum(){
-    ['vscroll','bible-scroll','sv-scroll'].forEach(function(id){
-      var el=document.getElementById(id);if(!el)return;
-      var y=el.scrollTop;
-      el.style.webkitOverflowScrolling='auto';
-      el.scrollTop=y;
-      void el.offsetHeight;
-      requestAnimationFrame(function(){el.style.webkitOverflowScrolling='touch';});
-    });
-    document.querySelectorAll('#setlist-section .sl-scroll-host > div,.settings-scroll').forEach(function(el){
-      var y=el.scrollTop;
-      el.style.webkitOverflowScrolling='auto';
-      el.scrollTop=y;
-      void el.offsetHeight;
-      requestAnimationFrame(function(){el.style.webkitOverflowScrolling='touch';});
-    });
+  function stopMomentum(){['vscroll','bible-scroll','sv-scroll'].forEach(function(id){var el=document.getElementById(id);if(!el)return;var y=el.scrollTop;el.style.webkitOverflowScrolling='auto';el.scrollTop=y;void el.offsetHeight;requestAnimationFrame(function(){el.style.webkitOverflowScrolling='touch';});});document.querySelectorAll('#setlist-section .sl-scroll-host > div,.settings-scroll').forEach(function(el){var y=el.scrollTop;el.style.webkitOverflowScrolling='auto';el.scrollTop=y;void el.offsetHeight;requestAnimationFrame(function(){el.style.webkitOverflowScrolling='touch';});});}
+  function installSongScrollBoundaryGuard(){
+    var el=document.getElementById('sv-scroll');
+    if(!el||el.__wbScrollBoundaryGuard)return;
+    el.__wbScrollBoundaryGuard=true;
+    var startX=0,startY=0,lastY=0;
+    el.addEventListener('touchstart',function(e){var t=e.touches&&e.touches[0];if(!t)return;startX=t.clientX;startY=t.clientY;lastY=t.clientY;},{passive:true});
+    el.addEventListener('touchmove',function(e){var t=e.touches&&e.touches[0];if(!t)return;var dx=t.clientX-startX;var totalDy=t.clientY-startY;var stepDy=t.clientY-lastY;lastY=t.clientY;var mostlyVertical=Math.abs(totalDy)>Math.abs(dx)*1.2;if(!mostlyVertical)return;var atTop=el.scrollTop<=0;var atBottom=Math.ceil(el.scrollTop+el.clientHeight)>=el.scrollHeight;if((atTop&&stepDy>0)||(atBottom&&stepDy<0)){if(e.cancelable)e.preventDefault();el.scrollTop=atTop?0:(el.scrollHeight-el.clientHeight);}}, {passive:false});
   }
   function tabNameFromButton(btn){return (btn&&btn.id||'').replace(/^tab-/,'');}
-  function isInBottomTabTapZone(btn,e){
-    try{
-      var t=e.touches&&e.touches[0]?e.touches[0]:e;
-      var rect=btn.getBoundingClientRect();
-      var tabH=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tab-h'))||52;
-      return t.clientY <= rect.top + tabH + 1;
-    }catch(err){return true;}
-  }
-  document.addEventListener('touchstart',function(e){var btn=e.target&&e.target.closest&&e.target.closest('.tab-btn');if(!btn)return;if(!isInBottomTabTapZone(btn,e))return;var tab=tabNameFromButton(btn);if(!tab)return;e.preventDefault();stopMomentum();try{if(typeof closeAllBS==='function')closeAllBS();}catch(err){}try{if(typeof switchTab==='function')switchTab(tab);}catch(err){}},{capture:true,passive:false});
-  document.addEventListener('pointerdown',function(e){var btn=e.target&&e.target.closest&&e.target.closest('.tab-btn');if(!btn)return;if(!isInBottomTabTapZone(btn,e))return;stopMomentum();try{if(typeof closeAllBS==='function')closeAllBS();}catch(err){}},true);
+  function tabSafeHit(e,btn){try{var t=(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0])||e;var r=btn.getBoundingClientRect();var h=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tab-h'))||52;return (t.clientY-r.top)<=h;}catch(err){return true;}}
+  document.addEventListener('touchstart',function(e){var btn=e.target&&e.target.closest&&e.target.closest('.tab-btn');if(!btn)return;if(!tabSafeHit(e,btn)){e.preventDefault();e.stopPropagation();return;}var tab=tabNameFromButton(btn);if(!tab)return;e.preventDefault();stopMomentum();try{if(typeof closeAllBS==='function')closeAllBS();}catch(err){}try{if(typeof switchTab==='function')switchTab(tab);}catch(err){}},{capture:true,passive:false});
+  document.addEventListener('pointerdown',function(e){var btn=e.target&&e.target.closest&&e.target.closest('.tab-btn');if(!btn)return;if(!tabSafeHit(e,btn)){e.preventDefault();e.stopPropagation();return;}stopMomentum();try{if(typeof closeAllBS==='function')closeAllBS();}catch(err){}},true);
   var oldSwitch=window.switchTab;if(typeof oldSwitch==='function'&&!oldSwitch.__wbBehaviourPassWrapped){window.switchTab=function(tab){stopMomentum();try{if(typeof closeAllBS==='function')closeAllBS();}catch(e){}var r=oldSwitch.apply(this,arguments);requestAnimationFrame(refreshAll);setTimeout(refreshAll,160);return r;};window.switchTab.__wbBehaviourPassWrapped=true;}
   var oldOpen=window.openBS;if(typeof oldOpen==='function'&&!oldOpen.__wbBehaviourPassWrapped){window.openBS=function(name){try{if(typeof closeAllBS==='function')closeAllBS();}catch(e){}var r=oldOpen.apply(this,arguments);var bg=document.getElementById('bs-'+name);var panel=bg&&bg.querySelector('.bs');if(bg)bg.style.pointerEvents='';if(panel){panel.style.transition='';panel.style.transform='';}requestAnimationFrame(refreshAll);return r;};window.openBS.__wbBehaviourPassWrapped=true;}
   var oldClose=window.closeBS;if(typeof oldClose==='function'&&!oldClose.__wbBehaviourPassWrapped){window.closeBS=function(name){var bg=document.getElementById('bs-'+name);var panel=bg&&bg.querySelector('.bs');if(bg)bg.style.pointerEvents='';if(panel){panel.style.transition='';panel.style.transform='';panel.style.marginBottom='';}return oldClose.apply(this,arguments);};window.closeBS.__wbBehaviourPassWrapped=true;}
-  document.addEventListener('DOMContentLoaded',function(){refreshAll();setTimeout(refreshAll,250);setInterval(refreshPad,1000);});
+  document.addEventListener('DOMContentLoaded',function(){installSongScrollBoundaryGuard();refreshAll();setTimeout(refreshAll,250);setInterval(refreshPad,1000);});
   window.addEventListener('resize',function(){setTimeout(refreshSetHeader,80);},{passive:true});
   document.addEventListener('visibilitychange',function(){setTimeout(refreshAll,120);});
   requestAnimationFrame(refreshAll);
 })();
 </script>
 
-<script id="wb-song-scroll-polish-js">
-(function(){
-  'use strict';
-  function installSongScrollBoundaryGuard(){
-    var el=document.getElementById('sv-scroll');
-    if(!el || el.__wbSongScrollBoundaryGuard)return;
-    el.__wbSongScrollBoundaryGuard=true;
-    var startX=0,startY=0,lastY=0;
-    el.addEventListener('touchstart',function(e){
-      if(!e.touches || !e.touches.length)return;
-      var t=e.touches[0];
-      startX=t.clientX;startY=t.clientY;lastY=t.clientY;
-    },{passive:true});
-    el.addEventListener('touchmove',function(e){
-      if(!e.touches || !e.touches.length)return;
-      var t=e.touches[0];
-      var dx=t.clientX-startX;
-      var totalDy=t.clientY-startY;
-      var stepDy=t.clientY-lastY;
-      lastY=t.clientY;
-      var mostlyVertical=Math.abs(totalDy)>Math.abs(dx)*1.2;
-      if(!mostlyVertical)return;
-      var maxScroll=Math.max(0,el.scrollHeight-el.clientHeight);
-      var atTop=el.scrollTop<=0;
-      var atBottom=el.scrollTop>=maxScroll-1;
-      if((atTop&&stepDy>0)||(atBottom&&stepDy<0)){
-        if(e.cancelable)e.preventDefault();
-        el.scrollTop=atTop?0:maxScroll;
-      }
-    },{passive:false});
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installSongScrollBoundaryGuard,{once:true});
-  else installSongScrollBoundaryGuard();
-})();
-</script>
 
-
-<script id="wb-v71-10-polish-js">
-(function(){
-  const VERSION='v71.10';
-  let inlineNotesExpanded=false;
-  let pendingConfirmAction=null;
-
-  function escLocal(v){
-    try{return typeof escapeHtml==='function'?escapeHtml(v):String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-    catch(e){return String(v??'');}
-  }
-  function firstMeaningfulLine(txt){return String(txt||'').split(/\n+/).map(s=>s.trim()).filter(Boolean)[0]||'';}
-  function noteSummary(song){
-    let m={};
-    try{m=typeof getSongMemory==='function'?getSongMemory(song):{};}catch(e){m={};}
-    const cues=String(m.cues||'').trim();
-    const notes=String(m.notes||'').trim();
-    const bits=[];
-    if(cues)bits.push({label:'Cues',text:cues});
-    if(notes)bits.push({label:'Notes',text:notes});
-    const preview=firstMeaningfulLine(cues)||firstMeaningfulLine(notes)||'';
-    return {has:!!(cues||notes),cues,notes,bits,preview};
-  }
-
-  function ensureInlineNotes(){
-    if(document.getElementById('song-note-strip'))return;
-    const sheet=document.getElementById('sv-sheet');
-    if(!sheet||!sheet.parentNode)return;
-    const strip=document.createElement('button');
-    strip.type='button';
-    strip.id='song-note-strip';
-    strip.className='song-note-strip';
-    strip.setAttribute('aria-expanded','false');
-    strip.innerHTML='<span class="song-note-tag">Notes</span><span class="song-note-preview" id="song-note-preview">Song notes</span><span class="song-note-chevron">⌄</span>';
-    strip.addEventListener('click',function(){
-      if(document.body.classList.contains('performance-mode')){
-        if(typeof openSongNotesSheet==='function')openSongNotesSheet(currentSong);
-        return;
-      }
-      inlineNotesExpanded=!inlineNotesExpanded;
-      updateInlineSongNotes();
-    });
-    const expanded=document.createElement('div');
-    expanded.id='song-note-expanded';
-    expanded.className='song-note-expanded';
-    sheet.parentNode.insertBefore(strip,sheet);
-    sheet.parentNode.insertBefore(expanded,sheet);
-  }
-  function updateInlineSongNotes(){
-    ensureInlineNotes();
-    const strip=document.getElementById('song-note-strip');
-    const preview=document.getElementById('song-note-preview');
-    const expanded=document.getElementById('song-note-expanded');
-    if(!strip||!preview||!expanded)return;
-    const info=noteSummary(window.currentSong||currentSong);
-    if(!info.has){
-      strip.classList.remove('show','expanded');
-      expanded.classList.remove('show');
-      strip.setAttribute('aria-expanded','false');
-      return;
-    }
-    strip.classList.add('show');
-    strip.classList.toggle('expanded',inlineNotesExpanded&&!document.body.classList.contains('performance-mode'));
-    strip.setAttribute('aria-expanded',String(inlineNotesExpanded&&!document.body.classList.contains('performance-mode')));
-    preview.textContent=info.preview||'Saved notes for this song';
-    expanded.innerHTML=info.bits.map(b=>'<div class="song-note-expanded-block"><div class="song-note-expanded-title">'+escLocal(b.label)+'</div><div>'+escLocal(b.text).replace(/\n/g,'<br>')+'</div></div>').join('');
-    expanded.classList.toggle('show',inlineNotesExpanded&&!document.body.classList.contains('performance-mode'));
-  }
-  window.updateInlineSongNotes=updateInlineSongNotes;
-
-  function applySetListNoteBadges(){
-    try{
-      document.querySelectorAll('#sl-items .set-item').forEach(row=>{
-        const id=row.dataset.id;
-        const song=(typeof findSongById==='function')?findSongById(id):null;
-        const host=row.querySelector('.set-meta-chips');
-        if(!song||!host)return;
-        const has=(typeof hasSongMemory==='function')?hasSongMemory(song):false;
-        let chip=host.querySelector('.set-notes-chip');
-        if(has && !chip){
-          chip=document.createElement('span');
-          chip.className='set-meta-chip set-notes-chip';
-          chip.textContent='Notes';
-          host.appendChild(chip);
-        }else if(!has && chip){chip.remove();}
-      });
-    }catch(e){}
-  }
-  window.applySetListNoteBadges=applySetListNoteBadges;
-
-  const oldRenderSetList=window.renderSetList || (typeof renderSetList==='function'?renderSetList:null);
-  if(oldRenderSetList){
-    window.renderSetList=function(){const r=oldRenderSetList.apply(this,arguments);requestAnimationFrame(applySetListNoteBadges);return r;};
-    try{renderSetList=window.renderSetList;}catch(e){}
-  }
-  const oldUpdateSongNoteIndicators=window.updateSongNoteIndicators || (typeof updateSongNoteIndicators==='function'?updateSongNoteIndicators:null);
-  if(oldUpdateSongNoteIndicators){
-    window.updateSongNoteIndicators=function(){const r=oldUpdateSongNoteIndicators.apply(this,arguments);updateInlineSongNotes();requestAnimationFrame(applySetListNoteBadges);return r;};
-    try{updateSongNoteIndicators=window.updateSongNoteIndicators;}catch(e){}
-  }
-  const oldUpdateSongView=window.updateSongView || (typeof updateSongView==='function'?updateSongView:null);
-  if(oldUpdateSongView){
-    window.updateSongView=function(){const r=oldUpdateSongView.apply(this,arguments);updateInlineSongNotes();return r;};
-    try{updateSongView=window.updateSongView;}catch(e){}
-  }
-
-  function ensureConfirmSheet(){
-    if(document.getElementById('bs-confirm'))return;
-    const el=document.createElement('div');
-    el.className='bs-bg';
-    el.id='bs-confirm';
-    el.addEventListener('click',e=>{if(e.target!==el)return;if(e.cancelable)e.preventDefault();if(e.stopImmediatePropagation)e.stopImmediatePropagation();else e.stopPropagation();closeConfirmSheet();});
-    el.innerHTML='<div class="bs"><div class="bs-handle"></div><div class="bs-title" id="confirm-title">Are you sure?</div><div class="confirm-copy" id="confirm-copy"></div><div class="confirm-actions"><button class="confirm-cancel" type="button" id="confirm-cancel">Cancel</button><button class="confirm-danger" type="button" id="confirm-action">Delete</button></div></div>';
-    document.body.appendChild(el);
-    document.getElementById('confirm-cancel').addEventListener('click',closeConfirmSheet);
-    document.getElementById('confirm-action').addEventListener('click',()=>{const fn=pendingConfirmAction;pendingConfirmAction=null;closeConfirmSheet();if(typeof fn==='function')setTimeout(fn,30);});
-  }
-  function closeConfirmSheet(){document.getElementById('bs-confirm')?.classList.remove('open');pendingConfirmAction=null;}
-  function openConfirmSheet(opts,onConfirm){
-    ensureConfirmSheet();
-    pendingConfirmAction=onConfirm;
-    const title=document.getElementById('confirm-title');
-    const copy=document.getElementById('confirm-copy');
-    const action=document.getElementById('confirm-action');
-    if(title)title.textContent=opts.title||'Are you sure?';
-    if(copy)copy.textContent=opts.message||'This cannot be undone.';
-    if(action){action.textContent=opts.confirmText||'Delete';action.classList.toggle('confirm-danger',opts.danger!==false);action.classList.toggle('confirm-primary',opts.danger===false);}
-    document.getElementById('bs-confirm')?.classList.add('open');
-  }
-  window.openConfirmSheet=openConfirmSheet;
-
-  window.clearSongNotes=function(){
-    if(!currentSong)return;
-    if(typeof hasSongMemory==='function'&&!hasSongMemory(currentSong)){if(typeof closeBS==='function')closeBS('songnotes');return;}
-    openConfirmSheet({title:'Clear notes?',message:'This will remove the saved notes and cues for this song on this device.',confirmText:'Clear notes'},()=>{
-      const id=(typeof memorySongId==='function')?memorySongId(currentSong):'';
-      if(id){delete loadSongMemory()[id];saveSongMemoryMap();}
-      inlineNotesExpanded=false;
-      if(typeof updateSongNoteIndicators==='function')updateSongNoteIndicators();
-      if(currentSong&&document.getElementById('song-view')?.classList.contains('visible')&&typeof updateSongView==='function')updateSongView();
-      if(typeof closeBS==='function')closeBS('songnotes');
-      if(typeof showToast==='function')showToast('Notes cleared');
-    });
-  };
-  try{clearSongNotes=window.clearSongNotes;}catch(e){}
-
-  window.clearSet=function(){
-    if(!getSetList().length)return;
-    const label=(typeof getSetListLabel==='function'?getSetListLabel():'Current').toLowerCase();
-    openConfirmSheet({title:'Clear set list?',message:'This removes all songs from the '+label+' set list. Your song library will not be deleted.',confirmText:'Clear set list'},()=>{modSetList([]);renderSetList();});
-  };
-  try{clearSet=window.clearSet;}catch(e){}
-
-  window.deleteSong=function(){
-    const ex=(typeof findSongById==='function')?findSongById(editingId):null;
-    if(!editingId)return;
-    const name=ex?.title?`“${ex.title}”`:'this song';
-    openConfirmSheet({title:'Delete song?',message:`${name} will be removed from ${ex?.localOnly?'My Songs on this device':'the WorshipBase library'}. This cannot be undone.`,confirmText:'Delete song'},()=>{
-      if(ex?.localOnly){ deleteLocalMySong(editingId).then(()=>{selectedSongIds.delete(normId(editingId));updateManageUI();showSync('Deleted locally');closeBS('modal',true);showList();}).catch(()=>showSync('Delete failed',true)); }
-      else if(ex?.fbKey){
-        if(!(manageMode||adminUnlocked)){showToast('Only admin can delete WorshipBase library songs');return;}
-        songsRef.child(ex.fbKey).remove().then(()=>{selectedSongIds.delete(normId(editingId));updateManageUI();showSync('Deleted');closeBS('modal',true);showList();}).catch(()=>showSync('Delete failed',true));
-      }
-    });
-  };
-  try{deleteSong=window.deleteSong;}catch(e){}
-
-  window.bulkDeleteSelected=function(){
-    requireAdmin(()=>{
-      const ids=[...selectedSongIds];
-      if(!ids.length){showToast('Select songs to delete');return;}
-      const toDelete=ids.map(id=>findSongById(id)).filter(Boolean).filter(s=>s.fbKey||s.localOnly);
-      if(!toDelete.length){showToast('No saved songs selected');return;}
-      openConfirmSheet({title:`Delete ${toDelete.length} song${toDelete.length!==1?'s':''}?`,message:'This cannot be undone.'+(typeof previewNamesForConfirm==='function'?previewNamesForConfirm(toDelete):''),confirmText:'Delete'},()=>{
-        Promise.all(toDelete.map(s=>s.localOnly?deleteLocalMySong(s.id):songsRef.child(s.fbKey).remove()))
-          .then(()=>{selectedSongIds.clear();updateManageUI();refresh(true);showSync('Deleted');showToast(`${toDelete.length} song${toDelete.length!==1?'s':''} deleted`);})
-          .catch(()=>showSync('Delete failed',true));
-      });
-    });
-  };
-  try{bulkDeleteSelected=window.bulkDeleteSelected;}catch(e){}
-
-  window.deleteDuplicateExtras=function(idx){
-    const g=lastDuplicateGroups[idx];
-    if(!g)return;
-    requireAdmin(()=>{
-      const extras=getDuplicateExtras(g).filter(s=>s.fbKey);
-      if(!extras.length){showToast('No extras to delete');return;}
-      openConfirmSheet({title:`Delete ${extras.length} duplicate${extras.length!==1?'s':''}?`,message:'This deletes the extra copies and keeps the selected main song.'+(typeof previewNamesForConfirm==='function'?previewNamesForConfirm(extras):''),confirmText:'Delete extras'},()=>{
-        Promise.all(extras.map(s=>songsRef.child(s.fbKey).remove()))
-          .then(()=>{selectedSongIds.forEach(id=>{if(extras.some(s=>normId(s.id)===id))selectedSongIds.delete(id);});renderDuplicateReview();if(isSongManageTab()&&manageMode)refresh(true);showSync('Deleted duplicates');})
-          .catch(()=>showSync('Delete failed',true));
-      });
-    });
-  };
-  try{deleteDuplicateExtras=window.deleteDuplicateExtras;}catch(e){}
-
-  window.deleteNamedSet=function(id){
-    const scope=appPrefs.setListScope;const sk=setScopeKey(scope);const sets={...getNamedSets(sk)};if(!sets[id])return;
-    const one=Object.keys(sets).length===1;
-    openConfirmSheet({title:one?'Clear this set list?':'Delete set list?',message:one?'This removes all songs from this set list. Your library songs are not deleted.':`Delete “${sets[id].name}”? Songs remain in your library.`,confirmText:one?'Clear':'Delete'},()=>{
-      if(one){sets[id]={...sets[id],items:[],updatedAt:Date.now()};}
-      else{delete sets[id];if(appPrefs[activeSetPrefKey(sk)]===id)appPrefs[activeSetPrefKey(sk)]=Object.keys(sets)[0];savePrefs();}
-      if(sk==='personal')_personalSets=sets;else _sharedSets=sets;commitNamedSetScope(sk);openBS('sets');
-    });
-  };
-  try{deleteNamedSet=window.deleteNamedSet;}catch(e){}
-
-  function ensureOfflineSection(){
-    if(document.getElementById('sync-offline-section'))return;
-    const exportSection=[...document.querySelectorAll('.ss-section')].find(sec=>sec.querySelector('.ss-title')?.textContent.trim()==='Export');
-    if(!exportSection)return;
-    const sec=document.createElement('div');
-    sec.className='ss-section';
-    sec.id='sync-offline-section';
-    sec.innerHTML='<div class="ss-title">Sync & Offline</div><div class="ss-card offline-status-card"><div class="ss-row no-tap"><div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5a5 5 0 0 1 10 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M5.2 10.6a3 3 0 0 1 5.6 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="12.6" r="1" fill="currentColor"/></svg></div><div class="ss-body"><div class="ss-lbl">Connection</div><div class="ss-sub" id="offline-status-sub">Checking…</div></div><span class="offline-pill" id="offline-status-pill">Checking</span></div><div class="ss-row no-tap"><div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10v8H3z" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 7h5M5.5 9.5h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div><div class="ss-body"><div class="ss-lbl">Offline app shell</div><div class="ss-sub" id="offline-sw-sub">Checking cache status…</div></div></div><div class="ss-row" onclick="wbClearOfflineCache()"><div class="ss-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4h8M6 4V2.8h4V4M5 6v7h6V6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="ss-body"><div class="ss-lbl">Clear offline cache</div><div class="ss-sub">Forces a fresh download next time you open WorshipBase</div></div></div></div>';
-    exportSection.parentNode.insertBefore(sec,exportSection.nextSibling);
-  }
-  function formatWhen(ts){
-    const n=Number(ts||0);if(!n)return 'Not recorded yet';
-    try{return new Date(n).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return new Date(n).toLocaleString();}
-  }
-  function updateOfflineStatus(){
-    ensureOfflineSection();
-    const online=navigator.onLine!==false;
-    const pill=document.getElementById('offline-status-pill');
-    const sub=document.getElementById('offline-status-sub');
-    const sw=document.getElementById('offline-sw-sub');
-    const last=localStorage.getItem('wb_last_sync_at')||'';
-    if(pill){pill.textContent=online?'Online':'Offline';pill.classList.toggle('ok',online);pill.classList.toggle('warn',!online);}
-    if(sub)sub.textContent=online?'Connected. Last sync: '+formatWhen(last):'Using saved data on this device. Last sync: '+formatWhen(last);
-    if(sw){
-      if(!('serviceWorker' in navigator))sw.textContent='Not available in this browser.';
-      else sw.textContent=navigator.serviceWorker.controller?'Available after first load. Pad audio caches when played.':'Installing or waiting for first reload.';
-    }
-  }
-  window.updateOfflineStatus=updateOfflineStatus;
-  window.wbClearOfflineCache=function(){
-    openConfirmSheet({title:'Clear offline cache?',message:'This removes cached app files and pad audio. Your song library, notes, and set lists stay saved. WorshipBase will download fresh files next time.',confirmText:'Clear cache',danger:false},async()=>{
-      try{navigator.serviceWorker?.controller?.postMessage({type:'WB_CLEAR_CACHES'});}catch(e){}
-      try{if(window.caches){const keys=await caches.keys();await Promise.all(keys.map(k=>/^worshipbase-|^wb-/.test(k)?caches.delete(k):false));}}catch(e){}
-      showToast('Offline cache cleared');
-      updateOfflineStatus();
-    });
-  };
-
-  const oldShowSync=window.showSync || (typeof showSync==='function'?showSync:null);
-  if(oldShowSync){
-    window.showSync=function(msg,err){
-      if(!err && !/offline/i.test(String(msg||'')))try{localStorage.setItem('wb_last_sync_at',String(Date.now()));}catch(e){}
-      const r=oldShowSync.apply(this,arguments);updateOfflineStatus();return r;
-    };
-    try{showSync=window.showSync;}catch(e){}
-  }
-  window.addEventListener('online',updateOfflineStatus,{passive:true});
-  window.addEventListener('offline',updateOfflineStatus,{passive:true});
-
-  function ensureExportSafeNote(){
-    if(document.getElementById('export-safe-note'))return;
-    const footer=document.querySelector('#export-view .ev-footer');
-    if(!footer)return;
-    const note=document.createElement('div');
-    note.id='export-safe-note';
-    note.className='export-safe-note';
-    note.textContent='PDF export keeps the current active export engine. Use Preview PDF first; the downloaded PDF is generated from the same layout.';
-    footer.parentNode.insertBefore(note,footer);
-  }
-  const oldRunExport=window.runExportFromPage || (typeof runExportFromPage==='function'?runExportFromPage:null);
-  if(oldRunExport){
-    window.runExportFromPage=function(){
-      try{return oldRunExport.apply(this,arguments);}catch(err){console.error('WorshipBase export failed',err);showToast('Export failed — try Standard size or one song per page');}
-    };
-    try{runExportFromPage=window.runExportFromPage;}catch(e){}
-  }
-
-  const oldOpenExportView=window.openExportView || (typeof openExportView==='function'?openExportView:null);
-  if(oldOpenExportView){
-    window.openExportView=function(){const r=oldOpenExportView.apply(this,arguments);ensureExportSafeNote();return r;};
-    try{openExportView=window.openExportView;}catch(e){}
-  }
-  const oldRenderSettings=window.renderSettings || (typeof renderSettings==='function'?renderSettings:null);
-  if(oldRenderSettings){
-    window.renderSettings=function(){const r=oldRenderSettings.apply(this,arguments);ensureOfflineSection();updateOfflineStatus();return r;};
-    try{renderSettings=window.renderSettings;}catch(e){}
-  }
-
-  document.addEventListener('DOMContentLoaded',()=>{ensureInlineNotes();ensureConfirmSheet();ensureOfflineSection();ensureExportSafeNote();updateOfflineStatus();setTimeout(()=>{updateInlineSongNotes();applySetListNoteBadges();},300);});
-  setTimeout(()=>{ensureInlineNotes();ensureConfirmSheet();ensureOfflineSection();ensureExportSafeNote();updateOfflineStatus();updateInlineSongNotes();applySetListNoteBadges();},600);
-})();
-</script>
-
-
-<div id="wb-pad-float" class="wb-pad-float"><button class="wb-pad-float-label" id="wb-pad-float-label" type="button">Pad</button><button class="wb-pad-float-stop" id="wb-pad-float-stop" type="button" aria-label="Stop pad"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"></rect></svg></button></div><div class="bs-bg" id="bs-confirm"><div class="bs"><div class="bs-handle"></div><div class="bs-title" id="confirm-title">Are you sure?</div><div class="confirm-copy" id="confirm-copy"></div><div class="confirm-actions"><button class="confirm-cancel" type="button" id="confirm-cancel">Cancel</button><button class="confirm-danger" type="button" id="confirm-action">Delete</button></div></div></div></body><div style="position: fixed; top: 0px; left: 0px; width: 1px; height: env(safe-area-inset-top,0px); pointer-events: none; opacity: 0; z-index: -1;"></div><div style="position: fixed; bottom: 0px; left: 0px; width: 1px; height: env(safe-area-inset-bottom,0px); pointer-events: none; opacity: 0; z-index: -1;"></div></html>
+<div id="wb-pad-float" class="wb-pad-float"><button class="wb-pad-float-label" id="wb-pad-float-label" type="button">Pad</button><button class="wb-pad-float-stop" id="wb-pad-float-stop" type="button" aria-label="Stop pad"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"></rect></svg></button></div></body><div style="position: fixed; top: 0px; left: 0px; width: 1px; height: env(safe-area-inset-top,0px); pointer-events: none; opacity: 0; z-index: -1;"></div><div style="position: fixed; bottom: 0px; left: 0px; width: 1px; height: env(safe-area-inset-bottom,0px); pointer-events: none; opacity: 0; z-index: -1;"></div></html>
