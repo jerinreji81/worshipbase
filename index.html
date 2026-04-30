@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v71.7</title>
+<title>WorshipBase v71.8</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -3424,7 +3424,7 @@ body.dark .offline-pill.warn{background:rgba(239,143,162,.12);border-color:rgba(
               <img src="assets/wb-icon-192.png" alt="WorshipBase logo">
             </div>
             <div class="about-name">WorshipBase</div>
-            <div class="about-version-pill">Version 71.7</div>
+            <div class="about-version-pill">Version 71.8</div>
             <div class="about-by">Created by <strong>Jerin Reji</strong></div>
           </div>
         </div>
@@ -13029,7 +13029,7 @@ button:focus-visible,.tab-btn:focus-visible,.mi:focus-visible,.pill:focus-visibl
 
 <script id="wb-v71-5-polish-js">
 (function(){
-  const VERSION='v71.7';
+  const VERSION='v71.8';
   let inlineNotesExpanded=false;
   let pendingConfirmAction=null;
 
@@ -13396,6 +13396,109 @@ button:focus-visible,.tab-btn:focus-visible,.mi:focus-visible,.pill:focus-visibl
   function bindAll(){document.querySelectorAll('.bs-bg').forEach(bindBackdrop);}
   bindAll();
   new MutationObserver(bindAll).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+
+
+<style id="wb-v71-8-bottom-sheet-window-shield-css">
+/* v71.8: make the backdrop a real modal shield. The first outside tap closes only the sheet. */
+.bs-bg.open{pointer-events:auto!important;}
+.bs-bg.open:not(#bs-modal){touch-action:none!important;}
+.bs-bg.open > .bs{pointer-events:auto!important;touch-action:auto!important;}
+</style>
+<script id="wb-v71-8-bottom-sheet-window-shield-js">
+/* v71.8 — window-capture backdrop shield.
+   This runs before older document-level handlers, so an outside tap cannot
+   close the sheet on touchstart and then activate a control behind it. */
+(function(){
+  'use strict';
+  var SHIELD_MS=1100;
+  var state={bg:null,started:false,closed:false,until:0,closeTimer:0};
+  function now(){return Date.now();}
+  function openSheets(){return Array.prototype.slice.call(document.querySelectorAll('.bs-bg.open'));}
+  function topSheet(){var s=openSheets();return s.length?s[s.length-1]:null;}
+  function nameOf(bg){return bg&&bg.id?bg.id.replace(/^bs-/,''):'';}
+  function panelFor(bg){return bg?bg.querySelector('.bs'):null;}
+  function insidePanel(target,bg){var panel=panelFor(bg);return !!(panel&&target&&target.closest&&target.closest('.bs')===panel);}
+  function outsideTap(e,bg){if(!bg||!bg.classList||!bg.classList.contains('open'))return false;return !insidePanel(e.target,bg);}
+  function stop(e){if(!e)return;try{e.preventDefault();}catch(_){}try{e.stopImmediatePropagation();}catch(_){try{e.stopPropagation();}catch(__){}}}
+  function arm(bg){state.bg=bg;state.started=true;state.closed=false;state.until=now()+SHIELD_MS;clearTimeout(state.closeTimer);}
+  function disarmSoon(){state.until=now()+SHIELD_MS;clearTimeout(state.closeTimer);state.closeTimer=setTimeout(function(){state.bg=null;state.started=false;state.closed=false;},SHIELD_MS);}
+  function closeBg(bg){
+    if(!bg||!bg.classList||!bg.classList.contains('open'))return;
+    var nm=nameOf(bg);
+    state.closed=true;
+    state.until=now()+SHIELD_MS;
+    clearTimeout(state.closeTimer);
+    try{
+      if(nm==='importdest'&&typeof window.resolveImportDestination==='function')window.resolveImportDestination('');
+      else if(typeof window.closeBS==='function')window.closeBS(nm);
+      else bg.classList.remove('open');
+    }catch(err){try{bg.classList.remove('open');}catch(_){}}
+    disarmSoon();
+  }
+  function onStart(e){
+    var bg=topSheet();
+    if(!bg||!outsideTap(e,bg))return;
+    arm(bg);
+    stop(e);
+  }
+  function onMove(e){
+    if(state.started&&now()<state.until)stop(e);
+  }
+  function onEnd(e){
+    if(!state.started)return;
+    stop(e);
+    state.until=now()+SHIELD_MS;
+    clearTimeout(state.closeTimer);
+    // Do not remove the backdrop immediately on touchend/pointerup. iOS may still
+    // synthesize a click; keeping the shield alive prevents fall-through taps.
+    state.closeTimer=setTimeout(function(){
+      if(state.bg&&!state.closed)closeBg(state.bg);
+    },380);
+  }
+  function onClick(e){
+    var bg=state.bg&&state.bg.classList&&state.bg.classList.contains('open')?state.bg:topSheet();
+    if(bg&&outsideTap(e,bg)){
+      stop(e);
+      closeBg(bg);
+      return;
+    }
+    if(state.started||now()<state.until){
+      stop(e);
+      if(bg&&!state.closed)closeBg(bg);
+    }
+  }
+  function onCancel(e){
+    if(!state.started)return;
+    stop(e);
+    if(state.bg&&!state.closed)closeBg(state.bg);
+  }
+  ['pointerdown','mousedown','touchstart'].forEach(function(type){
+    window.addEventListener(type,onStart,{capture:true,passive:false});
+  });
+  ['pointermove','mousemove','touchmove'].forEach(function(type){
+    window.addEventListener(type,onMove,{capture:true,passive:false});
+  });
+  ['pointerup','mouseup','touchend'].forEach(function(type){
+    window.addEventListener(type,onEnd,{capture:true,passive:false});
+  });
+  ['pointercancel','touchcancel'].forEach(function(type){
+    window.addEventListener(type,onCancel,{capture:true,passive:false});
+  });
+  window.addEventListener('click',onClick,{capture:true,passive:false});
+  window.addEventListener('dblclick',function(e){if(state.started||now()<state.until)stop(e);},{capture:true,passive:false});
+  window.addEventListener('contextmenu',function(e){if(state.started||now()<state.until)stop(e);},{capture:true,passive:false});
+  window.closeBSBg=function(e,name){
+    var bg=document.getElementById('bs-'+name);
+    if(!bg||!bg.classList.contains('open'))return false;
+    if(e&&insidePanel(e.target,bg))return false;
+    if(e)stop(e);
+    closeBg(bg);
+    return false;
+  };
+  try{closeBSBg=window.closeBSBg;}catch(_){}
 })();
 </script>
 
