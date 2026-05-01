@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/wb-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>WorshipBase v71.16</title>
+<title>WorshipBase v71.17</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 /* Prevent iOS long-press/callout menus and text selection on UI chrome
@@ -3226,7 +3226,7 @@ body.dark #setlist-section .sl-option-btn.icon-only{background:rgba(143,180,255,
   </div>
 
   <!-- SETTINGS -->
-  <div id="settings-section" style="display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;">
+  <div id="settings-section" style="display: none; flex: 1 1 0%; flex-direction: column; overflow: hidden; min-height: 0px;">
     <div class="settings-scroll" style="-webkit-overflow-scrolling: touch;">
 
       <div class="ss-section">
@@ -5191,7 +5191,7 @@ function attachSheetSwipe(panel,name){
       const bg=panel.closest('.bs-bg');
       panel.style.transition=`transform ${ANIM_MS}ms cubic-bezier(.25,.46,.45,.94)`;
       panel.style.transform='translateY(100%)';
-      if(bg) bg.style.pointerEvents='none';
+      if(bg) bg.style.pointerEvents='';
       setTimeout(()=>{
         closeBS(name);
         if(bg) bg.style.pointerEvents='';
@@ -12870,7 +12870,7 @@ body.dark #setlist-section #sl-set-key-info{background:rgba(255,255,255,.03)!imp
   function refreshAll(){refreshSetHeader();refreshPad();}
   ['renderSetList','applySetAllKey','setSetItemKey','modSetList','setActiveNamedSet','setSetListScope','clearSet','openSetKeyEditor'].forEach(function(name){try{var old=window[name];if(typeof old==='function'&&!old.__wbBehaviourPassWrapped){var wrapped=function(){var r=old.apply(this,arguments);requestAnimationFrame(refreshAll);setTimeout(refreshAll,120);return r;};wrapped.__wbBehaviourPassWrapped=true;window[name]=wrapped;}}catch(e){}});
   function closeOverlay(bg){if(!bg||!bg.classList||!bg.classList.contains('open'))return;var name=(bg.id||'').replace(/^bs-/,'');var panel=bg.querySelector('.bs');if(panel){panel.style.transition='';panel.style.transform='';panel.style.marginBottom='';}bg.style.pointerEvents='';try{if(typeof closeBS==='function')closeBS(name);else bg.classList.remove('open');}catch(e){bg.classList.remove('open');}}
-  document.addEventListener('click',function(e){var bg=e.target&&e.target.classList&&e.target.classList.contains('bs-bg')?e.target:null;if(!bg||!bg.classList.contains('open'))return;e.preventDefault();e.stopPropagation();closeOverlay(bg);},true);
+  document.addEventListener('click',function(e){var bg=e.target&&e.target.classList&&e.target.classList.contains('bs-bg')?e.target:null;if(!bg||!bg.classList.contains('open'))return;e.preventDefault();e.stopPropagation();if(bg.id==='bs-importdest'&&typeof resolveImportDestination==='function'){try{resolveImportDestination('');}catch(_e){closeOverlay(bg);}return;}closeOverlay(bg);},true);
   document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.bs-bg.open').forEach(closeOverlay);});
   function stopMomentum(){['vscroll','bible-scroll','sv-scroll'].forEach(function(id){var el=document.getElementById(id);if(!el)return;var y=el.scrollTop;el.style.webkitOverflowScrolling='auto';el.scrollTop=y;void el.offsetHeight;requestAnimationFrame(function(){el.style.webkitOverflowScrolling='touch';});});document.querySelectorAll('#setlist-section .sl-scroll-host > div,.settings-scroll').forEach(function(el){var y=el.scrollTop;el.style.webkitOverflowScrolling='auto';el.scrollTop=y;void el.offsetHeight;requestAnimationFrame(function(){el.style.webkitOverflowScrolling='touch';});});}
   function installSongScrollBoundaryGuard(){
@@ -12898,7 +12898,7 @@ body.dark #setlist-section #sl-set-key-info{background:rgba(255,255,255,.03)!imp
 
 
 <style id="wb-v71-14-planning-cleanup">
-/* v71.16 — cleanup for set planning, notes preview, cues toggle, and share text */
+/* v71.17 — cleanup for set planning, notes preview, cues toggle, and share text */
 .wb-sync-card{padding:14px 14px 12px;display:flex;flex-direction:column;gap:12px;}.wb-sync-status{display:flex;align-items:center;gap:10px;padding:12px;border-radius:16px;background:var(--surface-tint);border:1px solid var(--surface-border);}.wb-sync-dot{width:10px;height:10px;border-radius:999px;background:#2d9d62;box-shadow:0 0 0 4px rgba(45,157,98,.12);flex-shrink:0;}.wb-sync-status-title{font-size:14px;font-weight:850;color:var(--txt1);}.wb-sync-status-sub{font-size:12px;color:var(--txt2);line-height:1.45;margin-top:2px;}.wb-sync-actions{display:grid;grid-template-columns:1fr;gap:8px;}.wb-sync-btn{width:100%;border:1px solid var(--surface-border);background:var(--bg2);color:var(--txt1);border-radius:14px;min-height:46px;padding:10px 12px;font-size:13px;font-weight:800;font-family:inherit;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;}.wb-sync-btn:active{transform:scale(.99);background:var(--bg3);}.wb-sync-badge{font-size:10px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--tc);background:var(--accent-bg);border:1px solid var(--surface-border);border-radius:999px;padding:3px 7px;white-space:nowrap;}
 .set-item{height:62px;}.set-section-item{height:auto!important;min-height:42px!important;margin:8px 16px 6px!important;padding:0 10px!important;border:0!important;border-radius:14px!important;background:var(--tc)!important;color:#fff!important;box-shadow:0 8px 18px rgba(16,55,74,.13)!important;}.set-section-item .drag-handle span{background:rgba(255,255,255,.74)!important;}.set-section-copy{flex:1;min-width:0;padding:12px 4px;}.set-section-title{font-size:13px;font-weight:950;color:#fff;letter-spacing:.08em;text-transform:uppercase;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.set-section-kicker{display:none!important;}.set-section-item .set-rm{color:rgba(255,255,255,.76)!important;}.set-placeholder-item{height:auto!important;min-height:56px!important;margin:4px 12px!important;border:1px dashed var(--surface-border)!important;border-radius:14px!important;background:color-mix(in srgb,var(--surface-tint) 72%,var(--bg1))!important;}.set-placeholder-item .set-title{font-weight:780;}.set-placeholder-item .set-title:before{content:none!important;}.set-placeholder-item .set-meta{font-size:11px;line-height:1.35;margin-top:2px;}.set-meta-chips{display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap;justify-content:flex-end;}.notes-chip{color:var(--tc)!important;background:var(--accent-bg)!important;border-color:var(--surface-border)!important;}
 .sv-notes-btn{width:36px;height:36px;min-width:36px;border-radius:50%;border:.5px solid var(--bdr2);background:var(--bg2);color:var(--tc);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;flex-shrink:0;transition:background-color .18s ease,border-color .18s ease,color .18s ease,transform .12s ease;}.sv-notes-btn.hidden{display:none!important;}.sv-notes-btn:active{transform:scale(.94);}.performance-mode.cues-hidden .song-cue-marker{display:none!important;}.pres-section-chip.notes-rail-chip{min-width:36px;background:color-mix(in srgb,var(--bg1) 88%, transparent)!important;border-color:var(--surface-border)!important;color:var(--txt2)!important;box-shadow:var(--shadow-sm)!important;}.notes-preview-text{white-space:pre-wrap;font-size:14px;line-height:1.6;color:var(--txt1);padding:4px 0 12px;}.notes-preview-empty{font-size:13px;line-height:1.55;color:var(--txt3);padding:12px 0 16px;text-align:center;}.notes-preview-actions{display:flex;gap:10px;padding:4px 0 18px;}.notes-preview-actions .btn-s,.notes-preview-actions .btn-p{flex:1;}
@@ -12946,7 +12946,7 @@ body.dark .wb-sync-status,body.dark .wb-sync-btn,body.dark .set-placeholder-item
 
 
 <script id="wb-v71-15-ios-textarea-sheet-cleanup">
-/* v71.16 — iOS textarea selection cleanup for notes/cues bottom sheet.
+/* v71.17 — iOS textarea selection cleanup for notes/cues bottom sheet.
    When a textarea still has an active selection and its bottom sheet is hidden,
    iOS PWA can leave an invisible editing/selection layer over the app.  Always
    blur active form controls and clear browser selection before closing sheets. */
@@ -13040,5 +13040,77 @@ body.dark .wb-sync-status,body.dark .wb-sync-btn,body.dark .set-placeholder-item
 })();
 </script>
 
+
+
+<script id="wb-v71-17-transient-ui-audit-hardening">
+/* v71.17 — transient UI lifecycle hardening.
+   Keeps bottom-sheet behaviour stable, but makes text-field sheets safer after iOS
+   selection/highlight gestures and prevents orphan transparent overlays. */
+(function(){
+  'use strict';
+  function isFormControl(el){return !!(el&&el.matches&&el.matches('textarea,input,select,[contenteditable=\"true\"]'));}
+  function clearTextEditing(scope){
+    try{
+      var active=document.activeElement;
+      if(active&&(!scope||scope.contains(active))&&isFormControl(active)){
+        try{ if(active.setSelectionRange&&typeof active.value==='string'){var end=active.value.length;active.setSelectionRange(end,end);} }catch(_e){}
+        try{active.blur();}catch(_e){}
+      }
+      try{var sel=window.getSelection&&window.getSelection();if(sel&&sel.removeAllRanges)sel.removeAllRanges();}catch(_e){}
+    }catch(_e){}
+  }
+  function cleanupTransientUi(){
+    try{
+      document.querySelectorAll('.bs-bg').forEach(function(bg){
+        if(bg.classList.contains('open'))return;
+        bg.style.pointerEvents='';
+        var panel=bg.querySelector('.bs');
+        if(panel){panel.style.transition='';panel.style.transform='';panel.style.marginBottom='';}
+      });
+      var ctx=document.getElementById('ctx-bg'),ctxMenu=document.getElementById('ctx-menu');
+      if(ctx&&ctx.classList.contains('open')&&(!ctxMenu||ctxMenu.style.display==='none'))ctx.classList.remove('open');
+      var add=document.getElementById('add-menu-backdrop');
+      if(add&&add.classList.contains('open')&&getComputedStyle(add).display==='none')add.classList.remove('open');
+      if(!document.querySelector('.bs-bg.open')&&!document.querySelector('#export-view.visible'))document.body.classList.remove('editor-open');
+    }catch(_e){}
+  }
+  function closeTransientPopovers(){
+    try{ if(typeof closeCtx==='function')closeCtx(); }catch(_e){try{document.getElementById('ctx-bg')?.classList.remove('open');}catch(_e2){}}
+    try{ if(typeof closeAddSongMenu==='function')closeAddSongMenu(); }catch(_e){try{document.getElementById('add-menu-backdrop')?.classList.remove('open');}catch(_e2){}}
+  }
+  var selector='.bs-bg .m-close,.bs-bg .btn-s,.bs-bg .btn-p,.bs-bg .editor-save-btn,.bs-bg .editor-nav-btn,.bs-bg .bs-cancel,.bs-bg .mi,.bs-bg [onclick*=\"closeBS\"],.bs-bg [onclick*=\"save\"]';
+  function maybeClearBeforeControl(e){
+    var target=e.target&&e.target.closest&&e.target.closest(selector);
+    if(!target)return;
+    var bg=target.closest&&target.closest('.bs-bg');
+    if(bg)clearTextEditing(bg);
+  }
+  document.addEventListener('touchstart',maybeClearBeforeControl,{capture:true,passive:true});
+  document.addEventListener('pointerdown',maybeClearBeforeControl,true);
+  var oldOpenBS=window.openBS||((typeof openBS==='function')?openBS:null);
+  if(oldOpenBS&&!oldOpenBS.__wbV717){
+    window.openBS=function(name){closeTransientPopovers();cleanupTransientUi();return oldOpenBS.apply(this,arguments);};
+    window.openBS.__wbV717=true;try{openBS=window.openBS;}catch(_e){}
+  }
+  var oldCloseAllBS=window.closeAllBS||((typeof closeAllBS==='function')?closeAllBS:null);
+  if(oldCloseAllBS&&!oldCloseAllBS.__wbV717){
+    window.closeAllBS=function(){clearTextEditing(document.body);var r=oldCloseAllBS.apply(this,arguments);closeTransientPopovers();setTimeout(cleanupTransientUi,0);setTimeout(cleanupTransientUi,180);return r;};
+    window.closeAllBS.__wbV717=true;try{closeAllBS=window.closeAllBS;}catch(_e){}
+  }
+  window.WorshipBaseAuditState=function(){
+    return {
+      openSheets:[].slice.call(document.querySelectorAll('.bs-bg.open')).map(function(el){return el.id;}),
+      visibleViews:[].slice.call(document.querySelectorAll('#song-view.visible,#dup-view.visible,#export-view.visible')).map(function(el){return el.id;}),
+      ctxOpen:!!document.querySelector('.ctx-bg.open'),
+      addMenuOpen:!!document.querySelector('.add-menu-backdrop.open'),
+      bodyClass:document.body.className,
+      activeElement:document.activeElement&&document.activeElement.id||document.activeElement&&document.activeElement.tagName
+    };
+  };
+  window.addEventListener('pageshow',function(){setTimeout(cleanupTransientUi,50);});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)setTimeout(cleanupTransientUi,80);});
+  setTimeout(cleanupTransientUi,300);
+})();
+</script>
 
 <div id="wb-pad-float" class="wb-pad-float"><button class="wb-pad-float-label" id="wb-pad-float-label" type="button">Pad</button><button class="wb-pad-float-stop" id="wb-pad-float-stop" type="button" aria-label="Stop pad"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"></rect></svg></button></div></body><div style="position: fixed; top: 0px; left: 0px; width: 1px; height: env(safe-area-inset-top,0px); pointer-events: none; opacity: 0; z-index: -1;"></div><div style="position: fixed; bottom: 0px; left: 0px; width: 1px; height: env(safe-area-inset-bottom,0px); pointer-events: none; opacity: 0; z-index: -1;"></div></html>
